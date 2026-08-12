@@ -1,0 +1,1332 @@
+
+
+
+	
+	
+	
+	
+	
+
+
+
+<html lang="en">
+<head>
+<meta content="IE=edge" http-equiv="X-UA-Compatible">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Indian Railways eProcurement Systems">
+<meta name="keywords" content="Search Railways e-tender,Search Railways Supply tender,Search Railways Works tender,Search Railways e-auction tender,Indian Railways works tender,Indian Railways goods tender,Indian Railways services tender,Indian Railways supply tender,Indian Railways e-tender,Indian Railways e-auction,Railway Board tender,Railway Board e-tender,eProcurement,e-Procurement,Indian Railways,cris">
+<title>Guest</title>
+<link rel="stylesheet" href="/ireps/js/newJS/bootstrap.min.css">
+<link href="/ireps/css/bootStrap/style.css" rel="stylesheet">
+<link rel="shortcut icon" href="/ireps/images/common/favicon.ico" type="image/x-icon"> 
+<LINK href="/ireps/images/common/favicon.ico" type="image/vnd.microsoft.icon" rel="shortcut icon">
+<LINK href="/ireps/images/common/favicon.ico" type="image/vnd.microsoft.icon" rel="icon">
+<script language="javascript" src="/ireps/pki/CRISPKI.js"></script>
+<script type="text/javascript" src="/ireps/js/jquery.1.11.1.js"></script>
+<script type="text/javascript" src="/ireps/js/works/postRequest.js"></script>
+<script src="/ireps/js/newJS/jquery-3.3.1.slim.min.js" ></script>
+<script src="/ireps/js/newJS/popper.min.js"></script>
+<script src="/ireps/js/newJS/bootstrap.min.js"></script>
+</head>
+
+<body>
+
+	<div class="main-container">
+	
+	    <div>
+			
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha384-/o6I2CkkWC//PSjvWC/eYN7l3xM3tJm8ZzVkCOfp//W05QcE3mlGskpoHB6XqI+B" crossorigin="anonymous">
+
+<script src="https://cdn.ux4g.gov.in/tools/accessibility-widget.js" integrity="sha384-419MfWzsRfYF7SIkBaHGUOahD9+c4R5PsHwlx/eOlSVQKAEC6nh7lPMHhXAVLcpB" crossorigin="anonymous"></script>
+
+<style type="text/css">
+.epsLabel {
+	font-size: 33px;
+	/* font-family: Cambria; */
+	font-weight: normal;
+	letter-spacing: 2px;
+	color: white;
+	font-family: 'Roboto', sans-serif;
+}
+.small-text{
+color:white}
+.small-text:hover {
+    color: red;
+}
+	
+</style>
+<style>
+.gradientClass{
+background: #07222E;
+font-family: 'Adobe Garamond Pro', sans-serif;
+ 
+}
+
+
+
+
+        .custom-select option {
+            color: black;
+        }
+     
+  .custom-select {
+            margin-right: 30px;
+            border: 0px;
+            width: 220px;
+            background-color: transparent;
+            color: white;
+            height: 45px;
+            -webkit-appearance: none; 
+            -moz-appearance: none; 
+            appearance: none; 
+        }
+
+        .custom-select option {
+            color: black;
+        }
+        .small-text{
+			color:white;
+			font-weight: normal;
+			font-family: 'Adobe Garamond Pro', sans-serif;
+			text-transform: capitalize;
+		}
+	#mainHr {
+    margin-top: -4px;
+    margin-bottom: 0rem;
+    border: 0;
+    border-top: 1px solid rgba(0, 0, 0, .1);
+}
+
+
+
+    .controls { display: flex; align-items: center; gap: .5rem; }
+.btn1 {
+border: 1px solid rgba(255,255,255,.35); color: #fff; padding: 4px 6px; border-radius: 8px; cursor: pointer; background-color:transparent; font: inherit;
+}
+
+.btn1:hover {
+  background-color: rgba(255, 255, 255, 0.2) !important; /* Highlight on hover */
+  border-color: rgba(255, 255, 255, 0.9) !important;
+}
+
+
+
+
+:root {
+    --app-font-size: 14px;
+}
+
+/* Font size - Apply to ALL elements */
+*, *::before, *::after {
+    font-size: var(--app-font-size) ;
+}
+
+/* Dark theme styles */
+.dark-theme {
+    background-color: #1a1a1a !important;
+    color: #ffffff !important;
+}
+
+.dark-theme body,
+.dark-theme div,
+.dark-theme span,
+.dark-theme p,
+.dark-theme td,
+.dark-theme th,
+.dark-theme label {
+    background-color: #1a1a1a !important;
+    color: #ffffff !important;
+}
+
+.dark-theme input,
+.dark-theme textarea,
+.dark-theme select,
+.dark-theme button {
+    background-color: #333333 !important;
+    color: #ffffff !important;
+    border-color: #555555 !important;
+}
+
+.dark-theme table,
+.dark-theme .table {
+    background-color: #1a1a1a;
+    color: #ffffff !important;
+}
+
+.dark-theme table td,
+.dark-theme table th,
+.dark-theme .table td,
+.dark-theme .table th {
+    background-color: #1a1a1a !important;
+    color: #ffffff !important;
+    border-color: #555555 !important;
+}
+
+
+
+.dark-theme button,
+.dark-theme input[type="button"],
+.dark-theme input[type="submit"],
+.dark-theme .btn {
+    background-color: #444444 !important;
+    color: #ffffff !important;
+    border-color: #666666 !important;
+}
+
+</style>
+<script>
+var currentSize = 14;   // default font size in px
+var maxClicks = 4;      // maximum allowed A+ or A- clicks
+var clicks = 0;         // counter
+function changeFontSize(action) {
+		
+	   if (action === 'increase' && clicks < maxClicks) {
+	     currentSize += 2;
+	     clicks++;
+	   } else if (action === 'decrease' && clicks > -maxClicks) {
+	     currentSize -= 2;
+	     clicks--;
+	   } else if (action === 'reset') {
+	     currentSize = 14;
+	     clicks = 0;   // reset click count
+	   }
+
+	   document.documentElement.style.setProperty('--app-font-size', currentSize + 'px');
+	    localStorage.setItem('fontSize', currentSize);
+// Ensure nav grows correctly
+	   document.querySelectorAll('.container-fluid-custompadding.gradientClass').forEach(function(el){
+	     el.style.height = 'auto';
+	     el.style.minHeight = '45px';
+	   });
+
+	 }
+
+/* function changeFontSize(action) {
+    let currentSize = parseFloat(localStorage.getItem('fontSize')) || 14;
+    
+    switch(action) {
+        case 'increase': currentSize = Math.min(currentSize + 2, 24); break;
+        case 'decrease': currentSize = Math.max(currentSize - 2, 12); break;
+        case 'reset': currentSize = 14; break;
+}
+
+    document.documentElement.style.setProperty('--app-font-size', currentSize + 'px');
+    localStorage.setItem('fontSize', currentSize);
+    
+    // Force refresh layout for buttons and tables
+    const buttons = document.querySelectorAll('button, input[type="button"], input[type="submit"]');
+    buttons.forEach(btn => btn.style.display = 'none');
+    setTimeout(() => buttons.forEach(btn => btn.style.display = ''), 1);
+} */
+function toggleDarkMode() {
+    const html = document.documentElement;
+    const body = document.body;
+    const isDark = html.classList.toggle('dark-theme');
+    body.classList.toggle('dark-theme', isDark);
+
+    document.getElementById('darkModeBtn').textContent = isDark ? 'Light' : 'Dark';
+
+    localStorage.setItem('darkMode', isDark);
+}
+
+// **MODIFIED: Reset font size on page refresh**
+window.addEventListener('load', function() {
+    // ALWAYS reset font size to default on page refresh
+    document.documentElement.style.setProperty('--app-font-size', '14px');
+    localStorage.setItem('fontSize', '14');
+
+    // Only preserve dark mode setting
+    const darkMode = localStorage.getItem('darkMode') === 'true';
+    if (darkMode) {
+        document.documentElement.classList.add('dark-theme');
+        document.body.classList.add('dark-theme');
+        const btn = document.getElementById('darkModeBtn');
+        if (btn) btn.textContent = 'Light';
+    }
+});
+</script>
+<body>				
+ <table class="gradientClass"  width="100%">
+	<tr><td>&nbsp;</td></tr>
+
+	<tr>
+	                   
+		<td width="20%"><img src="/ireps/images/gem-new-logo-v6.png" style="margin-left:40px;width:350px;height:auto;" alt="Government eMarketplace (IREPS) logo"/></td>
+		
+		<td width="60%" align="center">
+		<div style="color:white; font-family: 'Adobe Garamond Pro', sans-serif; font-size:27px;    line-height: 1.2;">
+ 			Government eMarketplace <br>
+			<font style="color: gold;font-size:27px;">Indian Railways E-Procurement System</font>
+		</div>
+		</td>
+	    <td align="center" width="20%">
+			
+			
+            <div class="controls" aria-label="Display controls" style="display:flex; justify-content: flex-end; gap:5px;margin-right:70px;">
+                <button class="btn1" id="fontDec" title="Decrease font size" onclick="changeFontSize('decrease')">A -</button>
+                <button class="btn1" id="fontReset" title="Reset font size" onclick="changeFontSize('reset')">A</button>
+                <button class="btn1" id="fontInc" title="Increase font size" onclick="changeFontSize('increase')">A +</button>
+                 <button class="btn1" id="themeToggle" title="Toggle dark/light" onclick="toggleDarkMode()">  &#x1F319; / &#x2600;</button>
+           </div>&nbsp;
+           <div class="right-section">
+                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+                          <label for="language" style="color:white;">Select Your Language</label>
+                                                <!--  REQUIRED for BHASHINI PLUGIN -->
+						    <div class="bhashini-plugin-container"></div>
+						                        </div>
+						           
+        
+		</td>	
+		
+    </tr>
+    	<!-- <tr>
+		<td style="margin-left:40px;width:350px;height:auto; " width="100%" colspan="3">
+	       <div style="width: 20%; text-align: right;">
+            <div class="controls" aria-label="Display controls" style="display:flex; justify-content: flex-end; gap:5px;">
+                <button class="btn1" id="fontDec" title="Decrease font size" onclick="changeFontSize('decrease')">A -</button>
+                <button class="btn1" id="fontReset" title="Reset font size" onclick="changeFontSize('reset')">A</button>
+                <button class="btn1" id="fontInc" title="Increase font size" onclick="changeFontSize('increase')">A +</button>
+                 <button class="btn1" id="themeToggle" title="Toggle dark/light" onclick="toggleDarkMode()">  &#x1F319; / &#x2600;</button>
+           </div>
+        </div>
+		</td>
+	</tr> -->
+	<tr height="16px"><td>&nbsp;</td></tr>
+	
+</table>
+</body>
+<hr style="color:#4A4A4A;" id="mainHr">
+		</div>
+		<div>
+			
+<head>
+<link rel="stylesheet" type="text/css" href="/ireps/css/menuStyle.css">
+<link rel="stylesheet" href="/ireps/js/newJS/fontawesome/css/fontawesome.css">
+<link href="/ireps/js/newJS/fontawesome/css/brands.css" rel="stylesheet">
+<link href="/ireps/js/newJS/fontawesome/css/solid.css" rel="stylesheet">
+
+<script type="text/javascript" src="/ireps/js/newJS/fontawesome/js/fontawesome.js"></script>
+<script type="text/javascript" src="/ireps/js/newJS/fontawesome/js/brands.js"></script>
+<script type="text/javascript" src="/ireps/js/newJS/fontawesome/js/solid.js"></script>
+<script type="text/javascript">
+var proto="https:";
+var hostadd=window.location.host;
+var linkUrl;
+/*-----------------------------Added by Aastha---------------------------------*/
+var res = hostadd.substring(0,3);
+var context = "eps";
+if(res!='www') 
+{
+	linkUrl=proto+"//www." +hostadd + "/";   
+}
+if((hostadd=="10.60.200.142") || (hostadd=="203.176.113.40"))
+{
+	linkUrl=proto+"//" +hostadd + "/";
+}
+else 
+	linkUrl=proto+"//" +hostadd + "/";
+
+function home1() 
+{
+	window.document.location.href=linkUrl+"ireps.html";
+}
+</script>
+<style>
+
+#wrapper1 {
+    background: #07222E;
+	font-family: 'Adobe Garamond Pro', sans-serif;
+    width: 100%;
+    height: 30px;
+}
+
+</style>
+<script>
+		function showHelpDeskQueryPage()
+		{
+		    window.open(linkUrl+'html/helpdesk/helpdesk.html');
+		}
+		</script>				
+</head>
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	  		<tr>
+			   <td colspan="2" height="40">
+			   		<div id="wrapper1" >	
+						<ul style="list-style-type: none; padding: 0; margin: 0;">
+							<li style="background-color:transparent;line-height:30px; padding:0 50px; margin:0 2px; color:white; text-decoration:none;display:block;"><a href="javascript:home1();" style="color:white;"><i class="fa fa-home" style="font-size:27px;color:white;"></i></a>
+									<a style="float:right;color:white;font-size: 25px;" title="contact helpdesk" href="javascript:showHelpDeskQueryPage()" rel="noopener noreferrer" ><i class="fas fa-phone mt-1"></i></a>
+							</li>
+						</ul>
+					</div>
+				</td>
+			</tr>
+    </table>&nbsp;
+		</div>
+		<div>
+			
+		</div>
+		<div>
+			
+		</div>
+		<div>
+				
+
+
+<script type="text/javascript" src="/ireps/js/common/iecheck.js"></script>
+<script	src="/ireps/js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="/ireps/js/supply/captchaVerification.js"></script>
+<link rel="stylesheet" href="/ireps/js/newJS/fontawesome/css/fontawesome.css">
+<script type="text/javascript" src="/ireps/js/newJS/fontawesome/js/fontawesome.js"></script>
+
+
+
+<html>
+<script src="https://securepubads.g.doubleclick.net/tag/js/gpt.js" integrity="sha256-pPblcdaMgkvWWw3O7jE8HxYn+4PVrHFyJURlCxzcYDo=" crossorigin="anonymous">	</script>
+<script>
+window.googletag = window.googletag || {cmd: []};
+googletag.cmd.push(function() {
+googletag.defineSlot('/37179215/IRePRO_HOME_TOP', [[300, 250]], 'div-gpt-ad-1572611857377-0').setCollapseEmptyDiv(true).addService(googletag.pubads());
+googletag.defineSlot('/37179215/IRePRO_LOGIN_TOP', [[970, 250]], 'div-gpt-ad-1572612360884-0').setCollapseEmptyDiv(true).addService(googletag.pubads());
+googletag.pubads().enableSingleRequest();
+googletag.enableServices();
+  });
+</script>
+
+
+<style type="text/css">
+     body {  } 
+      #warning {
+        display: none; 
+        color: red; 
+        font-style: bold; 
+        padding: 0.5em;
+      }
+</style>
+<style type="text/css">
+.errClass {
+	border: 2px solid red !important;
+}
+.btn-success {
+    color: #fff;
+    background-color: #5cb85c;
+    border-color: #4cae4c;
+}
+.btn-error {
+    color: red;
+    background-color: white;
+    border-color: #4cae4c;
+}
+
+</style>
+
+<script type="text/javascript">
+ var audioCaptcha='';
+$(document).on('click','.audioCaptcha',function(){
+	if(audioCaptcha){
+		var snd = new Audio("data:audio/wav;base64," + audioCaptcha);
+		snd.play();
+	}
+}); 
+function reloadCaptcha(){
+	//var imgCaptcha=$(obj).parent().find('.imgCaptcha');
+	$.ajax({
+        type: 'POST',
+        url:'/epsn/generateCaptchaAction.do',
+        success: function(resultData) {
+          // console.log("g",resultData);
+           $('.imgCaptcha').attr("src","data:image/png;base64,"+resultData.imageCaptcha);
+           audioCaptcha=resultData.audioCaptcha;
+           $('#ver').val(resultData.newcaptcha);
+        }
+    });
+}
+document.addEventListener("DOMContentLoaded", function() { 
+	reloadCaptcha();
+});
+
+</script>
+
+<script type="text/javascript">
+
+
+
+	function addLoadEvent(func) 
+	{
+		var oldonload = window.onload;
+		if (typeof window.onload != 'function') 
+		{
+			window.onload = func;
+		}
+		else 
+		{
+			window.onload = function() 
+			{
+				if (oldonload) 
+				{
+					oldonload();
+				}
+				func();
+			}
+		}
+	}
+	
+
+
+</script>
+
+				   
+		  <div class="text-center small"><font color="red"></font></div>	
+          <div class="container">
+    	   <div class="row justify-content-center">
+    		<div class="col-md-11 text-center">
+	            <form name="guestLogonForm" method="post" action="/epsn/guestLogin.do"><input type="hidden" name="org.apache.struts.taglib.html.TOKEN" value="ab19c6a86d5e95e76df9a1f967b4ca"> 
+                 <input type="hidden" name="activity" id="activity">	
+                 <input type="hidden" name="actionMode" id="actionMode" value="adSearch">	
+                 
+                 <div class="outline mb-2">
+			    		<h5 class="mb-2 mt-0 head" >Authenticate Yourself</h5>
+			    		<!-- - <h5 class="mb-3 small" style="font-weight:500 ;">For All types of Tenders (Goods & Services, Works,  Earning / Leasing)</h5>--->
+			    			<table width="100%" border="0" style="padding: 5px ;border-spacing: 5px;border-collapse: separate;"> 
+						   <col width="22%">
+						   <col width="13%">
+						   <col width="65%">
+						  	<tr>
+			 						<td class="formLabel" colspan="3" >
+									
+									 <div style="font-size: 0.9rem; color: #ff8c66; line-height: 1.5; margin: 10px 0;">
+									    Foreign users can install the <b>IREPS mobile app</b> 
+									    <!-- Uncomment the line below if the logo is needed -->
+									    <!-- <img src="/ireps/images/common/aapoorti.png" 
+									         title="IREPS - &#2310;&#2346;&#2370;&#2352;&#2381;&#2340;&#2367;" 
+									         height="30" width="30" style="margin-left: 5px; vertical-align: middle;"> -->
+									    (available on 
+									    <a href="https://play.google.com/store/apps/details?id=in.gov.ireps" target="_blank" style="color: #0066cc; text-decoration: none;">Android</a> 
+									    and 
+									    <a href="https://apps.apple.com/in/app/ireps-app/id1462024189" target="_blank" style="color: #0066cc; text-decoration: none;">iOS</a>). 
+									    Use the 'Generate OTP' feature in the app, then enter your mobile number and the OTP here.
+									</div>
+									<div style="font-size: 0.9rem; color: #333; line-height: 1.5; margin: 10px 0;">
+									    <strong>Android Link:</strong> 
+									    <a href="https://play.google.com/store/apps/details?id=in.gov.ireps" target="_blank" style="color: #0066cc; text-decoration: none;">
+									        https://play.google.com/store/apps/details?id=in.gov.ireps
+									    </a><br>
+									    <strong>iOS Link:</strong> 
+									    <a href="https://apps.apple.com/in/app/ireps-app/id1462024189" target="_blank" style="color: #0066cc; text-decoration: none;">
+									        https://apps.apple.com/in/app/ireps-app/id1462024189
+									    </a>
+									</div>
+									 
+									  
+									</td>
+								</tr>
+						   	<tr>
+			 						<td  >
+										 <label for="mobileNo"  style="font-size: 0.9rem;">Mobile Number<span style="font-size: 80%; color: red;">*</span> :  </label>
+			 						 </td>
+			 						 <td  style="text-align: right;">
+										
+									+	
+									<select name="ccode" style="width:85%;height:25px;" id="ccode"><option value="-1">Select</option>
+													
+													<option value="93">93 (AF)</option>
+												
+													<option value="358">358 (AX)</option>
+												
+													<option value="355">355 (AL)</option>
+												
+													<option value="213">213 (DZ)</option>
+												
+													<option value="1684">1684 (AS)</option>
+												
+													<option value="376">376 (AD)</option>
+												
+													<option value="244">244 (AO)</option>
+												
+													<option value="1264">1264 (AI)</option>
+												
+													<option value="672">672 (AQ)</option>
+												
+													<option value="1268">1268 (AG)</option>
+												
+													<option value="54">54 (AR)</option>
+												
+													<option value="374">374 (AM)</option>
+												
+													<option value="297">297 (AW)</option>
+												
+													<option value="61">61 (AU)</option>
+												
+													<option value="43">43 (AT)</option>
+												
+													<option value="994">994 (AZ)</option>
+												
+													<option value="1242">1242 (BS)</option>
+												
+													<option value="973">973 (BH)</option>
+												
+													<option value="880">880 (BD)</option>
+												
+													<option value="1246">1246 (BB)</option>
+												
+													<option value="375">375 (BY)</option>
+												
+													<option value="32">32 (BE)</option>
+												
+													<option value="501">501 (BZ)</option>
+												
+													<option value="229">229 (BJ)</option>
+												
+													<option value="1441">1441 (BM)</option>
+												
+													<option value="975">975 (BT)</option>
+												
+													<option value="591">591 (BO)</option>
+												
+													<option value="387">387 (BA)</option>
+												
+													<option value="267">267 (BW)</option>
+												
+													<option value="55">55 (BR)</option>
+												
+													<option value="246">246 (IO)</option>
+												
+													<option value="673">673 (BN)</option>
+												
+													<option value="359">359 (BG)</option>
+												
+													<option value="226">226 (BF)</option>
+												
+													<option value="257">257 (BI)</option>
+												
+													<option value="855">855 (KH)</option>
+												
+													<option value="237">237 (CM)</option>
+												
+													<option value="1">1 (CA)</option>
+												
+													<option value="238">238 (CV)</option>
+												
+													<option value=" 345">345 (KY)</option>
+												
+													<option value="236">236 (CF)</option>
+												
+													<option value="235">235 (TD)</option>
+												
+													<option value="56">56 (CL)</option>
+												
+													<option value="86">86 (CN)</option>
+												
+													<option value="61">61 (CX)</option>
+												
+													<option value="61">61 (CC)</option>
+												
+													<option value="57">57 (CO)</option>
+												
+													<option value="269">269 (KM)</option>
+												
+													<option value="242">242 (CG)</option>
+												
+													<option value="243">243 (CD)</option>
+												
+													<option value="682">682 (CK)</option>
+												
+													<option value="506">506 (CR)</option>
+												
+													<option value="225">225 (CI)</option>
+												
+													<option value="385">385 (HR)</option>
+												
+													<option value="53">53 (CU)</option>
+												
+													<option value="357">357 (CY)</option>
+												
+													<option value="420">420 (CZ)</option>
+												
+													<option value="45">45 (DK)</option>
+												
+													<option value="253">253 (DJ)</option>
+												
+													<option value="1767">1767 (DM)</option>
+												
+													<option value="1849">1849 (DO)</option>
+												
+													<option value="593">593 (EC)</option>
+												
+													<option value="20">20 (EG)</option>
+												
+													<option value="503">503 (SV)</option>
+												
+													<option value="240">240 (GQ)</option>
+												
+													<option value="291">291 (ER)</option>
+												
+													<option value="372">372 (EE)</option>
+												
+													<option value="251">251 (ET)</option>
+												
+													<option value="500">500 (FK)</option>
+												
+													<option value="298">298 (FO)</option>
+												
+													<option value="679">679 (FJ)</option>
+												
+													<option value="358">358 (FI)</option>
+												
+													<option value="33">33 (FR)</option>
+												
+													<option value="594">594 (GF)</option>
+												
+													<option value="689">689 (PF)</option>
+												
+													<option value="241">241 (GA)</option>
+												
+													<option value="220">220 (GM)</option>
+												
+													<option value="995">995 (GE)</option>
+												
+													<option value="49">49 (DE)</option>
+												
+													<option value="233">233 (GH)</option>
+												
+													<option value="350">350 (GI)</option>
+												
+													<option value="30">30 (GR)</option>
+												
+													<option value="299">299 (GL)</option>
+												
+													<option value="1473">1473 (GD)</option>
+												
+													<option value="590">590 (GP)</option>
+												
+													<option value="1671">1671 (GU)</option>
+												
+													<option value="502">502 (GT)</option>
+												
+													<option value="44">44 (GG)</option>
+												
+													<option value="224">224 (GN)</option>
+												
+													<option value="245">245 (GW)</option>
+												
+													<option value="595">595 (GY)</option>
+												
+													<option value="509">509 (HT)</option>
+												
+													<option value="379">379 (VA)</option>
+												
+													<option value="504">504 (HN)</option>
+												
+													<option value="852">852 (HK)</option>
+												
+													<option value="36">36 (HU)</option>
+												
+													<option value="354">354 (IS)</option>
+												
+													<option value="91" selected="selected">91 (IN)</option>
+												
+													<option value="62">62 (ID)</option>
+												
+													<option value="98">98 (IR)</option>
+												
+													<option value="964">964 (IQ)</option>
+												
+													<option value="353">353 (IE)</option>
+												
+													<option value="44">44 (IM)</option>
+												
+													<option value="972">972 (IL)</option>
+												
+													<option value="39">39 (IT)</option>
+												
+													<option value="1876">1876 (JM)</option>
+												
+													<option value="81">81 (JP)</option>
+												
+													<option value="44">44 (JE)</option>
+												
+													<option value="962">962 (JO)</option>
+												
+													<option value="77">77 (KZ)</option>
+												
+													<option value="254">254 (KE)</option>
+												
+													<option value="686">686 (KI)</option>
+												
+													<option value="850">850 (KP)</option>
+												
+													<option value="82">82 (KR)</option>
+												
+													<option value="965">965 (KW)</option>
+												
+													<option value="996">996 (KG)</option>
+												
+													<option value="856">856 (LA)</option>
+												
+													<option value="371">371 (LV)</option>
+												
+													<option value="961">961 (LB)</option>
+												
+													<option value="266">266 (LS)</option>
+												
+													<option value="231">231 (LR)</option>
+												
+													<option value="218">218 (LY)</option>
+												
+													<option value="423">423 (LI)</option>
+												
+													<option value="370">370 (LT)</option>
+												
+													<option value="352">352 (LU)</option>
+												
+													<option value="853">853 (MO)</option>
+												
+													<option value="389">389 (MK)</option>
+												
+													<option value="261">261 (MG)</option>
+												
+													<option value="265">265 (MW)</option>
+												
+													<option value="60">60 (MY)</option>
+												
+													<option value="960">960 (MV)</option>
+												
+													<option value="223">223 (ML)</option>
+												
+													<option value="356">356 (MT)</option>
+												
+													<option value="692">692 (MH)</option>
+												
+													<option value="596">596 (MQ)</option>
+												
+													<option value="222">222 (MR)</option>
+												
+													<option value="230">230 (MU)</option>
+												
+													<option value="262">262 (YT)</option>
+												
+													<option value="52">52 (MX)</option>
+												
+													<option value="691">691 (FM)</option>
+												
+													<option value="373">373 (MD)</option>
+												
+													<option value="377">377 (MC)</option>
+												
+													<option value="976">976 (MN)</option>
+												
+													<option value="382">382 (ME)</option>
+												
+													<option value="1664">1664 (MS)</option>
+												
+													<option value="212">212 (MA)</option>
+												
+													<option value="258">258 (MZ)</option>
+												
+													<option value="95">95 (MM)</option>
+												
+													<option value="264">264 (NA)</option>
+												
+													<option value="674">674 (NR)</option>
+												
+													<option value="977">977 (NP)</option>
+												
+													<option value="31">31 (NL)</option>
+												
+													<option value="599">599 (AN)</option>
+												
+													<option value="687">687 (NC)</option>
+												
+													<option value="64">64 (NZ)</option>
+												
+													<option value="505">505 (NI)</option>
+												
+													<option value="227">227 (NE)</option>
+												
+													<option value="234">234 (NG)</option>
+												
+													<option value="683">683 (NU)</option>
+												
+													<option value="672">672 (NF)</option>
+												
+													<option value="1670">1670 (MP)</option>
+												
+													<option value="47">47 (NO)</option>
+												
+													<option value="968">968 (OM)</option>
+												
+													<option value="92">92 (PK)</option>
+												
+													<option value="680">680 (PW)</option>
+												
+													<option value="970">970 (PS)</option>
+												
+													<option value="507">507 (PA)</option>
+												
+													<option value="675">675 (PG)</option>
+												
+													<option value="595">595 (PY)</option>
+												
+													<option value="51">51 (PE)</option>
+												
+													<option value="63">63 (PH)</option>
+												
+													<option value="872">872 (PN)</option>
+												
+													<option value="48">48 (PL)</option>
+												
+													<option value="351">351 (PT)</option>
+												
+													<option value="1939">1939 (PR)</option>
+												
+													<option value="974">974 (QA)</option>
+												
+													<option value="40">40 (RO)</option>
+												
+													<option value="7">7 (RU)</option>
+												
+													<option value="250">250 (RW)</option>
+												
+													<option value="262">262 (RE)</option>
+												
+													<option value="590">590 (BL)</option>
+												
+													<option value="290">290 (SH)</option>
+												
+													<option value="1869">1869 (KN)</option>
+												
+													<option value="1758">1758 (LC)</option>
+												
+													<option value="590">590 (MF)</option>
+												
+													<option value="508">508 (PM)</option>
+												
+													<option value="1784">1784 (VC)</option>
+												
+													<option value="685">685 (WS)</option>
+												
+													<option value="378">378 (SM)</option>
+												
+													<option value="239">239 (ST)</option>
+												
+													<option value="966">966 (SA)</option>
+												
+													<option value="221">221 (SN)</option>
+												
+													<option value="381">381 (RS)</option>
+												
+													<option value="248">248 (SC)</option>
+												
+													<option value="232">232 (SL)</option>
+												
+													<option value="65">65 (SG)</option>
+												
+													<option value="421">421 (SK)</option>
+												
+													<option value="386">386 (SI)</option>
+												
+													<option value="677">677 (SB)</option>
+												
+													<option value="252">252 (SO)</option>
+												
+													<option value="27">27 (ZA)</option>
+												
+													<option value="211">211 (SS)</option>
+												
+													<option value="500">500 (GS)</option>
+												
+													<option value="34">34 (ES)</option>
+												
+													<option value="94">94 (LK)</option>
+												
+													<option value="249">249 (SD)</option>
+												
+													<option value="597">597 (SR)</option>
+												
+													<option value="47">47 (SJ)</option>
+												
+													<option value="268">268 (SZ)</option>
+												
+													<option value="46">46 (SE)</option>
+												
+													<option value="41">41 (CH)</option>
+												
+													<option value="963">963 (SY)</option>
+												
+													<option value="886">886 (TW)</option>
+												
+													<option value="992">992 (TJ)</option>
+												
+													<option value="255">255 (TZ)</option>
+												
+													<option value="66">66 (TH)</option>
+												
+													<option value="670">670 (TL)</option>
+												
+													<option value="228">228 (TG)</option>
+												
+													<option value="690">690 (TK)</option>
+												
+													<option value="676">676 (TO)</option>
+												
+													<option value="1868">1868 (TT)</option>
+												
+													<option value="216">216 (TN)</option>
+												
+													<option value="90">90 (TR)</option>
+												
+													<option value="993">993 (TM)</option>
+												
+													<option value="1649">1649 (TC)</option>
+												
+													<option value="688">688 (TV)</option>
+												
+													<option value="256">256 (UG)</option>
+												
+													<option value="380">380 (UA)</option>
+												
+													<option value="971">971 (AE)</option>
+												
+													<option value="44">44 (GB)</option>
+												
+													<option value="1">1 (US)</option>
+												
+													<option value="598">598 (UY)</option>
+												
+													<option value="998">998 (UZ)</option>
+												
+													<option value="678">678 (VU)</option>
+												
+													<option value="58">58 (VE)</option>
+												
+													<option value="84">84 (VN)</option>
+												
+													<option value="1284">1284 (VG)</option>
+												
+													<option value="1340">1340 (VI)</option>
+												
+													<option value="681">681 (WF)</option>
+												
+													<option value="967">967 (YE)</option>
+												
+													<option value="260">260 (ZM)</option>
+												
+													<option value="263">263 (ZW)</option></select>
+									
+			 						 </td>
+			 						 		<td class="formLabel" >
+			 							 <input name="mobileNo" id="mobileNo"   placeholder="Enter Mobile No."  name="guForm" class="form-control form-control-sm m-auto"    onkeypress="return isNumberKeyWithoutDot(this.value,event);" tabindex="1" value="" style="width:220px"  maxlength="12">
+									    
+									</td>
+								</tr>
+ 								<tr>
+			 						<td class="formLabel" colspan="2">
+										 <input type="hidden" name="ver" id="ver" ></input>
+			   						 <label for="username" class="mr-4" style="font-size: 0.9rem;">	Verification Code :</label>
+									   <!--Captcha/Refresh button-->
+									 
+									  </td> <td class="formLabel" >
+			 							<!-- <span id="verimage"></span>&nbsp;&nbsp;&nbsp;&nbsp; -->
+			 							<label for="captcha"> 
+									<img id="imgCaptcha" class="imgCaptcha" src=""/>
+									&nbsp;&nbsp;<span class="input-group-addon text-theme audioCaptcha " style="font-size:20px;" ><i class="fa fa-volume-up"></i></span>
+									<!-- <button class="input-group-addon text-theme refreshCaptcha " onclick="reloadCaptcha(this)"><i class="fa fa-refresh"></i></button> -->
+									 <img title='Refresh' src='/ireps/images/common/refresh1.gif'  id="refresh" style='cursor: pointer; text-decoration: none;' height='30' width='30' border='0' onclick='reloadCaptcha(this);'
+										alt='Refresh Image' />  &nbsp;&nbsp;&nbsp;&nbsp;
+									</label>
+									</td>
+								</tr>
+ 								<tr>
+			 						<td class="formLabel"  colspan="2">
+									 <label for="number" class="mr-4" style="font-size: 0.9rem;">	Enter Verification Code<span style="font-size: 80%; color: red;">*</span> : </label>
+									  </td>
+									  <td class="formLabel" >	
+									     <input type="text" id="verification" name="number" placeholder="Enter Verification Code" class="form-control form-control-sm m-auto" tabindex="2" style="width:220px; height: 31px; border: 1px solid #ced4da;"  autocomplete ="off" maxlength="6">
+									      &nbsp;	&nbsp; <input  class="btn btn-primary btn-sm btn-blue" name="imageField" tabindex="3" title="Send OTP" onclick="sendOTP();" type="button" value="Get OTP">
+									      <span id="alcS" style="width:25px;height:22px ;display: none;" class="btn-success">OTP sent &#10004;</span><span style="width:20px;height:22px;display: none;" id="alcE" class="btn-error">&#10005;</span>
+									      	&nbsp;<span style="font-size: 8pt;">(You can request OTP two times in an hour)</span> 							
+									</td>
+									 
+								</tr>
+ 
+								<tr>
+			 						<td class="formLabel" colspan="2">
+										 <label for="otp"  style="font-size: 0.9rem;">Please Enter Today's OTP<span style="font-size: 80%; color: red;">*</span>:</label>
+			 						</td>
+			 						<td class="formLabel" >	
+									     <input type="password" id="otp" name="otp"  onkeypress="return isNumberKeyWithoutDot(this.value,event);" class="form-control form-control-sm m-auto"  tabindex="2" style="width:220px" placeholder="Enter OTP" autocomplete ="off" maxlength="6">	&nbsp;<span style="font-size: 8pt;">(Same OTP will be valid for full day)
+									     
+									     </span> 
+									</td>
+								</tr>
+								<tr>
+			 						<td class="formLabel" align="center"  colspan="3">
+											
+									</td>
+								</tr>
+							</table>
+					<input class="btn btn-primary btn-sm btn-blue" name="imageField" id="submit"
+						tabindex="3" title="Proceed" onclick="javascript:return doGuestSubmit();" type="submit"	 value="Proceed"> 
+						<input class="btn btn-primary btn-sm btn-blue" name="imageField"
+						tabindex="3" title="Reset" onclick="reset();" type="button"
+						value="Reset"> <input
+						class="btn btn-outline-secondary btn-sm btn-orange"
+						title="IREPS Home Page"
+						onclick="javascript:document.location.href=linkUrl+'ireps.html'"
+						type="button" value=Home> <br />
+					<br />
+						  <p class="small" style="color: red;">For security reasons we have captured your system IP.</p>					
+					  </div>
+					 
+     </form>
+   </div>
+  </div>
+</div>
+<script type="text/javascript">
+var otpLimit = false;
+var oldMobile = '';
+var input = document.getElementById("otp");
+input.addEventListener("keyup", function(event) {
+  if (event.keyCode === 13) {
+   event.preventDefault();
+   document.getElementById("submit").click();
+  }
+});
+function doGuestSubmit()
+{
+	var mobileNo = document.getElementById('mobileNo').value;
+	if(mobileNo == '') {
+	alert("Kindly Enter 'Mobile No.'");
+	stupidFocus($("#mobileNo")); 
+	return false;
+}
+	var ccode = $("#ccode").val();
+	if(ccode == '-1') {
+		alert("Kindly select 'Country dial code'");
+		stupidFocus($("#ccode")); 
+		return false;
+	}
+	if(ccode=='91') {
+		if(mobileNo.length !=10) {
+			alert("Kindly enter 10 digit mobile No.");
+			stupidFocus($("#mobileNo")); 
+			return false;
+		}
+	}
+	
+if(!isNumber(document.getElementById('mobileNo'))) {
+	stupidFocus($("#mobileNo")); 
+	return false;
+}
+	if(!validateCaptcha()){
+		return false;
+	}
+var otp = document.getElementById('otp').value;
+if(otp == '') {
+	alert("Kindly Enter 'OTP'");
+	stupidFocus($("#otp")); 
+	return false;
+}
+if(!isNumber(document.getElementById('otp'))) {
+	stupidFocus($("#otp")); 
+	return false;
+}
+	document.getElementById('activity').value = "submitOTP";
+	document.forms[0].submit();
+	return;
+}
+function sendOTP(){
+	var ccode = $("#ccode").val();
+	if(ccode == '-1') {
+		alert("Kindly select 'Country dial code'");
+		stupidFocus($("#ccode")); 
+		return false;
+	}
+	var mobileNo = document.getElementById('mobileNo').value;
+	if(mobileNo == '') {
+		alert("Kindly Enter 'Mobile No.'");
+		stupidFocus($("#mobileNo")); 
+		return false;
+	}
+	if(ccode!='91') {
+		alert("Kindly generate otp through 'Aapoorti' android application");
+		return false;
+	}
+	if(ccode=='91') {
+		if(mobileNo.length !=10) {
+			alert("Kindly enter 10 digit mobile No.");
+			stupidFocus($("#mobileNo")); 
+			return false;
+		}
+	}
+	
+	if(!isNumber(document.getElementById('mobileNo'))) {
+		stupidFocus($("#mobileNo")); 
+		return false;
+	}
+	
+	if(!validateCaptcha()){
+		return false;
+	}
+	if(otpLimit && oldMobile===mobileNo){
+		alert("Maximum OTP limit exceeded.");
+		$("#alcE").show();
+    	setTimeout(function() {
+    		$("#alcE").hide();
+    		}, 3000);
+		return false;
+	}
+	var address = '/epsn/guestLogin.do';
+	$.ajax( {
+		type: "POST",
+	    url:address ,
+	    dataType:'text',
+	    data: { 
+	    	activity: 'submitGetOTP',
+	    	mobileNo:mobileNo,
+	    	ccode:document.getElementById('ccode').value,
+	    	number:document.getElementById('verification').value,
+	    	ver:document.getElementById('ver').value
+		},		
+	    success: function(result) {
+		    if(result.indexOf("OK#") != -1){
+		    	$("#alcS").show();
+		    	
+			    setTimeout(function() {
+			    	$("#alcS").hide();
+		    		}, 5000);
+		    }else if(result.indexOf("ERRORL#") != -1){
+		    	otpLimit = true;
+		    	oldMobile = document.getElementById('mobileNo').value;
+		    	alert("Maximum OTP limit exceeded.");
+		    	$("#alcS").hide();
+		    	$("#alcE").show();
+		    	setTimeout(function() {
+		    		$("#alcE").hide();
+		    		}, 3000);
+		    }
+		    else if(result.indexOf("BLOCKED#") != -1){
+		    	alert("Your Mobile No. is Blocked. Please contect Helpdesk");
+		    }else if(result.indexOf("BLOCKEDTEMP#") != -1){
+		    	alert("You have exceeded the number of wrong OTP attempts for today. Please try tomorrow or contact helpdesk");
+		    	$("#alcS").hide();
+		    	$("#alcE").show();
+		    	setTimeout(function() {
+		    		$("#alcE").hide();
+		    		}, 3000);
+		    }else{
+		    	alert("Some error occurred.");
+		    	$("#alcS").hide();
+		    	$("#alcE").show();
+		    	setTimeout(function() {
+		    		$("#alcE").hide();
+		    		}, 3000);
+		    }
+		},
+		error: function(result){
+			console.log(result);
+	    	alert("ERR: Something went wrong.");
+		}
+	} );
+}
+	
+function isNumberKeyWithoutDot(val, evt)
+{
+	var charCode = (evt.which) ? evt.which : event.keyCode;
+	
+	if (charCode > 47 && charCode < 58){
+	
+	
+	return true;
+	}
+	
+	return false;
+}
+function isNumber(formvalue)
+{
+	var numaric = formvalue.value;
+	for(var j=0; j<numaric.length; j++)
+	{
+		  var alphaa = numaric.charAt(j);
+		  var hh = alphaa.charCodeAt(0);
+		  if((hh > 47 && hh<58) )
+		  {
+		  }
+		else
+        {
+			 alert("Only numeric values are allowed.");
+			 formvalue.value="";
+			 formvalue.focus();
+             return false;
+	  }
+	}
+ 	return true;
+}
+
+function stupidFocus(el) {
+	if(!el) return false;
+	el.focus();
+	el.addClass("errClass");
+	setInterval(function() {
+		el.removeClass("errClass");
+	}, 2500);
+	return true;
+}
+
+function isInternetExplorer(){
+	/*var browserNameVersion = document.getElementById('browserNameVersion').value;
+	
+	var i = browserNameVersion.indexOf("IE");
+	if (browserNameVersion!=null && (i == -1))
+		return false;*/
+	return true;
+}
+
+</script>
+		</div>
+		<div>
+			
+		</div>
+	  <div class="footer">
+			
+
+
+ <footer class="w-100 gradientClass" >
+	    	<div class="row">
+
+	    			<div class="col-lg-4 dev-by-cris">
+	    				<!---<A  HREF="https://sealinfo.verisign.com/splash?form_file=fdf/splash.fdf&dn=www.ireps.gov.in&lang=en" TARGET="_blank">
+						<IMG SRC="/ireps/images/common/verisign.jpg" BORDER="0"></A>-->
+	    				<A HREF="http://cris.org.in/" target="_blank"><font color="white">Developed by CRIS</font></A>&nbsp;&nbsp;Mem02
+	    		   </div>
+
+		    		<div class="col-lg-8">
+						  <div class="row justify-content-center justify-content-lg-end">
+						   <a href="/ireps/upload/resources/AboutUs.pdf" target="_blank" rel="noopener noreferrer"><font color="white">About IREPS</font></a>
+				    	   <a href="/ireps/upload/resources/Disclamier_en.pdf" target="_blank" rel="noopener noreferrer"><font color="white">Disclaimer</font></a>
+				           <a href="/ireps/upload/resources/PrivacyPolicy.pdf" target="_blank" rel="noopener noreferrer"><font color="white">Privacy Statement</font></a>
+				           <a href="http://rti.railnet.gov.in/" target="_blank" rel="noopener noreferrer"><font color="white">RTI </font></a>
+				           <a href="/ireps/upload/resources/TermsAndCondition.pdf" target="_blank" rel="noopener noreferrer"><font color="white">Terms & Conditions</font></a>
+				           <a href="/ireps/upload/resources/Copyright.pdf" target="_blank" rel="noopener noreferrer"><font color="white">CopyRight </font></a>
+				          
+				    	 </div>
+		    		</div>
+	    	</div>
+    </footer>
+
+
+	  </div>
+	
+	</div>
+</body>
+</html>
+<script 
+
+ src="https://translation-plugin.bhashini.co.in/v3/website_translation_utility.js"
+
+ language-icon-color="#ffffff" charset="UTF-8">
+
+</script>
+
+<script src="/ireps/js/bhashini/bhashini-init.js"></script>

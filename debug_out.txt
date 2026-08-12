@@ -1,0 +1,190 @@
+﻿=== SELECT FIELDS ===
+SELECT name=searchOption
+  option value='1' text='Tender Number'
+  option value='2' text='Name Of Work'
+  option value='3' text='Item Code'
+  option value='4' text='Item Description'
+
+SELECT name=searchOptorOption
+
+SELECT name=organization
+  option value='12' text='BRAITHWAITE AND CO. LIMITED'
+  option value='11' text='CONTAINER CORPORATION OF INDIA LTD'
+  option value='05' text='CRIS'
+  option value='08' text='DFCCIL'
+  option value='03' text='DMRC'
+  option value='16' text='INDIAN RAILWAY CATERING AND TOURISM CORP'
+  option value='17' text='INDIAN RAILWAY FINANCE CORPORATION'
+  option value='15' text='IRCON INTERNATIONAL LIMITED'
+  option value='01' text='Indian Railway'
+  option value='09' text='KERALA RAIL DEVELOPMENT CORPORATION LTD'
+  option value='18' text='KOLKATA METRO RAIL CORPORATION LTD'
+  option value='02' text='KRCL'
+  option value='04' text='MRVC'
+  option value='10' text='RAIL VIKAS NIGAM LIMITED'
+  option value='07' text='RAILTEL'
+  option value='06' text='RITES Limited'
+
+SELECT name=workArea
+  option value='-1' text='All'
+  option value='WT' text='Works'
+  option value='PT' text='Goods & Services'
+  option value='LT' text='Earning / Leasing'
+
+SELECT name=railwayZone
+  option value='' text='---Select---'
+  option value='1222' text='Banaras Locomotive Works'
+  option value='45221' text='COFMOW'
+  option value='31381' text='CORE'
+  option value='561' text='Central Railway'
+  option value='6721' text='Chittaranjan Locomotive Works'
+  option value='6806' text='East Central Railway'
+  option value='3482' text='East Coast Railway'
+  option value='8937' text='Eastern Railway'
+  option value='1041033' text='IREPS TESTING2'
+  option value='301' text='IREPS-TESTING'
+  option value='84841' text='IRICEN'
+  option value='122041' text='IRIEEN'
+  option value='1001683' text='IRIFM'
+  option value='112821' text='IRIMEE'
+  option value='148086' text='IRISET'
+  option value='120714' text='IRITM'
+  option value='133061' text='IROAF'
+  option value='641' text='Integral Coach Factory'
+  option value='1016777' text='JRRPFA'
+  option value='31528' text='Metro'
+  option value='20281' text='Modern Coach Factory, Raebareli'
+  option value='11341' text='NFR Construction'
+  option value='105322' text='National Academy of Indian Railways'
+  option value='541' text='North Central Railway'
+  option value='4527' text='North East Frontier Railway'
+  option value='4702' text='North Eastern Railway'
+  option value='4494' text='North Western Railway'
+  option value='401' text='Northern Railway'
+  option value='831' text='Patiala Locomotive Works'
+  option value='20504' text='RDSO'
+  option value='501' text='Rail Coach Factory, Kapurthala'
+  option value='1233' text='Rail Wheel Factory'
+  option value='43901' text='Rail Wheel Plant, Bela'
+  option value='2261' text='Railway Board'
+  option value='562' text='South Central Railway'
+  option value='1140989' text='South Coast Railway'
+  option value='581' text='South East Central Railway'
+  option value='5261' text='South Eastern Railway'
+  option value='4495' text='South Western Railway'
+  option value='582' text='Southern Railway'
+  option value='601' text='West Central Railway'
+  option value='483' text='Western Railway'
+  option value='75781' text='Workshop Projects Organization'
+  option value='-1' text='All'
+
+SELECT name=division
+  option value='-1' text='All'
+  option value='01' text='Accounts'
+  option value='02' text='Administration'
+  option value='52' text='Audit'
+  option value='03' text='Commercial'
+  option value='04' text='Electrical'
+  option value='21' text='EnHM'
+  option value='05' text='Engineering'
+  option value='81' text='Gati Shakti'
+  option value='70' text='General'
+  option value='99' text='Information Tech.'
+  option value='06' text='Mechanical'
+  option value='07' text='Medical'
+  option value='08' text='Operating'
+  option value='09' text='Personnel'
+  option value='22' text='Planning'
+  option value='18' text='S AND T'
+  option value='10' text='Safety'
+  option value='11' text='Security'
+  option value='19' text='Stores'
+  option value='51' text='Vigilance'
+
+SELECT name=unit
+  option value='-1' text='All'
+
+SELECT name=tenderStage
+  option value='-1' text='All'
+  option value='1' text='Published'
+  option value='2' text='Tender Box Open'
+  option value='3' text='Under Evaluation'
+  option value='4' text='PO Placed'
+  option value='5' text='Cancelled'
+  option value='7' text='Dropped'
+  option value='8' text='Tender Box Opened-Tabulation Pending'
+  option value='9' text='Retendered'
+  option value='20' text='TABULATION PENDING'
+
+SELECT name=tenderType
+  option value='-1' text='All'
+  option value='1' text='Limited'
+  option value='2' text='Open'
+  option value='3' text='Special Limited'
+  option value='5' text='Single'
+
+SELECT name=bidding
+  option value='-1' text='All'
+  option value='0' text='Single Packet'
+  option value='1' text='Two Packet'
+
+SELECT name=selectDate
+  option value='TENDER_OPENING_DATE' text='Tender Closing Date'
+  option value='TENDER_PUBLISHING_DATE' text='Tender Uploading Date'
+
+SELECT name=direction
+  option value='P' text='Previous'
+  option value='L' text='Later'
+
+SELECT name=monthDay
+  option value='M' text='Month(s)'
+  option value='D' text='Day(s)'
+
+=== HIDDEN FIELDS ===
+HIDDEN name=changezone value=
+HIDDEN name=searchParam value=
+HIDDEN name=activity value=
+=== FORM ACTION ===
+FORM action=/epsn/anonymSearch.do method=post
+
+=== TABLE ROWS (first 10 with 6+ cells) ===
+Row 0: ['Government eMarketplaceIn', '', '', 'Government eMarketplaceIn', 'A -AA +­ƒîÖ / ÔÿÇSelect Your L', '']
+Row 7: ['', 'Search Tender(Please choo', 'Search Tender(Please choo', 'Search Tender(Please choo', 'Search Tender', '', 'Search Tender', '']
+Row 8: ['Search Tender(Please choo', 'Search Tender(Please choo', 'Search Tender', '', 'Search Tender', '', '', '(Please choose one or mor']
+Row 9: ['Search Tender(Please choo', 'Search Tender', '', 'Search Tender', '', '', '(Please choose one or mor', '']
+Row 12: ['(Please choose one or mor', '', '', '', '', '', '', '']
+Row 14: ['', '', '', '', '', '']
+Row 15: ['(Please choose one or mor', '', '(Please choose one or mor', 'Search Criteria:', 'Tender NumberName Of Work', 'Tender NumberName Of Work', '', 'Search For :']
+Row 18: ['Search Criteria:', 'Tender NumberName Of Work', 'Tender NumberName Of Work', '', 'Search For :', '']
+Row 21: ['OrganizationBRAITHWAITE A', 'Organization', 'BRAITHWAITE AND CO. LIMIT', 'Work Area*', 'AllWorksGoods & ServicesE', 'Railway/PU*', '---Select---Banaras Locom', 'Department*']
+Row 27: ['Select DateTender Closing', 'Select Date', 'Tender Closing DateTender', 'FromToPreviousLaterMonth(', 'From', 'ToPreviousLaterMonth(s)Da', '', '']
+Row 28: ['Select Date', 'Tender Closing DateTender', 'FromToPreviousLaterMonth(', 'From', 'ToPreviousLaterMonth(s)Da', '', '', '']
+Row 29: ['Select Date', 'Tender Closing DateTender', 'FromToPreviousLaterMonth(', 'From', 'ToPreviousLaterMonth(s)Da', '', '', '']
+Row 30: ['From', 'ToPreviousLaterMonth(s)Da', '', '', '', '', 'To', '']
+Row 38: ['Deptt./Rly. UnitTender No', 'Deptt./Rly. Unit', 'Tender No', 'Tender Title', 'Status', 'Work Area', 'Due Date/Time', 'Due Days']
+Row 39: ['Deptt./Rly. Unit', 'Tender No', 'Tender Title', 'Status', 'Work Area', 'Due Date/Time', 'Due Days', 'Actions']
+Row 40: ['STORES/ECOR', '03261633', 'Compensating Ring for Bog', 'Published', 'Goods & Service', '10/08/2026 15:00', 'TODAY', '']
+Row 41: ['STORES/ECOR', '03261149', 'Commode Lid & Seat Plasti', 'Published', 'Goods & Service', '10/08/2026 15:00', 'TODAY', '']
+Row 42: ['KUR/DIV/ECOR', '81266116', 'Supply of Battery operate', 'Published', 'Goods & Service', '10/08/2026 15:00', 'TODAY', '']
+Row 43: ['KUR/DIV/ECOR', '81266114', 'Supply of Hydraulic Rail ', 'Published', 'Goods & Service', '10/08/2026 15:00', 'TODAY', '']
+Row 44: ['KUR/DIV/ECOR', '81266115', 'Supply, installation and ', 'Published', 'Goods & Service', '10/08/2026 15:00', 'TODAY', '']
+Row 45: ['KUR/DIV/ECOR', '81265889', '24 VOLT STARTER BATTERY C', 'Published', 'Goods & Service', '10/08/2026 15:00', 'TODAY', '']
+Row 46: ['SAMBALPUR/DIV/ECOR', '40256494A', 'TAIL LAMP BRACKET (STAINL', 'Published', 'Goods & Service', '10/08/2026 15:00', 'TODAY', '']
+Row 47: ['KUR/DIV/ECOR', '81265588', 'POWER CONTACTOR WITH SURG', 'Published', 'Goods & Service', '10/08/2026 15:00', 'TODAY', '']
+Row 48: ['CRW/MCS/ECOR', '92265666', 'Angle Cock R-3/4 Right.', 'Published', 'Goods & Service', '10/08/2026 15:00', 'TODAY', '']
+Row 49: ['KUR/DIV/ECOR', '81265950A', 'Supply, Installation and ', 'Published', 'Goods & Service', '10/08/2026 15:00', 'TODAY', '']
+Row 50: ['STORES/KRCL', 'VDPD-0126D0181', 'Procurement of Kit of Gas', 'Published', 'Goods & Service', '10/08/2026 15:00', 'TODAY', '']
+Row 51: ['KUR/DIV/ECOR', '81266134', 'Cable Head Termination Ve', 'Published', 'Goods & Service', '10/08/2026 15:00', 'TODAY', '']
+Row 52: ['STORES/KRCL', '0126D0328-A', 'Procurement of various Bo', 'Published', 'Goods & Service', '10/08/2026 15:00', 'TODAY', '']
+Row 53: ['STORES/ECOR', '02262000', 'Single Bottle Vacuum circ', 'Published', 'Goods & Service', '10/08/2026 15:00', 'TODAY', '']
+Row 54: ['SAMBALPUR/DIV/ECOR', '40265766B', 'Multimedia LCD Projector,', 'Published', 'Goods & Service', '10/08/2026 15:00', 'TODAY', '']
+Row 55: ['CRW/MCS/ECOR', '92265669', 'Angle Cock R 1 Left.', 'Published', 'Goods & Service', '10/08/2026 15:00', 'TODAY', '']
+Row 56: ['LUCKNOW-NR-DIVISION-ENGIN', '03-Quot-SrDEN-I-LKO-26-27', 'Urgent supply of Cement P', 'Published', 'Works', '10/08/2026 15:00', 'TODAY', '']
+Row 57: ['KUR/DIV/ECOR', '81266016A', 'Supply of 1 x 25 sqmm (Re', 'Published', 'Goods & Service', '10/08/2026 15:00', 'TODAY', '']
+Row 58: ['KUR/DIV/ECOR', '81266118', 'Bush Size 38x26x12.', 'Published', 'Goods & Service', '10/08/2026 15:00', 'TODAY', '']
+Row 59: ['KUR/DIV/ECOR', '81266117', 'Set of two items: 1. Lug ', 'Published', 'Goods & Service', '10/08/2026 15:00', 'TODAY', '']
+Row 60: ['KUR/DIV/ECOR', '81266119', 'Bush For Bogie Brake Gear', 'Published', 'Goods & Service', '10/08/2026 15:00', 'TODAY', '']
+Row 61: ['KUR/DIV/ECOR', '81266113', 'Primary spring inner for ', 'Published', 'Goods & Service', '10/08/2026 15:00', 'TODAY', '']
+Row 62: ['KUR/DIV/ECOR', '81265650B', 'supply of 3Mbps LAN exten', 'Published', 'Goods & Service', '10/08/2026 15:00', 'TODAY', '']
+Row 63: ['HOWRAH DIVISION-ELECTRICA', 'EL-HWH-25-21-3518-R', 'Electrical (General) work', 'Published', 'Works', '10/08/2026 15:00', 'TODAY', '']
+Row 64: ['KUR/DIV/ECOR', '81266044A', 'Supply of 2MB programmabl', 'Published', 'Goods & Service', '10/08/2026 15:00', 'TODAY', '']

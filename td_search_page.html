@@ -1,0 +1,2857 @@
+<!DOCTYPE html><html lang="en" style="height: auto;"><head>
+  
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - TenderDetail</title>
+    <!-- jQuery UI CSS -->
+    <link href="/css/css2.css?v=LABR9sQ8uYCSCyCiH3ZF3bBydbDlOIhqlxcKjmqsnQw" rel="stylesheet">
+    <!-- Inter font (same as main website) -->
+    <link href="/css/VisitorUser/css2.css?v=0yPMg7oTVD8LMlgFzOkjnm4mSrQCBCyMnSqsJPtVUw4" rel="stylesheet">
+    <!-- Fonts -->
+    <link href="/css/all.min.css?v=dABdfBfUoC8vJUBOwGVdm8L9qlMWaHTIfXt-7GnZCIo" rel="stylesheet">
+    <link rel="stylesheet" href="/css/bootstrap.min.css?v=EHT9uIFt0apChCRGEULVA0q1XonmY7nqf_lkJp4_NhU">
+
+    <!-- AdminLTE CSS -->
+    <link rel="stylesheet" href="/css/RegisterUser/Registeradminlte.css?v=Z2X2GrkZ9rsayUXWKf7-nUgiH9_AauVixwHmY8wCYVA">
+    <!-- Select2 (Bootstrap4 Theme - IMPORTANT) -->
+    <link href="/css/RegisterUser/select2.min_Sample.css?v=FdatTf20PQr_rWg-cAKfl6j4_IY3oohFAJ7gVC3M34E" rel="stylesheet">
+    <link href="/css/RegisterUser/select2-bootstrap4.min.css?v=h7vy42BP4MtLE0udIyBuOEoB8nJI2iLaiOJEgO5Ykp0" rel="stylesheet">
+
+    <!-- Toastr -->
+    <link href="/css/toastr.min.css?v=ENFZrbVzylNbgnXx0n3I1g__2WeO47XxoPe0vkp3NC8" rel="stylesheet">
+    <link rel="stylesheet" href="/css/RegisterUser/tempusdominus-bootstrap-4.min.css?v=VL9T9QfjO_EGCzuu5CtTWWzIksAkGDTs-fO51ALqMjg">
+    <link rel="stylesheet" href="/css/RegisterUser/icheck-bootstrap.min.css?v=fxxvNo_vOD88AQfrGh88D74wgYex47k9-sa3bWmCelI">
+    <link rel="stylesheet" href="/css/RegisterUser/Registersite.css?v=Egs1YBST1yITetgJpD9WaSueJvmDXWa6_i4stK8OFco">
+    <link href="/css/RegisterUser/jquery-ui.css?v=yMIVeRjJ_tC7ncxWyWtS3Hr3CwXKAijkZ-r5F3d1Gtc" rel="stylesheet">
+    <!-- Dynatree CSS -->
+    <link href="/css/RegisterUser/ui.dynatree.css?v=FbOmoKT3yHUnlGvKW09nHUhPIGPL0gO1G3W7IwfCuDo" rel="stylesheet">
+    <!-- Fancytree CSS (ONLY ONCE, HEAD ME) -->
+
+    <link rel="stylesheet" href="/css/daterangepicker.css?v=lP22bsj-dImBpPIJD99KKgo9vlrOLmXEzkbpXWkr2sc">
+    <link rel="stylesheet" href="/css/RegisterUser/main.min.css?v=EAq-X_hXd44MlSOCkm9hchPJT78vQ4UBTT7FBkQl9qE">
+
+    
+
+    
+</head>
+
+<body class="layout-wrapper" style="height: auto;">
+
+    <header class="sticky-header">
+    <nav class="main-header navbar navbar-expand-lg navbar-dark-tenderdetail-navbar">
+        <div class="container-fluid">
+            <!-- LEFT SIDE -->
+            <ul class="navbar-nav align-items-center">
+                <li class="nav-item">
+                    <a class="navbar-brand d-flex align-items-center ml-3" href="/registeruser/dashboard">
+                        <img src="/image/TenderDetail.png" alt="Tenderdetail" class="brand-image mr-3" style="max-width: 200px;">
+                    </a>
+                </li>
+            </ul>
+
+            <!-- CENTER + RIGHT -->
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <!-- Search Form -->
+                <form class="form-inline mx-lg-4 flex-grow-1 w-160" id="desktopSearch">
+                    <div class="input-group search-box w-75">
+                        <!-- Dropdown for Tender Type -->
+                        <div class="input-group-prepend">
+                            
+                            <select style="display:none;" id="ddlservices" name="ServiceType">
+                                    <option value="1" selected="selected">Indian Tenders</option>
+
+
+                                    <option value="3">Tender Results</option>
+                               
+                            </select>
+                            <div class="dropdown">
+                                <button class="btn btn-light dropdown-toggle" type="button" id="serviceDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Indian Tenders
+                                </button>
+
+                                <div class="dropdown-menu" aria-labelledby="serviceDropdown">
+
+                                        <a class="dropdown-item active" href="#" data-value="1">Indian Tenders</a>
+
+
+                                        <a class="dropdown-item " href="#" data-value="3">Tender Results</a>
+                                   
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Search Input -->
+                        <input type="search" id="txtDashboardSearch" class="form-control border-0 search-input ui-autocomplete-input" placeholder="Enter Keyword to Search" autocomplete="off">
+
+                        <!-- Search Button -->
+                        <div class="input-group-append">
+                           
+
+                            <button type="submit" class="btn btn-block btn-light btn-sm" id="btnDashboardSearch">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Right Menu -->
+                <ul class="navbar-nav ml-auto align-items-center">
+                    <!-- WhatsApp Link -->
+                    <!-- Mobile Search Icon -->
+                    <li class="nav-item d-lg-none mr-3">
+                        <a href="javascript:void(0);" id="mobileSearchToggle" class="text-white nav-svg-icon" onclick="event.stopPropagation();">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            </svg>
+                        </a>
+                    </li>
+
+                    <li class="nav-item text-right mr-3">
+                        <a title="+91 76003 07788" class="text-decoration-none" href="https://api.whatsapp.com/send?phone=917600603344" target="_blank">
+                            <img src="/image/whatsapp.png" class="whatsapp-icon">
+                            <span class="text-white" title="+91 76003 07788"><strong>+91 76006 03344</strong></span>
+                        </a>
+                    </li>
+
+                    <!-- User Dropdown -->
+                    <li class="nav-item dropdown mr-3">
+                        <a class="nav-link dropdown-toggle text-white nav-svg-icon" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-expanded="false">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                        </a>
+
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                            <a class="dropdown-item d-flex align-items-center" href="/RegisterUser/myprofile">
+                                <svg class="dd-svg mr-2 text-muted" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="12" cy="7" r="4"></circle>
+                                </svg>
+                                My Profile
+                            </a>
+
+                            <a class="dropdown-item d-flex align-items-center" href="/RegisterUser/logindetail">
+                                <svg class="dd-svg mr-2 text-muted" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+                                    <polyline points="10 17 15 12 10 7"></polyline>
+                                    <line x1="15" y1="12" x2="3" y2="12"></line>
+                                </svg>
+                                My Login Detail
+                            </a>
+
+                            <a class="dropdown-item d-flex align-items-center" href="/RegisterUser/tenderlog">
+                                <svg class="dd-svg mr-2 text-muted" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="m14 13-7.5 7.5a2.12 2.12 0 0 1-3-3L11 10"></path>
+                                    <path d="m16 16 6-6"></path>
+                                    <path d="m8 8 6-6"></path>
+                                    <path d="m9 7 8 8"></path>
+                                    <path d="m21 11-8-8"></path>
+                                </svg>
+                                My Tender Log
+                            </a>
+
+                            <a class="dropdown-item d-flex align-items-center" href="/RegisterUser/orderdetail">
+                                <svg class="dd-svg mr-2 text-muted" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M16.5 9.4 7.5 4.21"></path>
+                                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                                    <polyline points="3.29 7 12 12 20.71 7"></polyline>
+                                    <line x1="12" y1="22" x2="12" y2="12"></line>
+                                </svg>
+                                Order Detail
+                            </a>
+
+                            <a class="dropdown-item d-flex align-items-center" href="/RegisterUser/changepassword">
+                                <svg class="dd-svg mr-2 text-muted" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="7.5" cy="15.5" r="5.5"></circle>
+                                    <path d="m21 2-9.6 9.6"></path>
+                                    <path d="m15.5 7.5 3 3L22 7l-3-3"></path>
+                                </svg>
+                                Change Password
+                            </a>
+
+                            <a class="dropdown-item d-flex align-items-center" href="/RegisterUser/paynow">
+                                <svg class="dd-svg mr-2 text-muted" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                                    <line x1="1" y1="10" x2="23" y2="10"></line>
+                                </svg>
+                                Pay Now
+                            </a>
+
+                            <div class="dropdown-divider"></div>
+
+                            <form method="post" class="m-0" action="/Account/Logout">
+                                
+                                <button type="submit" class="dropdown-item d-flex align-items-center text-danger">
+                                    <svg class="dd-svg mr-2" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                        <polyline points="16 17 21 12 16 7"></polyline>
+                                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                                    </svg>
+                                    Logout
+                                </button>
+                            <input name="__RequestVerificationToken" type="hidden" value="CfDJ8DFY9FFrOZBFj3Wo2pKZOwNf7h_IwYSYA1hSJamoZTPtqxTOlGBHA3Skm5ep_Q-UDYzwuJTlTcEDYXKj216JQ-3fRxoJFjx2H0DXvI-b7-rUm-4mFNxG99GNO-GryFZmIWfOI5ag8XjubnqQlmXls38dZtpdihD1ESWTiEnb6B5zUh0f9j77WDRohpbsxRuEqA"></form>
+                        </div>
+                    </li>
+                </ul>
+
+            </div>
+        </div>
+    </nav>
+    <!-- Mobile Search Box -->
+    <div id="mobileSearchBox" class="mobile-search-container">
+        <form class="p-3 bg-white" id="mobileSearch">
+            <div class="search-wrapper">
+                <div class="input-group custom-search-group">
+
+                    <div class="dropdown">
+                        <button class="btn btn-light dropdown-toggle" type="button" id="serviceDropdownMobile" data-toggle="dropdown">
+                            Indian Tenders
+                        </button>
+
+                        <div class="dropdown-menu">
+                            <select style="display:none;" id="ddlservicesMobile" name="ServiceType">
+                                    <option value="1" selected="selected">Indian Tenders</option>
+                                    <option value="3">Tender Results</option>
+                              
+                            </select>
+                                <a class="dropdown-item" href="#" data-value="1">Indian Tenders</a>
+
+
+                                <a class="dropdown-item" href="#" data-value="3">Tender Results</a>
+                            
+
+                        </div>
+                    </div>
+
+
+
+                    <input type="search" id="txtDashboardSearchMobile" class="form-control search-input ui-autocomplete-input" placeholder="Enter Keyword to Search" autocomplete="off">
+
+                   
+
+                    <button type="submit" class="btn search-btn" id="btnDashboardMobileSearch">
+                        <i class="fa fa-search"></i>
+                    </button>
+
+                </div>
+            </div>
+        </form>
+    </div>
+
+</header>
+
+<style>
+    /* Top-right navigation SVG icons */
+    .nav-svg-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .nav-svg-icon svg {
+            vertical-align: middle;
+            display: block;
+        }
+
+        /* Subtle hover feedback for SVG nav icons */
+        .nav-svg-icon:hover svg {
+            opacity: .85;
+        }
+
+    /* SVG icons inside the user dropdown menu */
+    .dropdown-menu .dd-svg {
+        flex: 0 0 auto;
+        vertical-align: middle;
+    }
+
+    #btnAdvanceSearch.btn-advance-search {
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
+        height: 42px;
+        padding: 0 18px;
+        background-color: #ffffff !important;
+        color: #1e3c72 !important;
+        font-size: 14px;
+        font-weight: 600;
+        border: 1px solid #ffffff;
+        border-radius: 6px;
+        white-space: nowrap;
+        text-decoration: none !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+        transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    }
+
+    #btnAdvanceSearch.btn-advance-search i {
+        margin-right: 6px;
+        color: #1e3c72;
+        transition: color 0.2s ease;
+    }
+
+    #btnAdvanceSearch.btn-advance-search:hover,
+    #btnAdvanceSearch.btn-advance-search:focus {
+        background-color: #1e3c72 !important;
+        color: #ffffff !important;
+        border-color: #1e3c72;
+        text-decoration: none !important;
+    }
+
+    #btnAdvanceSearch.btn-advance-search:hover i,
+    #btnAdvanceSearch.btn-advance-search:focus i {
+        color: #ffffff;
+    }
+</style>
+
+<script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const toggleBtn = document.getElementById("mobileSearchToggle");
+        const searchBox = document.getElementById("mobileSearchBox");
+        const searchInput = document.getElementById("txtDashboardSearchMobile");
+
+        toggleBtn.addEventListener("click", function (e) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+
+            searchBox.classList.toggle("active");
+
+            // ✅ ONLY focus (no auto submit)
+            if (searchBox.classList.contains("active")) {
+                setTimeout(() => {
+                    searchInput.focus();
+                }, 100);
+            }
+        });
+
+        searchBox.addEventListener("click", function (e) {
+            e.stopPropagation();
+        });
+    });
+</script>
+
+
+    <main class="main-content" style="background-color:#ecf0f5;margin-top: 60px;">
+        <div class="container-fluid">
+    <div id="section-indian" class="row mt-3 ml-3 mr-3 mobile-no-margin">
+        <div class="col-md-12">
+                <div class="col-sm-6">
+                    <h3 class="mb-2">Indian</h3>
+                </div>
+                <div class="card card-primary card-outline card-outline-tabs">
+                    <div class="card-header p-0 border-bottom-0">
+                        <ul class="nav nav-tabs" id="custom-tabs-four-tab" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active text-black" id="custom-tabs-four-home-Tender" data-toggle="pill" href="#custom-tabs-four-Tender" role="tab" aria-controls="custom-tabs-four-Tender" aria-selected="true">Tender</a>
+                            </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link text-black" id="custom-tabs-four-CompetitiveBidAnalysis-tab" data-toggle="pill" href="#custom-tabs-four-CompetitiveBidAnalysis" role="tab" aria-controls="custom-tabs-four-CompetitiveBidAnalysis" aria-selected="false">
+                                                <label>Tender Result</label>
+                                    </a>
+                                </li>
+                           
+                            <li class="nav-item">
+                                <a class="nav-link text-black" id="custom-tabs-four-Project-tab" data-toggle="pill" href="#custom-tabs-four-Project" role="tab" aria-controls="custom-tabs-four-Project" aria-selected="false"> Project</a>
+                            </li>
+                            <li class="nav-item MobileviewInstantid">
+                                <a class="nav-link text-black" href="/RegisterUser/instantloan">
+                                    Instant Loan
+                                </a>
+                            </li>
+
+                            <!-- RIGHT SIDE TOOLS -->
+                            <div class="ml-auto" id="actionToolsContainer">
+                                
+
+<div class="action-tools">
+        <!-- MAIL -->
+            <div class="icon-wrapper">
+                <a class="text-black" href="/registeruser/inbox/1">
+                    <i class="fa-regular fa-envelope"></i>
+                    <span class="badge badge-pill bg-success badge-count">90</span>
+                </a>
+            </div>
+
+
+    <!-- STAR -->
+        <div class="icon-wrapper">
+                <a class="text-black favourite-link" data-usertype="2" href="/registeruser/favouritetender/1">
+                    <i class="fa-regular fa-star"></i>
+                    <span class="badge badge-pill bg-warning badge-count">0</span>
+                </a>
+        </div>
+
+    <!-- LIMIT -->
+        <!-- ADD NEW QUERY -->
+        <a class="badge bg-success mr-2 mt-2" href="/registeruser/addnewquery/1/281090">
+            Add New Query
+        </a>
+
+</div>
+                        </div>
+                    </ul>
+                </div>
+                <div class="card-body">
+                    <div class="tab-content" id="custom-tabs-four-tabContent">
+                        <div class="tab-pane fade active show" id="custom-tabs-four-Tender" role="tabpanel" aria-labelledby="custom-tabs-four-home-Tender">
+                            
+    <!-- ===================== DESKTOP / TABLET TABLE VIEW ===================== -->
+    <div class="table-responsive-lg d-none d-md-block">
+        <table class="table table-bordered table-hover table-striped text-center card-outline card-success">
+            <thead>
+                <tr>
+                    <th class="table-th-head">Query Name</th>
+                    <th class="table-th-head d-none d-md-table-cell">Due Date</th>
+                    <th class="table-th-head">Fresh</th>
+                    <th class="table-th-head">Live</th>
+                    <th class="table-th-head">Close</th>
+                    <th class="table-th-head">My Calendar</th>
+                    <th class="table-th-head">Export</th>
+                    <th class="table-th-head">Analytic</th>
+                    <th class="table-th-head">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                    <tr>
+                        <td>OFC Cable</td>
+                        <td class="d-none d-md-table-cell">07-01-2027</td>
+                        <td>
+                            <span class="badge bg-warning">
+                                <a style="color: white;" class="Fresh_363977" href="/registeruser/indiatenders/363977/1">45</a><span class="FreshSpanLoader_363977"></span>
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge bg-success">
+                                <a style="color: white;" id="Live_363977" href="/registeruser/indiatenders/363977/2">
+                                    View
+                                </a>
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge bg-primary">
+                                <a style="color: white;" id="Close_363977" href="/registeruser/indiatenders/363977/3">
+                                    View
+                                </a>
+                            </span>
+                        </td><td>
+                            <a href="#" class="text-black">
+                                </a><a href="/registeruser/mycalendar/363977">
+                                    <span class="badge bg-warning">
+                                        <i class="fas fa-calendar-alt text-white"></i>
+                                    </span>
+                                </a>
+                            
+                        </td>
+                        <td>
+                            <a class="text-black" href="/registeruser/exporttoexcel/363977/1">
+                                <i class="fas fa-download"></i>
+                            </a>
+                        </td>
+                        <td>
+                            <a class="text-black" href="/registeruser/tenderanalytic/363977/1">
+                                <i class="fa-solid fa-chart-column text-black"></i>
+                            </a>
+                        </td>
+                        <td>
+                            <a class="text-black" title="View" href="/registeruser/viewquery/363977/1"><i class="fas fa-eye mr-2"></i></a>
+                                <a class="text-black" title="Contact To Customer Care for Edit">
+                                    <i class="fas fa-edit mr-2"></i>
+                                </a>
+                                <a class="text-black" title="Contact To Customer Care for Delete"> <i class="fas fa-trash-alt"></i></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Wireless Communicate</td>
+                        <td class="d-none d-md-table-cell">07-01-2027</td>
+                        <td>
+                            <span class="badge bg-warning">
+                                <a style="color: white;" class="Fresh_363978" href="/registeruser/indiatenders/363978/1">11</a><span class="FreshSpanLoader_363978"></span>
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge bg-success">
+                                <a style="color: white;" id="Live_363978" href="/registeruser/indiatenders/363978/2">
+                                    View
+                                </a>
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge bg-primary">
+                                <a style="color: white;" id="Close_363978" href="/registeruser/indiatenders/363978/3">
+                                    View
+                                </a>
+                            </span>
+                        </td><td>
+                            <a href="#" class="text-black">
+                                </a><a href="/registeruser/mycalendar/363978">
+                                    <span class="badge bg-warning">
+                                        <i class="fas fa-calendar-alt text-white"></i>
+                                    </span>
+                                </a>
+                            
+                        </td>
+                        <td>
+                            <a class="text-black" href="/registeruser/exporttoexcel/363978/1">
+                                <i class="fas fa-download"></i>
+                            </a>
+                        </td>
+                        <td>
+                            <a class="text-black" href="/registeruser/tenderanalytic/363978/1">
+                                <i class="fa-solid fa-chart-column text-black"></i>
+                            </a>
+                        </td>
+                        <td>
+                            <a class="text-black" title="View" href="/registeruser/viewquery/363978/1"><i class="fas fa-eye mr-2"></i></a>
+                                <a class="text-black" title="Contact To Customer Care for Edit">
+                                    <i class="fas fa-edit mr-2"></i>
+                                </a>
+                                <a class="text-black" title="Contact To Customer Care for Delete"> <i class="fas fa-trash-alt"></i></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Telecom work</td>
+                        <td class="d-none d-md-table-cell">07-01-2027</td>
+                        <td>
+                            <span class="badge bg-warning">
+                                <a style="color: white;" class="Fresh_363979" href="/registeruser/indiatenders/363979/1">3</a><span class="FreshSpanLoader_363979"></span>
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge bg-success">
+                                <a style="color: white;" id="Live_363979" href="/registeruser/indiatenders/363979/2">
+                                    View
+                                </a>
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge bg-primary">
+                                <a style="color: white;" id="Close_363979" href="/registeruser/indiatenders/363979/3">
+                                    View
+                                </a>
+                            </span>
+                        </td><td>
+                            <a href="#" class="text-black">
+                                </a><a href="/registeruser/mycalendar/363979">
+                                    <span class="badge bg-warning">
+                                        <i class="fas fa-calendar-alt text-white"></i>
+                                    </span>
+                                </a>
+                            
+                        </td>
+                        <td>
+                            <a class="text-black" href="/registeruser/exporttoexcel/363979/1">
+                                <i class="fas fa-download"></i>
+                            </a>
+                        </td>
+                        <td>
+                            <a class="text-black" href="/registeruser/tenderanalytic/363979/1">
+                                <i class="fa-solid fa-chart-column text-black"></i>
+                            </a>
+                        </td>
+                        <td>
+                            <a class="text-black" title="View" href="/registeruser/viewquery/363979/1"><i class="fas fa-eye mr-2"></i></a>
+                                <a class="text-black" title="Contact To Customer Care for Edit">
+                                    <i class="fas fa-edit mr-2"></i>
+                                </a>
+                                <a class="text-black" title="Contact To Customer Care for Delete"> <i class="fas fa-trash-alt"></i></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>CCTV</td>
+                        <td class="d-none d-md-table-cell">07-01-2027</td>
+                        <td>
+                            <span class="badge bg-warning">
+                                <a style="color: white;" class="Fresh_363980" href="/registeruser/indiatenders/363980/1">154</a><span class="FreshSpanLoader_363980"></span>
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge bg-success">
+                                <a style="color: white;" id="Live_363980" href="/registeruser/indiatenders/363980/2">
+                                    View
+                                </a>
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge bg-primary">
+                                <a style="color: white;" id="Close_363980" href="/registeruser/indiatenders/363980/3">
+                                    View
+                                </a>
+                            </span>
+                        </td><td>
+                            <a href="#" class="text-black">
+                                </a><a href="/registeruser/mycalendar/363980">
+                                    <span class="badge bg-warning">
+                                        <i class="fas fa-calendar-alt text-white"></i>
+                                    </span>
+                                </a>
+                            
+                        </td>
+                        <td>
+                            <a class="text-black" href="/registeruser/exporttoexcel/363980/1">
+                                <i class="fas fa-download"></i>
+                            </a>
+                        </td>
+                        <td>
+                            <a class="text-black" href="/registeruser/tenderanalytic/363980/1">
+                                <i class="fa-solid fa-chart-column text-black"></i>
+                            </a>
+                        </td>
+                        <td>
+                            <a class="text-black" title="View" href="/registeruser/viewquery/363980/1"><i class="fas fa-eye mr-2"></i></a>
+                                <a class="text-black" title="Contact To Customer Care for Edit">
+                                    <i class="fas fa-edit mr-2"></i>
+                                </a>
+                                <a class="text-black" title="Contact To Customer Care for Delete"> <i class="fas fa-trash-alt"></i></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Data Centers</td>
+                        <td class="d-none d-md-table-cell">07-01-2027</td>
+                        <td>
+                            <span class="badge bg-warning">
+                                <a style="color: white;" class="Fresh_363981" href="/registeruser/indiatenders/363981/1">11</a><span class="FreshSpanLoader_363981"></span>
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge bg-success">
+                                <a style="color: white;" id="Live_363981" href="/registeruser/indiatenders/363981/2">
+                                    View
+                                </a>
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge bg-primary">
+                                <a style="color: white;" id="Close_363981" href="/registeruser/indiatenders/363981/3">
+                                    View
+                                </a>
+                            </span>
+                        </td><td>
+                            <a href="#" class="text-black">
+                                </a><a href="/registeruser/mycalendar/363981">
+                                    <span class="badge bg-warning">
+                                        <i class="fas fa-calendar-alt text-white"></i>
+                                    </span>
+                                </a>
+                            
+                        </td>
+                        <td>
+                            <a class="text-black" href="/registeruser/exporttoexcel/363981/1">
+                                <i class="fas fa-download"></i>
+                            </a>
+                        </td>
+                        <td>
+                            <a class="text-black" href="/registeruser/tenderanalytic/363981/1">
+                                <i class="fa-solid fa-chart-column text-black"></i>
+                            </a>
+                        </td>
+                        <td>
+                            <a class="text-black" title="View" href="/registeruser/viewquery/363981/1"><i class="fas fa-eye mr-2"></i></a>
+                                <a class="text-black" title="Contact To Customer Care for Edit">
+                                    <i class="fas fa-edit mr-2"></i>
+                                </a>
+                                <a class="text-black" title="Contact To Customer Care for Delete"> <i class="fas fa-trash-alt"></i></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>HVAC</td>
+                        <td class="d-none d-md-table-cell">07-01-2027</td>
+                        <td>
+                            <span class="badge bg-warning">
+                                <a style="color: white;" class="Fresh_363982" href="/registeruser/indiatenders/363982/1">30</a><span class="FreshSpanLoader_363982"></span>
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge bg-success">
+                                <a style="color: white;" id="Live_363982" href="/registeruser/indiatenders/363982/2">
+                                    View
+                                </a>
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge bg-primary">
+                                <a style="color: white;" id="Close_363982" href="/registeruser/indiatenders/363982/3">
+                                    View
+                                </a>
+                            </span>
+                        </td><td>
+                            <a href="#" class="text-black">
+                                </a><a href="/registeruser/mycalendar/363982">
+                                    <span class="badge bg-warning">
+                                        <i class="fas fa-calendar-alt text-white"></i>
+                                    </span>
+                                </a>
+                            
+                        </td>
+                        <td>
+                            <a class="text-black" href="/registeruser/exporttoexcel/363982/1">
+                                <i class="fas fa-download"></i>
+                            </a>
+                        </td>
+                        <td>
+                            <a class="text-black" href="/registeruser/tenderanalytic/363982/1">
+                                <i class="fa-solid fa-chart-column text-black"></i>
+                            </a>
+                        </td>
+                        <td>
+                            <a class="text-black" title="View" href="/registeruser/viewquery/363982/1"><i class="fas fa-eye mr-2"></i></a>
+                                <a class="text-black" title="Contact To Customer Care for Edit">
+                                    <i class="fas fa-edit mr-2"></i>
+                                </a>
+                                <a class="text-black" title="Contact To Customer Care for Delete"> <i class="fas fa-trash-alt"></i></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Smart City</td>
+                        <td class="d-none d-md-table-cell">07-01-2027</td>
+                        <td>
+                            <span class="badge bg-warning">
+                                <a style="color: white;" class="Fresh_363983" href="/registeruser/indiatenders/363983/1">4</a><span class="FreshSpanLoader_363983"></span>
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge bg-success">
+                                <a style="color: white;" id="Live_363983" href="/registeruser/indiatenders/363983/2">
+                                    View
+                                </a>
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge bg-primary">
+                                <a style="color: white;" id="Close_363983" href="/registeruser/indiatenders/363983/3">
+                                    View
+                                </a>
+                            </span>
+                        </td><td>
+                            <a href="#" class="text-black">
+                                </a><a href="/registeruser/mycalendar/363983">
+                                    <span class="badge bg-warning">
+                                        <i class="fas fa-calendar-alt text-white"></i>
+                                    </span>
+                                </a>
+                            
+                        </td>
+                        <td>
+                            <a class="text-black" href="/registeruser/exporttoexcel/363983/1">
+                                <i class="fas fa-download"></i>
+                            </a>
+                        </td>
+                        <td>
+                            <a class="text-black" href="/registeruser/tenderanalytic/363983/1">
+                                <i class="fa-solid fa-chart-column text-black"></i>
+                            </a>
+                        </td>
+                        <td>
+                            <a class="text-black" title="View" href="/registeruser/viewquery/363983/1"><i class="fas fa-eye mr-2"></i></a>
+                                <a class="text-black" title="Contact To Customer Care for Edit">
+                                    <i class="fas fa-edit mr-2"></i>
+                                </a>
+                                <a class="text-black" title="Contact To Customer Care for Delete"> <i class="fas fa-trash-alt"></i></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>LED WALL</td>
+                        <td class="d-none d-md-table-cell">07-01-2027</td>
+                        <td>
+                            <span class="badge bg-warning">
+                                <a style="color: white;" class="Fresh_363984" href="/registeruser/indiatenders/363984/1">35</a><span class="FreshSpanLoader_363984"></span>
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge bg-success">
+                                <a style="color: white;" id="Live_363984" href="/registeruser/indiatenders/363984/2">
+                                    View
+                                </a>
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge bg-primary">
+                                <a style="color: white;" id="Close_363984" href="/registeruser/indiatenders/363984/3">
+                                    View
+                                </a>
+                            </span>
+                        </td><td>
+                            <a href="#" class="text-black">
+                                </a><a href="/registeruser/mycalendar/363984">
+                                    <span class="badge bg-warning">
+                                        <i class="fas fa-calendar-alt text-white"></i>
+                                    </span>
+                                </a>
+                            
+                        </td>
+                        <td>
+                            <a class="text-black" href="/registeruser/exporttoexcel/363984/1">
+                                <i class="fas fa-download"></i>
+                            </a>
+                        </td>
+                        <td>
+                            <a class="text-black" href="/registeruser/tenderanalytic/363984/1">
+                                <i class="fa-solid fa-chart-column text-black"></i>
+                            </a>
+                        </td>
+                        <td>
+                            <a class="text-black" title="View" href="/registeruser/viewquery/363984/1"><i class="fas fa-eye mr-2"></i></a>
+                                <a class="text-black" title="Contact To Customer Care for Edit">
+                                    <i class="fas fa-edit mr-2"></i>
+                                </a>
+                                <a class="text-black" title="Contact To Customer Care for Delete"> <i class="fas fa-trash-alt"></i></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Solar Power Plants</td>
+                        <td class="d-none d-md-table-cell">07-01-2027</td>
+                        <td>
+                            <span class="badge bg-warning">
+                                <a style="color: white;" class="Fresh_363985" href="/registeruser/indiatenders/363985/1">71</a><span class="FreshSpanLoader_363985"></span>
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge bg-success">
+                                <a style="color: white;" id="Live_363985" href="/registeruser/indiatenders/363985/2">
+                                    View
+                                </a>
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge bg-primary">
+                                <a style="color: white;" id="Close_363985" href="/registeruser/indiatenders/363985/3">
+                                    View
+                                </a>
+                            </span>
+                        </td><td>
+                            <a href="#" class="text-black">
+                                </a><a href="/registeruser/mycalendar/363985">
+                                    <span class="badge bg-warning">
+                                        <i class="fas fa-calendar-alt text-white"></i>
+                                    </span>
+                                </a>
+                            
+                        </td>
+                        <td>
+                            <a class="text-black" href="/registeruser/exporttoexcel/363985/1">
+                                <i class="fas fa-download"></i>
+                            </a>
+                        </td>
+                        <td>
+                            <a class="text-black" href="/registeruser/tenderanalytic/363985/1">
+                                <i class="fa-solid fa-chart-column text-black"></i>
+                            </a>
+                        </td>
+                        <td>
+                            <a class="text-black" title="View" href="/registeruser/viewquery/363985/1"><i class="fas fa-eye mr-2"></i></a>
+                                <a class="text-black" title="Contact To Customer Care for Edit">
+                                    <i class="fas fa-edit mr-2"></i>
+                                </a>
+                                <a class="text-black" title="Contact To Customer Care for Delete"> <i class="fas fa-trash-alt"></i></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Lithium ion Tenders</td>
+                        <td class="d-none d-md-table-cell">07-01-2027</td>
+                        <td>
+                            <span class="badge bg-warning">
+                                <a style="color: white;" class="Fresh_365030" href="/registeruser/indiatenders/365030/1">6</a><span class="FreshSpanLoader_365030"></span>
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge bg-success">
+                                <a style="color: white;" id="Live_365030" href="/registeruser/indiatenders/365030/2">
+                                    View
+                                </a>
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge bg-primary">
+                                <a style="color: white;" id="Close_365030" href="/registeruser/indiatenders/365030/3">
+                                    View
+                                </a>
+                            </span>
+                        </td><td>
+                            <a href="#" class="text-black">
+                                </a><a href="/registeruser/mycalendar/365030">
+                                    <span class="badge bg-warning">
+                                        <i class="fas fa-calendar-alt text-white"></i>
+                                    </span>
+                                </a>
+                            
+                        </td>
+                        <td>
+                            <a class="text-black" href="/registeruser/exporttoexcel/365030/1">
+                                <i class="fas fa-download"></i>
+                            </a>
+                        </td>
+                        <td>
+                            <a class="text-black" href="/registeruser/tenderanalytic/365030/1">
+                                <i class="fa-solid fa-chart-column text-black"></i>
+                            </a>
+                        </td>
+                        <td>
+                            <a class="text-black" title="View" href="/registeruser/viewquery/365030/1"><i class="fas fa-eye mr-2"></i></a>
+                                <a class="text-black" title="Edit" href="/registeruser/editdomesticquery/365030">
+                                    <i class="fas fa-edit mr-2"></i>
+                                </a>
+                                <a href="#" onclick="return DeleteQuery(365030,1);" class="text-black" title="Delete"> <i class="fas fa-trash-alt"></i></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Bio pellet Tenders</td>
+                        <td class="d-none d-md-table-cell">07-01-2027</td>
+                        <td>
+                            <span class="badge bg-warning">
+                                <a style="color: white;" class="Fresh_365031" href="/registeruser/indiatenders/365031/1">0</a><span class="FreshSpanLoader_365031"></span>
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge bg-success">
+                                <a style="color: white;" id="Live_365031" href="/registeruser/indiatenders/365031/2">
+                                    View
+                                </a>
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge bg-primary">
+                                <a style="color: white;" id="Close_365031" href="/registeruser/indiatenders/365031/3">
+                                    View
+                                </a>
+                            </span>
+                        </td><td>
+                            <a href="#" class="text-black">
+                                </a><a href="/registeruser/mycalendar/365031">
+                                    <span class="badge bg-warning">
+                                        <i class="fas fa-calendar-alt text-white"></i>
+                                    </span>
+                                </a>
+                            
+                        </td>
+                        <td>
+                            <a class="text-black" href="/registeruser/exporttoexcel/365031/1">
+                                <i class="fas fa-download"></i>
+                            </a>
+                        </td>
+                        <td>
+                            <a class="text-black" href="/registeruser/tenderanalytic/365031/1">
+                                <i class="fa-solid fa-chart-column text-black"></i>
+                            </a>
+                        </td>
+                        <td>
+                            <a class="text-black" title="View" href="/registeruser/viewquery/365031/1"><i class="fas fa-eye mr-2"></i></a>
+                                <a class="text-black" title="Edit" href="/registeruser/editdomesticquery/365031">
+                                    <i class="fas fa-edit mr-2"></i>
+                                </a>
+                                <a href="#" onclick="return DeleteQuery(365031,1);" class="text-black" title="Delete"> <i class="fas fa-trash-alt"></i></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>software de Tenders</td>
+                        <td class="d-none d-md-table-cell">07-01-2027</td>
+                        <td>
+                            <span class="badge bg-warning">
+                                <a style="color: white;" class="Fresh_368352" href="/registeruser/indiatenders/368352/1">164</a><span class="FreshSpanLoader_368352"></span>
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge bg-success">
+                                <a style="color: white;" id="Live_368352" href="/registeruser/indiatenders/368352/2">
+                                    View
+                                </a>
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge bg-primary">
+                                <a style="color: white;" id="Close_368352" href="/registeruser/indiatenders/368352/3">
+                                    View
+                                </a>
+                            </span>
+                        </td><td>
+                            <a href="#" class="text-black">
+                                </a><a href="/registeruser/mycalendar/368352">
+                                    <span class="badge bg-warning">
+                                        <i class="fas fa-calendar-alt text-white"></i>
+                                    </span>
+                                </a>
+                            
+                        </td>
+                        <td>
+                            <a class="text-black" href="/registeruser/exporttoexcel/368352/1">
+                                <i class="fas fa-download"></i>
+                            </a>
+                        </td>
+                        <td>
+                            <a class="text-black" href="/registeruser/tenderanalytic/368352/1">
+                                <i class="fa-solid fa-chart-column text-black"></i>
+                            </a>
+                        </td>
+                        <td>
+                            <a class="text-black" title="View" href="/registeruser/viewquery/368352/1"><i class="fas fa-eye mr-2"></i></a>
+                                <a class="text-black" title="Edit" href="/registeruser/editdomesticquery/368352">
+                                    <i class="fas fa-edit mr-2"></i>
+                                </a>
+                                <a href="#" onclick="return DeleteQuery(368352,1);" class="text-black" title="Delete"> <i class="fas fa-trash-alt"></i></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>battery Tenders</td>
+                        <td class="d-none d-md-table-cell">07-01-2027</td>
+                        <td>
+                            <span class="badge bg-warning">
+                                <a style="color: white;" class="Fresh_371969" href="/registeruser/indiatenders/371969/1">271</a><span class="FreshSpanLoader_371969"></span>
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge bg-success">
+                                <a style="color: white;" id="Live_371969" href="/registeruser/indiatenders/371969/2">
+                                    View
+                                </a>
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge bg-primary">
+                                <a style="color: white;" id="Close_371969" href="/registeruser/indiatenders/371969/3">
+                                    View
+                                </a>
+                            </span>
+                        </td><td>
+                            <a href="#" class="text-black">
+                                </a><a href="/registeruser/mycalendar/371969">
+                                    <span class="badge bg-warning">
+                                        <i class="fas fa-calendar-alt text-white"></i>
+                                    </span>
+                                </a>
+                            
+                        </td>
+                        <td>
+                            <a class="text-black" href="/registeruser/exporttoexcel/371969/1">
+                                <i class="fas fa-download"></i>
+                            </a>
+                        </td>
+                        <td>
+                            <a class="text-black" href="/registeruser/tenderanalytic/371969/1">
+                                <i class="fa-solid fa-chart-column text-black"></i>
+                            </a>
+                        </td>
+                        <td>
+                            <a class="text-black" title="View" href="/registeruser/viewquery/371969/1"><i class="fas fa-eye mr-2"></i></a>
+                                <a class="text-black" title="Edit" href="/registeruser/editdomesticquery/371969">
+                                    <i class="fas fa-edit mr-2"></i>
+                                </a>
+                                <a href="#" onclick="return DeleteQuery(371969,1);" class="text-black" title="Delete"> <i class="fas fa-trash-alt"></i></a>
+                        </td>
+                    </tr>
+            </tbody>
+        </table>
+    </div>
+    <!-- ===================== MOBILE CARD VIEW ===================== -->
+    <div class="d-md-none mobile-query-list">
+        <div class="mobile-query-head">
+            <span class="mq-head-title">Query Name</span>
+            <span class="mq-head-title">Due Date <i class="fas fa-sort ml-1"></i></span>
+        </div>
+
+            <div class="mobile-query-card">
+                <div class="mq-body">
+                    <div class="mq-name">OFC Cable</div>
+                    <div class="mq-badges">
+                        <a class="mq-btn mq-btn-fresh" href="/registeruser/indiatenders/363977/1">
+                            <span class="Fresh_363977">45</span><span class="FreshSpanLoader_363977"></span>
+                        </a>
+                        <a class="mq-btn mq-btn-live" href="/registeruser/indiatenders/363977/2">Live</a>
+                        <a class="mq-btn mq-btn-close" href="/registeruser/indiatenders/363977/3">Close</a>
+                    </div>
+                </div>
+
+                <div class="mq-side">
+                    <div class="mq-date">07-01-2027</div>
+                    <div class="dropdown">
+                        <button type="button" class="mq-kebab" data-toggle="dropdown" aria-expanded="false" title="More">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="/registeruser/mycalendar/363977">
+                                <i class="fas fa-calendar-alt mr-2 text-warning"></i> My Calendar
+                            </a>
+                            <a class="dropdown-item" href="/registeruser/exporttoexcel/363977/1">
+                                <i class="fas fa-download mr-2 text-success"></i> Export
+                            </a>
+                            <a class="dropdown-item" href="/registeruser/tenderanalytic/363977/1">
+                                <i class="fa-solid fa-chart-column mr-2 text-primary"></i> Analytic
+                            </a>
+                            <a class="dropdown-item" href="/registeruser/viewquery/363977/1">
+                                <i class="fas fa-eye mr-2"></i> View
+                            </a>
+                                <a class="dropdown-item text-muted" title="Contact To Customer Care for Edit">
+                                    <i class="fas fa-edit mr-2"></i> Edit
+                                </a>
+                                <a class="dropdown-item text-muted" title="Contact To Customer Care for Delete">
+                                    <i class="fas fa-trash-alt mr-2"></i> Delete
+                                </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mobile-query-card">
+                <div class="mq-body">
+                    <div class="mq-name">Wireless Communicate</div>
+                    <div class="mq-badges">
+                        <a class="mq-btn mq-btn-fresh" href="/registeruser/indiatenders/363978/1">
+                            <span class="Fresh_363978">11</span><span class="FreshSpanLoader_363978"></span>
+                        </a>
+                        <a class="mq-btn mq-btn-live" href="/registeruser/indiatenders/363978/2">Live</a>
+                        <a class="mq-btn mq-btn-close" href="/registeruser/indiatenders/363978/3">Close</a>
+                    </div>
+                </div>
+
+                <div class="mq-side">
+                    <div class="mq-date">07-01-2027</div>
+                    <div class="dropdown">
+                        <button type="button" class="mq-kebab" data-toggle="dropdown" aria-expanded="false" title="More">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="/registeruser/mycalendar/363978">
+                                <i class="fas fa-calendar-alt mr-2 text-warning"></i> My Calendar
+                            </a>
+                            <a class="dropdown-item" href="/registeruser/exporttoexcel/363978/1">
+                                <i class="fas fa-download mr-2 text-success"></i> Export
+                            </a>
+                            <a class="dropdown-item" href="/registeruser/tenderanalytic/363978/1">
+                                <i class="fa-solid fa-chart-column mr-2 text-primary"></i> Analytic
+                            </a>
+                            <a class="dropdown-item" href="/registeruser/viewquery/363978/1">
+                                <i class="fas fa-eye mr-2"></i> View
+                            </a>
+                                <a class="dropdown-item text-muted" title="Contact To Customer Care for Edit">
+                                    <i class="fas fa-edit mr-2"></i> Edit
+                                </a>
+                                <a class="dropdown-item text-muted" title="Contact To Customer Care for Delete">
+                                    <i class="fas fa-trash-alt mr-2"></i> Delete
+                                </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mobile-query-card">
+                <div class="mq-body">
+                    <div class="mq-name">Telecom work</div>
+                    <div class="mq-badges">
+                        <a class="mq-btn mq-btn-fresh" href="/registeruser/indiatenders/363979/1">
+                            <span class="Fresh_363979">3</span><span class="FreshSpanLoader_363979"></span>
+                        </a>
+                        <a class="mq-btn mq-btn-live" href="/registeruser/indiatenders/363979/2">Live</a>
+                        <a class="mq-btn mq-btn-close" href="/registeruser/indiatenders/363979/3">Close</a>
+                    </div>
+                </div>
+
+                <div class="mq-side">
+                    <div class="mq-date">07-01-2027</div>
+                    <div class="dropdown">
+                        <button type="button" class="mq-kebab" data-toggle="dropdown" aria-expanded="false" title="More">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="/registeruser/mycalendar/363979">
+                                <i class="fas fa-calendar-alt mr-2 text-warning"></i> My Calendar
+                            </a>
+                            <a class="dropdown-item" href="/registeruser/exporttoexcel/363979/1">
+                                <i class="fas fa-download mr-2 text-success"></i> Export
+                            </a>
+                            <a class="dropdown-item" href="/registeruser/tenderanalytic/363979/1">
+                                <i class="fa-solid fa-chart-column mr-2 text-primary"></i> Analytic
+                            </a>
+                            <a class="dropdown-item" href="/registeruser/viewquery/363979/1">
+                                <i class="fas fa-eye mr-2"></i> View
+                            </a>
+                                <a class="dropdown-item text-muted" title="Contact To Customer Care for Edit">
+                                    <i class="fas fa-edit mr-2"></i> Edit
+                                </a>
+                                <a class="dropdown-item text-muted" title="Contact To Customer Care for Delete">
+                                    <i class="fas fa-trash-alt mr-2"></i> Delete
+                                </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mobile-query-card">
+                <div class="mq-body">
+                    <div class="mq-name">CCTV</div>
+                    <div class="mq-badges">
+                        <a class="mq-btn mq-btn-fresh" href="/registeruser/indiatenders/363980/1">
+                            <span class="Fresh_363980">154</span><span class="FreshSpanLoader_363980"></span>
+                        </a>
+                        <a class="mq-btn mq-btn-live" href="/registeruser/indiatenders/363980/2">Live</a>
+                        <a class="mq-btn mq-btn-close" href="/registeruser/indiatenders/363980/3">Close</a>
+                    </div>
+                </div>
+
+                <div class="mq-side">
+                    <div class="mq-date">07-01-2027</div>
+                    <div class="dropdown">
+                        <button type="button" class="mq-kebab" data-toggle="dropdown" aria-expanded="false" title="More">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="/registeruser/mycalendar/363980">
+                                <i class="fas fa-calendar-alt mr-2 text-warning"></i> My Calendar
+                            </a>
+                            <a class="dropdown-item" href="/registeruser/exporttoexcel/363980/1">
+                                <i class="fas fa-download mr-2 text-success"></i> Export
+                            </a>
+                            <a class="dropdown-item" href="/registeruser/tenderanalytic/363980/1">
+                                <i class="fa-solid fa-chart-column mr-2 text-primary"></i> Analytic
+                            </a>
+                            <a class="dropdown-item" href="/registeruser/viewquery/363980/1">
+                                <i class="fas fa-eye mr-2"></i> View
+                            </a>
+                                <a class="dropdown-item text-muted" title="Contact To Customer Care for Edit">
+                                    <i class="fas fa-edit mr-2"></i> Edit
+                                </a>
+                                <a class="dropdown-item text-muted" title="Contact To Customer Care for Delete">
+                                    <i class="fas fa-trash-alt mr-2"></i> Delete
+                                </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mobile-query-card">
+                <div class="mq-body">
+                    <div class="mq-name">Data Centers</div>
+                    <div class="mq-badges">
+                        <a class="mq-btn mq-btn-fresh" href="/registeruser/indiatenders/363981/1">
+                            <span class="Fresh_363981">11</span><span class="FreshSpanLoader_363981"></span>
+                        </a>
+                        <a class="mq-btn mq-btn-live" href="/registeruser/indiatenders/363981/2">Live</a>
+                        <a class="mq-btn mq-btn-close" href="/registeruser/indiatenders/363981/3">Close</a>
+                    </div>
+                </div>
+
+                <div class="mq-side">
+                    <div class="mq-date">07-01-2027</div>
+                    <div class="dropdown">
+                        <button type="button" class="mq-kebab" data-toggle="dropdown" aria-expanded="false" title="More">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="/registeruser/mycalendar/363981">
+                                <i class="fas fa-calendar-alt mr-2 text-warning"></i> My Calendar
+                            </a>
+                            <a class="dropdown-item" href="/registeruser/exporttoexcel/363981/1">
+                                <i class="fas fa-download mr-2 text-success"></i> Export
+                            </a>
+                            <a class="dropdown-item" href="/registeruser/tenderanalytic/363981/1">
+                                <i class="fa-solid fa-chart-column mr-2 text-primary"></i> Analytic
+                            </a>
+                            <a class="dropdown-item" href="/registeruser/viewquery/363981/1">
+                                <i class="fas fa-eye mr-2"></i> View
+                            </a>
+                                <a class="dropdown-item text-muted" title="Contact To Customer Care for Edit">
+                                    <i class="fas fa-edit mr-2"></i> Edit
+                                </a>
+                                <a class="dropdown-item text-muted" title="Contact To Customer Care for Delete">
+                                    <i class="fas fa-trash-alt mr-2"></i> Delete
+                                </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mobile-query-card">
+                <div class="mq-body">
+                    <div class="mq-name">HVAC</div>
+                    <div class="mq-badges">
+                        <a class="mq-btn mq-btn-fresh" href="/registeruser/indiatenders/363982/1">
+                            <span class="Fresh_363982">30</span><span class="FreshSpanLoader_363982"></span>
+                        </a>
+                        <a class="mq-btn mq-btn-live" href="/registeruser/indiatenders/363982/2">Live</a>
+                        <a class="mq-btn mq-btn-close" href="/registeruser/indiatenders/363982/3">Close</a>
+                    </div>
+                </div>
+
+                <div class="mq-side">
+                    <div class="mq-date">07-01-2027</div>
+                    <div class="dropdown">
+                        <button type="button" class="mq-kebab" data-toggle="dropdown" aria-expanded="false" title="More">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="/registeruser/mycalendar/363982">
+                                <i class="fas fa-calendar-alt mr-2 text-warning"></i> My Calendar
+                            </a>
+                            <a class="dropdown-item" href="/registeruser/exporttoexcel/363982/1">
+                                <i class="fas fa-download mr-2 text-success"></i> Export
+                            </a>
+                            <a class="dropdown-item" href="/registeruser/tenderanalytic/363982/1">
+                                <i class="fa-solid fa-chart-column mr-2 text-primary"></i> Analytic
+                            </a>
+                            <a class="dropdown-item" href="/registeruser/viewquery/363982/1">
+                                <i class="fas fa-eye mr-2"></i> View
+                            </a>
+                                <a class="dropdown-item text-muted" title="Contact To Customer Care for Edit">
+                                    <i class="fas fa-edit mr-2"></i> Edit
+                                </a>
+                                <a class="dropdown-item text-muted" title="Contact To Customer Care for Delete">
+                                    <i class="fas fa-trash-alt mr-2"></i> Delete
+                                </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mobile-query-card">
+                <div class="mq-body">
+                    <div class="mq-name">Smart City</div>
+                    <div class="mq-badges">
+                        <a class="mq-btn mq-btn-fresh" href="/registeruser/indiatenders/363983/1">
+                            <span class="Fresh_363983">4</span><span class="FreshSpanLoader_363983"></span>
+                        </a>
+                        <a class="mq-btn mq-btn-live" href="/registeruser/indiatenders/363983/2">Live</a>
+                        <a class="mq-btn mq-btn-close" href="/registeruser/indiatenders/363983/3">Close</a>
+                    </div>
+                </div>
+
+                <div class="mq-side">
+                    <div class="mq-date">07-01-2027</div>
+                    <div class="dropdown">
+                        <button type="button" class="mq-kebab" data-toggle="dropdown" aria-expanded="false" title="More">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="/registeruser/mycalendar/363983">
+                                <i class="fas fa-calendar-alt mr-2 text-warning"></i> My Calendar
+                            </a>
+                            <a class="dropdown-item" href="/registeruser/exporttoexcel/363983/1">
+                                <i class="fas fa-download mr-2 text-success"></i> Export
+                            </a>
+                            <a class="dropdown-item" href="/registeruser/tenderanalytic/363983/1">
+                                <i class="fa-solid fa-chart-column mr-2 text-primary"></i> Analytic
+                            </a>
+                            <a class="dropdown-item" href="/registeruser/viewquery/363983/1">
+                                <i class="fas fa-eye mr-2"></i> View
+                            </a>
+                                <a class="dropdown-item text-muted" title="Contact To Customer Care for Edit">
+                                    <i class="fas fa-edit mr-2"></i> Edit
+                                </a>
+                                <a class="dropdown-item text-muted" title="Contact To Customer Care for Delete">
+                                    <i class="fas fa-trash-alt mr-2"></i> Delete
+                                </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mobile-query-card">
+                <div class="mq-body">
+                    <div class="mq-name">LED WALL</div>
+                    <div class="mq-badges">
+                        <a class="mq-btn mq-btn-fresh" href="/registeruser/indiatenders/363984/1">
+                            <span class="Fresh_363984">35</span><span class="FreshSpanLoader_363984"></span>
+                        </a>
+                        <a class="mq-btn mq-btn-live" href="/registeruser/indiatenders/363984/2">Live</a>
+                        <a class="mq-btn mq-btn-close" href="/registeruser/indiatenders/363984/3">Close</a>
+                    </div>
+                </div>
+
+                <div class="mq-side">
+                    <div class="mq-date">07-01-2027</div>
+                    <div class="dropdown">
+                        <button type="button" class="mq-kebab" data-toggle="dropdown" aria-expanded="false" title="More">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="/registeruser/mycalendar/363984">
+                                <i class="fas fa-calendar-alt mr-2 text-warning"></i> My Calendar
+                            </a>
+                            <a class="dropdown-item" href="/registeruser/exporttoexcel/363984/1">
+                                <i class="fas fa-download mr-2 text-success"></i> Export
+                            </a>
+                            <a class="dropdown-item" href="/registeruser/tenderanalytic/363984/1">
+                                <i class="fa-solid fa-chart-column mr-2 text-primary"></i> Analytic
+                            </a>
+                            <a class="dropdown-item" href="/registeruser/viewquery/363984/1">
+                                <i class="fas fa-eye mr-2"></i> View
+                            </a>
+                                <a class="dropdown-item text-muted" title="Contact To Customer Care for Edit">
+                                    <i class="fas fa-edit mr-2"></i> Edit
+                                </a>
+                                <a class="dropdown-item text-muted" title="Contact To Customer Care for Delete">
+                                    <i class="fas fa-trash-alt mr-2"></i> Delete
+                                </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mobile-query-card">
+                <div class="mq-body">
+                    <div class="mq-name">Solar Power Plants</div>
+                    <div class="mq-badges">
+                        <a class="mq-btn mq-btn-fresh" href="/registeruser/indiatenders/363985/1">
+                            <span class="Fresh_363985">71</span><span class="FreshSpanLoader_363985"></span>
+                        </a>
+                        <a class="mq-btn mq-btn-live" href="/registeruser/indiatenders/363985/2">Live</a>
+                        <a class="mq-btn mq-btn-close" href="/registeruser/indiatenders/363985/3">Close</a>
+                    </div>
+                </div>
+
+                <div class="mq-side">
+                    <div class="mq-date">07-01-2027</div>
+                    <div class="dropdown">
+                        <button type="button" class="mq-kebab" data-toggle="dropdown" aria-expanded="false" title="More">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="/registeruser/mycalendar/363985">
+                                <i class="fas fa-calendar-alt mr-2 text-warning"></i> My Calendar
+                            </a>
+                            <a class="dropdown-item" href="/registeruser/exporttoexcel/363985/1">
+                                <i class="fas fa-download mr-2 text-success"></i> Export
+                            </a>
+                            <a class="dropdown-item" href="/registeruser/tenderanalytic/363985/1">
+                                <i class="fa-solid fa-chart-column mr-2 text-primary"></i> Analytic
+                            </a>
+                            <a class="dropdown-item" href="/registeruser/viewquery/363985/1">
+                                <i class="fas fa-eye mr-2"></i> View
+                            </a>
+                                <a class="dropdown-item text-muted" title="Contact To Customer Care for Edit">
+                                    <i class="fas fa-edit mr-2"></i> Edit
+                                </a>
+                                <a class="dropdown-item text-muted" title="Contact To Customer Care for Delete">
+                                    <i class="fas fa-trash-alt mr-2"></i> Delete
+                                </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mobile-query-card">
+                <div class="mq-body">
+                    <div class="mq-name">Lithium ion Tenders</div>
+                    <div class="mq-badges">
+                        <a class="mq-btn mq-btn-fresh" href="/registeruser/indiatenders/365030/1">
+                            <span class="Fresh_365030">6</span><span class="FreshSpanLoader_365030"></span>
+                        </a>
+                        <a class="mq-btn mq-btn-live" href="/registeruser/indiatenders/365030/2">Live</a>
+                        <a class="mq-btn mq-btn-close" href="/registeruser/indiatenders/365030/3">Close</a>
+                    </div>
+                </div>
+
+                <div class="mq-side">
+                    <div class="mq-date">07-01-2027</div>
+                    <div class="dropdown">
+                        <button type="button" class="mq-kebab" data-toggle="dropdown" aria-expanded="false" title="More">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="/registeruser/mycalendar/365030">
+                                <i class="fas fa-calendar-alt mr-2 text-warning"></i> My Calendar
+                            </a>
+                            <a class="dropdown-item" href="/registeruser/exporttoexcel/365030/1">
+                                <i class="fas fa-download mr-2 text-success"></i> Export
+                            </a>
+                            <a class="dropdown-item" href="/registeruser/tenderanalytic/365030/1">
+                                <i class="fa-solid fa-chart-column mr-2 text-primary"></i> Analytic
+                            </a>
+                            <a class="dropdown-item" href="/registeruser/viewquery/365030/1">
+                                <i class="fas fa-eye mr-2"></i> View
+                            </a>
+                                <a class="dropdown-item" href="/registeruser/editdomesticquery/365030">
+                                    <i class="fas fa-edit mr-2 text-info"></i> Edit
+                                </a>
+                                <a class="dropdown-item text-danger" href="#" onclick="return DeleteQuery(365030,1);">
+                                    <i class="fas fa-trash-alt mr-2"></i> Delete
+                                </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mobile-query-card">
+                <div class="mq-body">
+                    <div class="mq-name">Bio pellet Tenders</div>
+                    <div class="mq-badges">
+                        <a class="mq-btn mq-btn-fresh" href="/registeruser/indiatenders/365031/1">
+                            <span class="Fresh_365031">0</span><span class="FreshSpanLoader_365031"></span>
+                        </a>
+                        <a class="mq-btn mq-btn-live" href="/registeruser/indiatenders/365031/2">Live</a>
+                        <a class="mq-btn mq-btn-close" href="/registeruser/indiatenders/365031/3">Close</a>
+                    </div>
+                </div>
+
+                <div class="mq-side">
+                    <div class="mq-date">07-01-2027</div>
+                    <div class="dropdown">
+                        <button type="button" class="mq-kebab" data-toggle="dropdown" aria-expanded="false" title="More">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="/registeruser/mycalendar/365031">
+                                <i class="fas fa-calendar-alt mr-2 text-warning"></i> My Calendar
+                            </a>
+                            <a class="dropdown-item" href="/registeruser/exporttoexcel/365031/1">
+                                <i class="fas fa-download mr-2 text-success"></i> Export
+                            </a>
+                            <a class="dropdown-item" href="/registeruser/tenderanalytic/365031/1">
+                                <i class="fa-solid fa-chart-column mr-2 text-primary"></i> Analytic
+                            </a>
+                            <a class="dropdown-item" href="/registeruser/viewquery/365031/1">
+                                <i class="fas fa-eye mr-2"></i> View
+                            </a>
+                                <a class="dropdown-item" href="/registeruser/editdomesticquery/365031">
+                                    <i class="fas fa-edit mr-2 text-info"></i> Edit
+                                </a>
+                                <a class="dropdown-item text-danger" href="#" onclick="return DeleteQuery(365031,1);">
+                                    <i class="fas fa-trash-alt mr-2"></i> Delete
+                                </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mobile-query-card">
+                <div class="mq-body">
+                    <div class="mq-name">software de Tenders</div>
+                    <div class="mq-badges">
+                        <a class="mq-btn mq-btn-fresh" href="/registeruser/indiatenders/368352/1">
+                            <span class="Fresh_368352">164</span><span class="FreshSpanLoader_368352"></span>
+                        </a>
+                        <a class="mq-btn mq-btn-live" href="/registeruser/indiatenders/368352/2">Live</a>
+                        <a class="mq-btn mq-btn-close" href="/registeruser/indiatenders/368352/3">Close</a>
+                    </div>
+                </div>
+
+                <div class="mq-side">
+                    <div class="mq-date">07-01-2027</div>
+                    <div class="dropdown">
+                        <button type="button" class="mq-kebab" data-toggle="dropdown" aria-expanded="false" title="More">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="/registeruser/mycalendar/368352">
+                                <i class="fas fa-calendar-alt mr-2 text-warning"></i> My Calendar
+                            </a>
+                            <a class="dropdown-item" href="/registeruser/exporttoexcel/368352/1">
+                                <i class="fas fa-download mr-2 text-success"></i> Export
+                            </a>
+                            <a class="dropdown-item" href="/registeruser/tenderanalytic/368352/1">
+                                <i class="fa-solid fa-chart-column mr-2 text-primary"></i> Analytic
+                            </a>
+                            <a class="dropdown-item" href="/registeruser/viewquery/368352/1">
+                                <i class="fas fa-eye mr-2"></i> View
+                            </a>
+                                <a class="dropdown-item" href="/registeruser/editdomesticquery/368352">
+                                    <i class="fas fa-edit mr-2 text-info"></i> Edit
+                                </a>
+                                <a class="dropdown-item text-danger" href="#" onclick="return DeleteQuery(368352,1);">
+                                    <i class="fas fa-trash-alt mr-2"></i> Delete
+                                </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mobile-query-card">
+                <div class="mq-body">
+                    <div class="mq-name">battery Tenders</div>
+                    <div class="mq-badges">
+                        <a class="mq-btn mq-btn-fresh" href="/registeruser/indiatenders/371969/1">
+                            <span class="Fresh_371969">271</span><span class="FreshSpanLoader_371969"></span>
+                        </a>
+                        <a class="mq-btn mq-btn-live" href="/registeruser/indiatenders/371969/2">Live</a>
+                        <a class="mq-btn mq-btn-close" href="/registeruser/indiatenders/371969/3">Close</a>
+                    </div>
+                </div>
+
+                <div class="mq-side">
+                    <div class="mq-date">07-01-2027</div>
+                    <div class="dropdown">
+                        <button type="button" class="mq-kebab" data-toggle="dropdown" aria-expanded="false" title="More">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="/registeruser/mycalendar/371969">
+                                <i class="fas fa-calendar-alt mr-2 text-warning"></i> My Calendar
+                            </a>
+                            <a class="dropdown-item" href="/registeruser/exporttoexcel/371969/1">
+                                <i class="fas fa-download mr-2 text-success"></i> Export
+                            </a>
+                            <a class="dropdown-item" href="/registeruser/tenderanalytic/371969/1">
+                                <i class="fa-solid fa-chart-column mr-2 text-primary"></i> Analytic
+                            </a>
+                            <a class="dropdown-item" href="/registeruser/viewquery/371969/1">
+                                <i class="fas fa-eye mr-2"></i> View
+                            </a>
+                                <a class="dropdown-item" href="/registeruser/editdomesticquery/371969">
+                                    <i class="fas fa-edit mr-2 text-info"></i> Edit
+                                </a>
+                                <a class="dropdown-item text-danger" href="#" onclick="return DeleteQuery(371969,1);">
+                                    <i class="fas fa-trash-alt mr-2"></i> Delete
+                                </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+
+                        </div>
+                        <div class="tab-pane fade" id="custom-tabs-four-CompetitiveBidAnalysis" role="tabpanel" aria-labelledby="custom-tabs-four-CompetitiveBidAnalysis-tab">
+                            
+    <!-- ===================== DESKTOP / TABLET TABLE VIEW ===================== -->
+    <div class="table-responsive-lg d-none d-md-block">
+        <table class="table table-bordered table-hover table-striped text-center card-outline card-success">
+            <thead>
+                <tr>
+                    <th>Query Name</th>
+                    <th class="d-none d-md-table-cell">Due Date</th>
+                    <th>Tender Result</th>
+                    <th>Export</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                    <tr>
+                        <td class="text-capitalize">OFC Cable</td>
+                        <td class="d-none d-md-table-cell">07-01-2027</td>
+                        <td>
+                            <span class="badge badge-success">
+                                <a style="color: white;" href="/registeruser/tenderresults/140682">
+                                    View
+                                </a>
+                            </span>
+                        </td>
+                        <td>
+                            <a class="text-black" href="/registeruser/exporttoexcel/140682/5">
+                                <i class="fas fa-download"></i>
+                            </a>
+                        </td>
+                        <td>
+                            <a class="text-black" title="View" href="/registeruser/viewquery/140682/5"><i class="fas fa-eye mr-2"></i></a>
+                                <a class="text-black" title="Contact To Customer Care for Edit">
+                                    <i class="fas fa-edit mr-2"></i>
+                                </a>
+                                <a class="text-black" title="Contact To Customer Care for Delete"> <i class="fas fa-trash-alt"></i></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-capitalize">Wireless Communicate</td>
+                        <td class="d-none d-md-table-cell">07-01-2027</td>
+                        <td>
+                            <span class="badge badge-success">
+                                <a style="color: white;" href="/registeruser/tenderresults/140683">
+                                    View
+                                </a>
+                            </span>
+                        </td>
+                        <td>
+                            <a class="text-black" href="/registeruser/exporttoexcel/140683/5">
+                                <i class="fas fa-download"></i>
+                            </a>
+                        </td>
+                        <td>
+                            <a class="text-black" title="View" href="/registeruser/viewquery/140683/5"><i class="fas fa-eye mr-2"></i></a>
+                                <a class="text-black" title="Contact To Customer Care for Edit">
+                                    <i class="fas fa-edit mr-2"></i>
+                                </a>
+                                <a class="text-black" title="Contact To Customer Care for Delete"> <i class="fas fa-trash-alt"></i></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-capitalize">Telecom work</td>
+                        <td class="d-none d-md-table-cell">07-01-2027</td>
+                        <td>
+                            <span class="badge badge-success">
+                                <a style="color: white;" href="/registeruser/tenderresults/140684">
+                                    View
+                                </a>
+                            </span>
+                        </td>
+                        <td>
+                            <a class="text-black" href="/registeruser/exporttoexcel/140684/5">
+                                <i class="fas fa-download"></i>
+                            </a>
+                        </td>
+                        <td>
+                            <a class="text-black" title="View" href="/registeruser/viewquery/140684/5"><i class="fas fa-eye mr-2"></i></a>
+                                <a class="text-black" title="Contact To Customer Care for Edit">
+                                    <i class="fas fa-edit mr-2"></i>
+                                </a>
+                                <a class="text-black" title="Contact To Customer Care for Delete"> <i class="fas fa-trash-alt"></i></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-capitalize">CCTV</td>
+                        <td class="d-none d-md-table-cell">07-01-2027</td>
+                        <td>
+                            <span class="badge badge-success">
+                                <a style="color: white;" href="/registeruser/tenderresults/140685">
+                                    View
+                                </a>
+                            </span>
+                        </td>
+                        <td>
+                            <a class="text-black" href="/registeruser/exporttoexcel/140685/5">
+                                <i class="fas fa-download"></i>
+                            </a>
+                        </td>
+                        <td>
+                            <a class="text-black" title="View" href="/registeruser/viewquery/140685/5"><i class="fas fa-eye mr-2"></i></a>
+                                <a class="text-black" title="Contact To Customer Care for Edit">
+                                    <i class="fas fa-edit mr-2"></i>
+                                </a>
+                                <a class="text-black" title="Contact To Customer Care for Delete"> <i class="fas fa-trash-alt"></i></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-capitalize">Data Centers</td>
+                        <td class="d-none d-md-table-cell">07-01-2027</td>
+                        <td>
+                            <span class="badge badge-success">
+                                <a style="color: white;" href="/registeruser/tenderresults/140686">
+                                    View
+                                </a>
+                            </span>
+                        </td>
+                        <td>
+                            <a class="text-black" href="/registeruser/exporttoexcel/140686/5">
+                                <i class="fas fa-download"></i>
+                            </a>
+                        </td>
+                        <td>
+                            <a class="text-black" title="View" href="/registeruser/viewquery/140686/5"><i class="fas fa-eye mr-2"></i></a>
+                                <a class="text-black" title="Contact To Customer Care for Edit">
+                                    <i class="fas fa-edit mr-2"></i>
+                                </a>
+                                <a class="text-black" title="Contact To Customer Care for Delete"> <i class="fas fa-trash-alt"></i></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-capitalize">HVAC</td>
+                        <td class="d-none d-md-table-cell">07-01-2027</td>
+                        <td>
+                            <span class="badge badge-success">
+                                <a style="color: white;" href="/registeruser/tenderresults/140687">
+                                    View
+                                </a>
+                            </span>
+                        </td>
+                        <td>
+                            <a class="text-black" href="/registeruser/exporttoexcel/140687/5">
+                                <i class="fas fa-download"></i>
+                            </a>
+                        </td>
+                        <td>
+                            <a class="text-black" title="View" href="/registeruser/viewquery/140687/5"><i class="fas fa-eye mr-2"></i></a>
+                                <a class="text-black" title="Contact To Customer Care for Edit">
+                                    <i class="fas fa-edit mr-2"></i>
+                                </a>
+                                <a class="text-black" title="Contact To Customer Care for Delete"> <i class="fas fa-trash-alt"></i></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-capitalize">Smart City</td>
+                        <td class="d-none d-md-table-cell">07-01-2027</td>
+                        <td>
+                            <span class="badge badge-success">
+                                <a style="color: white;" href="/registeruser/tenderresults/140688">
+                                    View
+                                </a>
+                            </span>
+                        </td>
+                        <td>
+                            <a class="text-black" href="/registeruser/exporttoexcel/140688/5">
+                                <i class="fas fa-download"></i>
+                            </a>
+                        </td>
+                        <td>
+                            <a class="text-black" title="View" href="/registeruser/viewquery/140688/5"><i class="fas fa-eye mr-2"></i></a>
+                                <a class="text-black" title="Contact To Customer Care for Edit">
+                                    <i class="fas fa-edit mr-2"></i>
+                                </a>
+                                <a class="text-black" title="Contact To Customer Care for Delete"> <i class="fas fa-trash-alt"></i></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-capitalize">LED WALL</td>
+                        <td class="d-none d-md-table-cell">07-01-2027</td>
+                        <td>
+                            <span class="badge badge-success">
+                                <a style="color: white;" href="/registeruser/tenderresults/140689">
+                                    View
+                                </a>
+                            </span>
+                        </td>
+                        <td>
+                            <a class="text-black" href="/registeruser/exporttoexcel/140689/5">
+                                <i class="fas fa-download"></i>
+                            </a>
+                        </td>
+                        <td>
+                            <a class="text-black" title="View" href="/registeruser/viewquery/140689/5"><i class="fas fa-eye mr-2"></i></a>
+                                <a class="text-black" title="Contact To Customer Care for Edit">
+                                    <i class="fas fa-edit mr-2"></i>
+                                </a>
+                                <a class="text-black" title="Contact To Customer Care for Delete"> <i class="fas fa-trash-alt"></i></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-capitalize">Solar Power Plants</td>
+                        <td class="d-none d-md-table-cell">07-01-2027</td>
+                        <td>
+                            <span class="badge badge-success">
+                                <a style="color: white;" href="/registeruser/tenderresults/140690">
+                                    View
+                                </a>
+                            </span>
+                        </td>
+                        <td>
+                            <a class="text-black" href="/registeruser/exporttoexcel/140690/5">
+                                <i class="fas fa-download"></i>
+                            </a>
+                        </td>
+                        <td>
+                            <a class="text-black" title="View" href="/registeruser/viewquery/140690/5"><i class="fas fa-eye mr-2"></i></a>
+                                <a class="text-black" title="Contact To Customer Care for Edit">
+                                    <i class="fas fa-edit mr-2"></i>
+                                </a>
+                                <a class="text-black" title="Contact To Customer Care for Delete"> <i class="fas fa-trash-alt"></i></a>
+                        </td>
+                    </tr>
+            </tbody>
+        </table>
+    </div>
+    <!-- ===================== MOBILE CARD VIEW ===================== -->
+    <div class="d-md-none mobile-query-list">
+        <div class="mobile-query-head">
+            <span class="mq-head-title">Query Name</span>
+            <span class="mq-head-title">Due Date <i class="fas fa-sort ml-1"></i></span>
+        </div>
+
+            <div class="mobile-query-card">
+                <div class="mq-body">
+                    <div class="mq-name text-capitalize">OFC Cable</div>
+                    <div class="mq-badges">
+                        <a class="mq-btn mq-btn-live" href="/registeruser/tenderresults/140682">Tender Result</a>
+                    </div>
+                </div>
+
+                <div class="mq-side">
+                    <div class="mq-date">07-01-2027</div>
+                    <div class="dropdown">
+                        <button type="button" class="mq-kebab" data-toggle="dropdown" aria-expanded="false" title="More">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="/registeruser/exporttoexcel/140682/5">
+                                <i class="fas fa-download mr-2 text-success"></i> Export
+                            </a>
+                            <a class="dropdown-item" href="/registeruser/viewquery/140682/5">
+                                <i class="fas fa-eye mr-2"></i> View
+                            </a>
+                                <a class="dropdown-item text-muted" title="Contact To Customer Care for Edit">
+                                    <i class="fas fa-edit mr-2"></i> Edit
+                                </a>
+                                <a class="dropdown-item text-muted" title="Contact To Customer Care for Delete">
+                                    <i class="fas fa-trash-alt mr-2"></i> Delete
+                                </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mobile-query-card">
+                <div class="mq-body">
+                    <div class="mq-name text-capitalize">Wireless Communicate</div>
+                    <div class="mq-badges">
+                        <a class="mq-btn mq-btn-live" href="/registeruser/tenderresults/140683">Tender Result</a>
+                    </div>
+                </div>
+
+                <div class="mq-side">
+                    <div class="mq-date">07-01-2027</div>
+                    <div class="dropdown">
+                        <button type="button" class="mq-kebab" data-toggle="dropdown" aria-expanded="false" title="More">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="/registeruser/exporttoexcel/140683/5">
+                                <i class="fas fa-download mr-2 text-success"></i> Export
+                            </a>
+                            <a class="dropdown-item" href="/registeruser/viewquery/140683/5">
+                                <i class="fas fa-eye mr-2"></i> View
+                            </a>
+                                <a class="dropdown-item text-muted" title="Contact To Customer Care for Edit">
+                                    <i class="fas fa-edit mr-2"></i> Edit
+                                </a>
+                                <a class="dropdown-item text-muted" title="Contact To Customer Care for Delete">
+                                    <i class="fas fa-trash-alt mr-2"></i> Delete
+                                </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mobile-query-card">
+                <div class="mq-body">
+                    <div class="mq-name text-capitalize">Telecom work</div>
+                    <div class="mq-badges">
+                        <a class="mq-btn mq-btn-live" href="/registeruser/tenderresults/140684">Tender Result</a>
+                    </div>
+                </div>
+
+                <div class="mq-side">
+                    <div class="mq-date">07-01-2027</div>
+                    <div class="dropdown">
+                        <button type="button" class="mq-kebab" data-toggle="dropdown" aria-expanded="false" title="More">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="/registeruser/exporttoexcel/140684/5">
+                                <i class="fas fa-download mr-2 text-success"></i> Export
+                            </a>
+                            <a class="dropdown-item" href="/registeruser/viewquery/140684/5">
+                                <i class="fas fa-eye mr-2"></i> View
+                            </a>
+                                <a class="dropdown-item text-muted" title="Contact To Customer Care for Edit">
+                                    <i class="fas fa-edit mr-2"></i> Edit
+                                </a>
+                                <a class="dropdown-item text-muted" title="Contact To Customer Care for Delete">
+                                    <i class="fas fa-trash-alt mr-2"></i> Delete
+                                </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mobile-query-card">
+                <div class="mq-body">
+                    <div class="mq-name text-capitalize">CCTV</div>
+                    <div class="mq-badges">
+                        <a class="mq-btn mq-btn-live" href="/registeruser/tenderresults/140685">Tender Result</a>
+                    </div>
+                </div>
+
+                <div class="mq-side">
+                    <div class="mq-date">07-01-2027</div>
+                    <div class="dropdown">
+                        <button type="button" class="mq-kebab" data-toggle="dropdown" aria-expanded="false" title="More">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="/registeruser/exporttoexcel/140685/5">
+                                <i class="fas fa-download mr-2 text-success"></i> Export
+                            </a>
+                            <a class="dropdown-item" href="/registeruser/viewquery/140685/5">
+                                <i class="fas fa-eye mr-2"></i> View
+                            </a>
+                                <a class="dropdown-item text-muted" title="Contact To Customer Care for Edit">
+                                    <i class="fas fa-edit mr-2"></i> Edit
+                                </a>
+                                <a class="dropdown-item text-muted" title="Contact To Customer Care for Delete">
+                                    <i class="fas fa-trash-alt mr-2"></i> Delete
+                                </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mobile-query-card">
+                <div class="mq-body">
+                    <div class="mq-name text-capitalize">Data Centers</div>
+                    <div class="mq-badges">
+                        <a class="mq-btn mq-btn-live" href="/registeruser/tenderresults/140686">Tender Result</a>
+                    </div>
+                </div>
+
+                <div class="mq-side">
+                    <div class="mq-date">07-01-2027</div>
+                    <div class="dropdown">
+                        <button type="button" class="mq-kebab" data-toggle="dropdown" aria-expanded="false" title="More">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="/registeruser/exporttoexcel/140686/5">
+                                <i class="fas fa-download mr-2 text-success"></i> Export
+                            </a>
+                            <a class="dropdown-item" href="/registeruser/viewquery/140686/5">
+                                <i class="fas fa-eye mr-2"></i> View
+                            </a>
+                                <a class="dropdown-item text-muted" title="Contact To Customer Care for Edit">
+                                    <i class="fas fa-edit mr-2"></i> Edit
+                                </a>
+                                <a class="dropdown-item text-muted" title="Contact To Customer Care for Delete">
+                                    <i class="fas fa-trash-alt mr-2"></i> Delete
+                                </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mobile-query-card">
+                <div class="mq-body">
+                    <div class="mq-name text-capitalize">HVAC</div>
+                    <div class="mq-badges">
+                        <a class="mq-btn mq-btn-live" href="/registeruser/tenderresults/140687">Tender Result</a>
+                    </div>
+                </div>
+
+                <div class="mq-side">
+                    <div class="mq-date">07-01-2027</div>
+                    <div class="dropdown">
+                        <button type="button" class="mq-kebab" data-toggle="dropdown" aria-expanded="false" title="More">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="/registeruser/exporttoexcel/140687/5">
+                                <i class="fas fa-download mr-2 text-success"></i> Export
+                            </a>
+                            <a class="dropdown-item" href="/registeruser/viewquery/140687/5">
+                                <i class="fas fa-eye mr-2"></i> View
+                            </a>
+                                <a class="dropdown-item text-muted" title="Contact To Customer Care for Edit">
+                                    <i class="fas fa-edit mr-2"></i> Edit
+                                </a>
+                                <a class="dropdown-item text-muted" title="Contact To Customer Care for Delete">
+                                    <i class="fas fa-trash-alt mr-2"></i> Delete
+                                </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mobile-query-card">
+                <div class="mq-body">
+                    <div class="mq-name text-capitalize">Smart City</div>
+                    <div class="mq-badges">
+                        <a class="mq-btn mq-btn-live" href="/registeruser/tenderresults/140688">Tender Result</a>
+                    </div>
+                </div>
+
+                <div class="mq-side">
+                    <div class="mq-date">07-01-2027</div>
+                    <div class="dropdown">
+                        <button type="button" class="mq-kebab" data-toggle="dropdown" aria-expanded="false" title="More">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="/registeruser/exporttoexcel/140688/5">
+                                <i class="fas fa-download mr-2 text-success"></i> Export
+                            </a>
+                            <a class="dropdown-item" href="/registeruser/viewquery/140688/5">
+                                <i class="fas fa-eye mr-2"></i> View
+                            </a>
+                                <a class="dropdown-item text-muted" title="Contact To Customer Care for Edit">
+                                    <i class="fas fa-edit mr-2"></i> Edit
+                                </a>
+                                <a class="dropdown-item text-muted" title="Contact To Customer Care for Delete">
+                                    <i class="fas fa-trash-alt mr-2"></i> Delete
+                                </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mobile-query-card">
+                <div class="mq-body">
+                    <div class="mq-name text-capitalize">LED WALL</div>
+                    <div class="mq-badges">
+                        <a class="mq-btn mq-btn-live" href="/registeruser/tenderresults/140689">Tender Result</a>
+                    </div>
+                </div>
+
+                <div class="mq-side">
+                    <div class="mq-date">07-01-2027</div>
+                    <div class="dropdown">
+                        <button type="button" class="mq-kebab" data-toggle="dropdown" aria-expanded="false" title="More">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="/registeruser/exporttoexcel/140689/5">
+                                <i class="fas fa-download mr-2 text-success"></i> Export
+                            </a>
+                            <a class="dropdown-item" href="/registeruser/viewquery/140689/5">
+                                <i class="fas fa-eye mr-2"></i> View
+                            </a>
+                                <a class="dropdown-item text-muted" title="Contact To Customer Care for Edit">
+                                    <i class="fas fa-edit mr-2"></i> Edit
+                                </a>
+                                <a class="dropdown-item text-muted" title="Contact To Customer Care for Delete">
+                                    <i class="fas fa-trash-alt mr-2"></i> Delete
+                                </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mobile-query-card">
+                <div class="mq-body">
+                    <div class="mq-name text-capitalize">Solar Power Plants</div>
+                    <div class="mq-badges">
+                        <a class="mq-btn mq-btn-live" href="/registeruser/tenderresults/140690">Tender Result</a>
+                    </div>
+                </div>
+
+                <div class="mq-side">
+                    <div class="mq-date">07-01-2027</div>
+                    <div class="dropdown">
+                        <button type="button" class="mq-kebab" data-toggle="dropdown" aria-expanded="false" title="More">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="/registeruser/exporttoexcel/140690/5">
+                                <i class="fas fa-download mr-2 text-success"></i> Export
+                            </a>
+                            <a class="dropdown-item" href="/registeruser/viewquery/140690/5">
+                                <i class="fas fa-eye mr-2"></i> View
+                            </a>
+                                <a class="dropdown-item text-muted" title="Contact To Customer Care for Edit">
+                                    <i class="fas fa-edit mr-2"></i> Edit
+                                </a>
+                                <a class="dropdown-item text-muted" title="Contact To Customer Care for Delete">
+                                    <i class="fas fa-trash-alt mr-2"></i> Delete
+                                </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+
+                        </div>
+
+                        <div class="tab-pane fade" id="custom-tabs-four-BidderInsights" role="tabpanel" aria-labelledby="custom-tabs-four-BidderInsights-tab">
+                            <div class="container mt-4 col-md-12">
+                                
+<div class="card card-success card-outline">
+    <div class="card-body">
+        <form id="bidderinsightsearch">
+            <input type="hidden" id="hdnControllerName" value="RegisterUser">
+            <!-- Bidder Name -->
+            <div class="form-group row">
+                <label for="BidderNameInput" class="col-md-3 col-form-label">Bidder Name</label>
+                <div class="col-md-6 bidder-select-wrapper">
+                    <select id="bidderName" placeholder="Enter Bidder Name" class="form-control select2-hidden-accessible" multiple="" data-select2-id="bidderName" tabindex="-1" aria-hidden="true"></select><span class="select2 select2-container select2-container--default" dir="ltr" data-select2-id="5" style="width: auto;"><span class="selection"><span class="select2-selection select2-selection--multiple" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="-1" aria-disabled="false"><ul class="select2-selection__rendered"><li class="select2-search select2-search--inline"><input class="select2-search__field" type="search" tabindex="0" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" role="searchbox" aria-autocomplete="list" placeholder="Search Bidder" style="width: 0px;"></li></ul></span></span><span class="dropdown-wrapper" aria-hidden="true"></span></span>
+                </div>
+
+                <input type="hidden" id="txtBidderNames">
+            </div>
+
+            <div class="text-center mb-3">
+                <strong>OR</strong>
+            </div>
+
+            <!-- Keyword -->
+            <div class="form-group row">
+                <label for="keywordInput" class="col-md-3 col-form-label">Enter Keyword</label>
+                <div class="col-md-6">
+                    <select id="keyword" class="form-control select2-hidden-accessible" multiple="" style="width:100%" placeholder="Enter Keyword" data-select2-id="keyword" tabindex="-1" aria-hidden="true"></select><span class="select2 select2-container select2-container--default" dir="ltr" data-select2-id="2" style="width: 100%;"><span class="selection"><span class="select2-selection select2-selection--multiple" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="-1" aria-disabled="false"><ul class="select2-selection__rendered"><li class="select2-search select2-search--inline"><input class="select2-search__field" type="search" tabindex="0" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" role="searchbox" aria-autocomplete="list" placeholder="Select Keyword" style="width: 0px;"></li></ul></span></span><span class="dropdown-wrapper" aria-hidden="true"></span></span>
+                </div>
+            </div>
+
+
+            <!-- State -->
+            <div class="form-group row" id="stateRow" style="display: none;">
+                <label for="StateInput" class="col-md-3 col-form-label">Select State(s)</label>
+                <div class="col-md-6">
+                    <select id="FilterBidderState" class="form-control select2-hidden-accessible" multiple="" style="width:100%" data-select2-id="FilterBidderState" tabindex="-1" aria-hidden="true"></select><span class="select2 select2-container select2-container--default" dir="ltr" data-select2-id="4" style="width: 100%;"><span class="selection"><span class="select2-selection select2-selection--multiple" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="-1" aria-disabled="false"><ul class="select2-selection__rendered"><li class="select2-search select2-search--inline"><input class="select2-search__field" type="search" tabindex="0" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" role="searchbox" aria-autocomplete="list" placeholder="Select State" style="width: 0px;"></li></ul></span></span><span class="dropdown-wrapper" aria-hidden="true"></span></span>
+                </div>
+            </div>
+
+            <div class="text-center mb-3" id="orStateAuthority" style="display: none;">
+                <strong>OR</strong>
+            </div>
+
+            <!-- Authority -->
+            <div class="form-group row" id="authorityRow" style="display: none;">
+                <label for="TenderingAuthorityInput" class="col-md-3 col-form-label">Select Authority</label>
+                <div class="col-md-6">
+                    <select id="authorityBidderSelect" class="form-control select2-hidden-accessible" multiple="" style="width:100%" data-select2-id="authorityBidderSelect" tabindex="-1" aria-hidden="true"></select><span class="select2 select2-container select2-container--default" dir="ltr" data-select2-id="3" style="width: 100%;"><span class="selection"><span class="select2-selection select2-selection--multiple" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="-1" aria-disabled="false"><ul class="select2-selection__rendered"><li class="select2-search select2-search--inline"><input class="select2-search__field" type="search" tabindex="0" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" role="searchbox" aria-autocomplete="list" placeholder="Select Tendering Authority" style="width: 0px;"></li></ul></span></span><span class="dropdown-wrapper" aria-hidden="true"></span></span>
+                </div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="text-center mt-3">
+                <button type="button" class="btn btn-primary mr-2" id="btnsearchBidder">
+                    Search
+                </button>
+
+                <button type="button" class="btn btn-secondary" id="clearButton">
+                    Clear
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div id="TenderLoading" class="overlay d-none">
+        <i class="fas fa-2x fa-sync-alt fa-spin"></i>
+    </div>
+
+    <div id="bidderTableBody">
+    </div>
+</div>
+
+
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="custom-tabs-four-Project" role="tabpanel" aria-labelledby="custom-tabs-four-Project-tab">
+                            <div class="container mt-4 col-md-12">
+                                <div class="table-responsive-lg">
+                                    <table class="table table-bordered table-hover table-striped text-center card-outline card-success">
+                                        <thead>
+                                            <tr>
+                                                <th>Type</th>
+                                                <th>All</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Project</td>
+                                                <td>
+                                                    <a href="/registeruser/projects/3">
+                                                        View
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="section-complaint" class="row mt-3 ml-3 mr-3 mobile-no-margin">
+        <div class="col-md-12">
+            <div class="col-sm-6">
+                <h3 class="mb-2">Complaint</h3>
+            </div>
+            <div class="card card-primary card-outline card-outline-tabs">
+                <div class="card-header p-0 border-bottom-0">
+                    <ul class="nav nav-tabs" id="custom-tabs-four-tab" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="custom-tabs-four-LogComplaint-tab" data-toggle="pill" href="#custom-tabs-four-LogComplaint" role="tab" aria-controls="custom-tabs-four-LogComplaint" aria-selected="true">My Complaint</a>
+                        </li>
+
+                        <!-- Button to Open the Modal, aligned to the right -->
+                        <div class="ml-auto">
+                            <button type="button" class="btn btn-primary btn-sm mt-2 mr-2" data-toggle="modal" data-target="#complaintModal">
+                                Log Complaint
+                                <i class="fa-regular fa-circle-question"></i>
+                            </button>
+                        </div>
+                    </ul>
+                </div>
+                <div class="card-body">
+                    <div class="tab-content" id="custom-tabs-four-tabContent">
+                        <div class="tab-pane fade active show" id="custom-tabs-four-home" role="tabpanel" aria-labelledby="custom-tabs-four-home-tab">
+                            <div id="divComplaintList">
+                                    <div class="tab-content" id="custom-tabs-four-tabContent">
+        <div class="tab-pane fade active show" id="custom-tabs-four-home" role="tabpanel" aria-labelledby="custom-tabs-four-home-tab">
+            
+<!-- ===================== DESKTOP / TABLET TABLE VIEW ===================== -->
+<div class="table-responsive-lg d-none d-md-block">
+    <table class="table table-bordered text-center">
+        <thead>
+            <tr class="text-center">
+                <th>Log Date &amp; Time</th>
+                <th>Complaint</th>
+                <th>Complaint Type</th>
+                <th>Complaint Status</th>
+                <th>View</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</div>
+
+<!-- ===================== MOBILE CARD VIEW ===================== -->
+<div class="d-md-none mobile-complaint-list">
+</div>
+        </div>
+    </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Modal Structure -->
+    <div class="modal" id="complaintModal" tabindex="-1" role="dialog" aria-labelledby="complaintModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="complaintModalLabel">Complaint Detail</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="frmComplaint">
+                        <!-- Complaint Type Dropdown -->
+                        <div class="form-group">
+                            <label for="complaintType">Complaint Type:<span class="text-danger">*</span></label>
+
+                            <select name="ComplaintTypeID" id="ComplaintTypeID" class="form-control select2-hidden-accessible" style="width:100%;" data-select2-id="ComplaintTypeID" tabindex="-1" aria-hidden="true">
+                            </select><span class="select2 select2-container select2-container--bootstrap4" dir="ltr" data-select2-id="1" style="width: 100%;"><span class="selection"><span class="select2-selection select2-selection--single" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="0" aria-disabled="false" aria-labelledby="select2-ComplaintTypeID-container"><span class="select2-selection__rendered" id="select2-ComplaintTypeID-container" role="textbox" aria-readonly="true"><span class="select2-selection__placeholder">Select Complaint Type</span></span><span class="select2-selection__arrow" role="presentation"><b role="presentation"></b></span></span></span><span class="dropdown-wrapper" aria-hidden="true"></span></span>
+
+                        </div>
+                        <div class="form-group">
+                            <label for="complaintDescription">Complaint Description:<span class="text-danger">*</span></label>
+                            <textarea class="form-control" id="complaintDescription" rows="3" name="ComplaintDesc" placeholder="Enter complaint details"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" id="btnCloseComplaint">Close</button>
+                    <button type="button" class="btn btn-primary" id="btnSaveComplaint">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- ===================== MOBILE BOTTOM NAVIGATION ===================== -->
+<nav class="mobile-bottom-nav d-md-none">
+        <a href="#section-indian" class="mbn-item active" data-target="section-indian">
+            <i class="fas fa-flag"></i>
+            <span>Indian</span>
+        </a>
+    <a href="#section-complaint" class="mbn-item" data-target="section-complaint">
+        <i class="fa-regular fa-circle-question"></i>
+        <span>Complaint</span>
+    </a>
+</nav>
+
+
+
+
+
+        <div id="ajaxLoader" style="display: none;">
+            <div class="loader-overlay">
+                <div class="loader-spinner"></div>
+            </div>
+        </div>
+
+        <button id="btnScrollTop" class="scroll-top-btn">
+            <i class="fas fa-arrow-up"></i>
+        </button>
+    </main>
+
+    <footer class="main-footer bg-black">
+    <div class="container">
+        <p class="text-white text-bold text-left" style="font-size:15px;">
+            Copyright © 2026 · All Rights Reserved  For Tender Information Services Visit : TenderDetail
+        </p>
+    </div>
+</footer>
+
+   
+    <!-- ================= JS SECTION ================= -->
+    <!-- jQuery (ONLY ONCE) -->
+    <script src="/js/jquery.min.js?v=_JqT3SQfawRcv_BIHPThkBvs0OEvtFFmqPF_lYI_Cxo"></script>
+
+    <!-- Bootstrap 4 JS (AdminLTE needs this) -->
+    <script src="/js/bootstrap.bundle.min.js?v=GRJrh0oydT1CwS36bBeJK_2TggpaUQC6GzTaTQdZm0k"></script>
+
+    <!-- AdminLTE -->
+    <script src="/js/RegisterUser/adminlte.min.js?v=dVs7YxkIJMdWKIx-E4Z7KGIrsH2P7MHj4WDNvzTzsQU"></script>
+    <script src="/js/select2.min_Sample.js?v=AFAYEOkzB6iIKnTYZOdUf9FFje6lOTYdwRJKwTN5mks"></script>
+
+    <!-- Toastr -->
+    <script src="/js/toastr.min.js?v=3blsJd4Hli_7wCQ-bmgXfOdK7p_ZUMtPXY08jmxSSgk"></script>
+    <!-- ChartJS -->
+    <script src="/js/RegisterUser/chart.min.js?v=-8RZJua0aEWg-QVVKg4LEzEEm_8RFez5Tb4JBNiV5xA"></script>
+    <script src="/js/RegisterUser/chartjs-plugin-datalabels@2.js?v=IMCPPZxtLvdt9tam8RJ8ABMzn-Mq3SQiInbDmMYwjDg"></script>
+
+    <script src="/js/moment.min.js?v=CBc3mFM1r0vhX8Z27UzMBwPHRGxrXLyTF-QLzcZCjl0"></script>
+
+    <script src="/js/RegisterUser/tempusdominus-bootstrap-4.min.js?v=uE3vOLooa0gPBylbimXggux1GAC8XT80pB_QIvNXoxo"></script>
+
+    <script src="/js/jquery-ui.min.js?v=lSjKY0_srUM9BE3dPm-c4fBo1dky2v27Gdjm2uoZaL0"></script>
+
+    <!-- Dynatree -->
+    <script src="/js/RegisterUser/jquery.dynatree.min.js?v=MCchuDaMvkT5kx26Vk_41DOOQ9pGIPF1ial56c8iIvA"></script>
+    <!-- Your custom JS -->
+    <script src="/js/daterangepicker.min.js?v=7iJtQEbIUfhOCRQgTcgKcfeO8V6vfbYvtvrJKSCyYIY"></script>
+    <script src="/js/jspdf.umd.min.js?v=mMzxeqEMILsTAXYmGPzJtqs6Tn8mtgcdZNC0EVTfOHU"></script>
+    <script src="/js/RegisterUser.js?v=tzB_MM75RzJ-V91aXNFXifSO5LBR2jhUX7He6zwA8Yk"></script>
+    <script src="/js/RegisterUser/main.min.js?v=gqhxNoRraWeCppNZHezKGig-uPdmR_cntAtJsdTkm5A"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
+    <script>
+        $(document).ready(function () {
+
+            /* ===============================
+               COMMON SERVICE ROUTES
+            =============================== */
+
+            const serviceRoutes = {
+                "1": "/RegisterUser/SearchIndianTender",
+                "2": "/RegisterUser/SearchGlobalTender",
+                "3": "/RegisterUser/SearchTenderResult"
+                
+            };
+
+
+            /* ===============================
+               DROPDOWN HANDLER (Reusable)
+            =============================== */
+
+            function initDropdown(formSelector, buttonSelector, selectSelector) {
+
+                $(formSelector + " .dropdown-item").on("click", function (e) {
+
+                    e.preventDefault();
+
+                    const value = $(this).data("value");
+                    const text = $(this).text();
+
+                    $(selectSelector).val(value);
+                    $(buttonSelector).text(text);
+
+                    $(formSelector + " .dropdown-item").removeClass("active");
+                    $(this).addClass("active");
+                });
+            }
+
+
+            /* ===============================
+               AUTOCOMPLETE (Reusable)
+            =============================== */
+
+            function initAutocomplete(inputSelector) {
+
+                $(inputSelector).autocomplete({
+                    minLength: 2,
+                    position: {
+                        my: "left top",
+                        at: "left bottom",
+                        collision: "none"
+                    },
+                    open: function () {
+                        $(".ui-autocomplete").css({
+                            width: $(inputSelector).outerWidth() + "px"
+                        });
+                    },
+                    source: function (request, response) {
+
+                        $.ajax({
+                            url: "/Master/GetDashBoardAutoSuggestionKeywords",
+                            data: { term: request.term },
+                            success: function (data) {
+                                response(data);
+                            }
+                        });
+
+                    }
+                });
+            }
+
+
+            /* ===============================
+               SEARCH SUBMIT (Reusable)
+            =============================== */
+
+           function initSearch(formSelector, inputSelector, selectSelector) {
+
+    $(formSelector).on("submit", function (e) {
+
+        e.preventDefault();
+
+        const serviceType = $(selectSelector).val();
+        const keyword = $(inputSelector).val();
+
+        if (!keyword) {
+            toastr.warning("Please enter search keyword.");
+            return;
+        }
+                
+        if (!serviceRoutes[serviceType]) {
+            toastr.warning("Please select service.");
+            return;
+        }
+
+        // Create dynamic form
+        var form = document.createElement("form");
+        form.method = "POST";
+        form.action = serviceRoutes[serviceType];
+
+        var input = document.createElement("input");
+        input.type = "hidden";
+        input.name = "keyword";
+        input.value = keyword;
+
+        form.appendChild(input);
+
+        document.body.appendChild(form);
+        form.submit();
+
+    });
+}
+
+
+            /* ===============================
+               INITIALIZE DESKTOP
+            =============================== */
+
+            initDropdown("#desktopSearch", "#serviceDropdown", "#ddlservices");
+            initAutocomplete("#txtDashboardSearch");
+            initSearch("#desktopSearch", "#txtDashboardSearch", "#ddlservices");
+
+
+            /* ===============================
+               INITIALIZE MOBILE
+            =============================== */
+
+            initDropdown("#mobileSearch", "#serviceDropdownMobile", "#ddlservicesMobile");
+            initAutocomplete("#txtDashboardSearchMobile");
+            initSearch("#mobileSearch", "#txtDashboardSearchMobile", "#ddlservicesMobile");
+
+
+            /* ===============================
+               MOBILE SEARCH TOGGLE
+            =============================== */
+
+            $("#mobileSearchToggle").on("click", function (e) {
+                e.preventDefault();
+                $("#mobileSearchBox").slideToggle();
+            });
+
+
+            /* ===============================
+               SCROLL TO TOP
+            =============================== */
+
+            $(window).scroll(function () {
+                if ($(this).scrollTop() > 200) {
+                    $("#btnScrollTop").fadeIn();
+                } else {
+                    $("#btnScrollTop").fadeOut();
+                }
+            });
+
+            $("#btnScrollTop").click(function () {
+                $("html, body").animate({ scrollTop: 0 }, 600);
+                return false;
+            });
+
+        });
+    </script>
+
+	
+    
+    <script>
+
+         $(document).ready(function () {
+                const urlParams = new URLSearchParams(window.location.search);
+                const tab = urlParams.get('tab');
+
+                if (tab === "CBA") {
+                    $('#custom-tabs-four-CompetitiveBidAnalysis-tab').tab('show');
+                }
+                else if (tab === "Tender") {
+                    $('#custom-tabs-four-home-Tender').tab('show');
+                }
+
+
+             HideActionTools();
+
+             InitMobileBottomNav();
+
+          $('#ComplaintTypeID').select2({
+              theme: 'bootstrap4',
+              width: '100%',
+              placeholder: 'Select Complaint Type',
+              allowClear: true,
+              ajax: {
+                  url: '/Master/GetComplaintType',
+                  dataType: 'json',
+                  delay: 300,
+                  data: function (params) {
+                      return {
+                          q: params.term || ''   // IMPORTANT
+                      };
+                  },
+                  processResults: function (data) {
+                      return {
+                          results: $.map(data, function (item) {
+                              return {
+                                  id: item.id,
+                                  text: item.text
+                              };
+                          })
+                      };
+                  }
+              }
+          });
+
+               LoadTenders();
+
+               GetbidderInsight("registeruser");
+
+               $('a[data-toggle="pill"]').on('shown.bs.tab', function (e) {
+
+                      var id = $(e.target).attr("id");
+
+                        if (id === "custom-tabs-four-home-Tender") {
+                          loadActionTools(1);
+                          $('#actionToolsContainer').removeClass('d-none');
+                      }
+                      else if (id === "custom-tabs-four-CompetitiveBidAnalysis-tab") {
+                          loadActionTools(5);
+                          $('#actionToolsContainer').removeClass('d-none');
+                      }
+                      else {
+                          $('#actionToolsContainer').addClass('d-none');
+                      }
+              });
+
+
+           });
+
+
+
+          function LoadTenders(){
+               var _indianQueries = [{"QueryID":363977,"OrderID":281090,"QueryNm":"OFC Cable","Keyword":"Optical Fiber Cable,Optical Fibre Cable,OFC Cable,Fiber Optic Cable,Fibre Optic Cable,OFC Construction,Optical Fiber Cable Construction,OFC Lying,OFC Laying,Optical Fiber Cable Lying,Optical Fibre Cable Lying,Optic Fiber Network,OFC Route,Cable Route,Cable Lying,Coaxial Cable,optical fiber lying,fiber optical lying,optical fibre lying,fibre optical lying,Cat6 Cable,fibre optical laying,ftth,fibre to the home,fiber to the home,cable blowing,optical line terminal,optical network terminal,fiber patch cord,trenching laying,fiber splicing,fibre splicing,structured cabling","CompitionTypeID":false,"KeywordNotIn":"Auction,sale,scrap","EnterBy":149,"EnterDt":"2026-01-07T00:00:00","Querytype":0,"Product":"optical Fibre Cable,Fiber Optic Cable","GemTender":false,"DueDate":"07-01-2027","isServiceExpired":0,"IsCalendarFilter":false,"UserID":0,"IsLimitReached":false},{"QueryID":363978,"OrderID":281090,"QueryNm":"Wireless Communicate","Keyword":"Wireless Communication,Wireless Communication system,Wireless Communication Device,Wireless transmission,Wireless networking,Wireless technology,Radio communication,RF communication,Wireless data transfer,Wireless connectivity,Wireless signaling,Cordless communication,Over-the-air communication,Mobile communication,Wi-Fi communication,Wireless link,Untethered communication,digital communication","CompitionTypeID":false,"KeywordNotIn":"Auction,sale,scrap","EnterBy":149,"EnterDt":"2026-01-07T00:00:00","Querytype":0,"GemTender":false,"DueDate":"07-01-2027","isServiceExpired":0,"IsCalendarFilter":false,"UserID":0,"IsLimitReached":false},{"QueryID":363979,"OrderID":281090,"QueryNm":"Telecom work","Keyword":"Mobile tower,telecom tower,kavach tower,telecom civil work,telecom infra,Telecom construction,telecom work,telecom service,Cell tower,Communication tower,Signal tower,Antenna tower,Telecommunication mast,telecommunication work,telecommunication works,telecommunication service,telecom infrastructure","CompitionTypeID":false,"KeywordNotIn":"auction,sale,scrap","EnterBy":149,"EnterDt":"2026-01-07T00:00:00","Querytype":0,"Product":"Telecommunication Services","GemTender":false,"DueDate":"07-01-2027","isServiceExpired":0,"IsCalendarFilter":false,"UserID":0,"IsLimitReached":false},{"QueryID":363980,"OrderID":281090,"QueryNm":"CCTV","Keyword":"CCTV,C.C.T.V. Camera,CCTV Camera,Cctv Camera,Dome Camera,IP Camera,Security Camera,Cctv Bullet Camera,Wireless Cctv Camera,Analog Cctv Camera,Indoor Cctv Camera,CCTV System,Security Cameras,Cctv Surveillance,Hidden Camera,C.C.T.V Camera,CCTV Security System,Ip Based Cctv,Cctv Monitoring System,Closed Circuit Television Camera,Closedcircuit Television Camera,CC Television Camera,Ip Cctv Surveillance System,Surveillance System,Video Security,Video Surveillance,Security Equipment,Surveillance,Video Management System,VMS Installation,VMS System,Security System,Electronic Surveillance,Security Surveillance,Electronic Security System,Camera Installation,Wifi Camera,Ptz Camera,Surveillance Camera","CompitionTypeID":false,"KeywordNotIn":"auction,sale,scrap","EnterBy":149,"EnterDt":"2026-01-07T00:00:00","Querytype":0,"Product":"CCTV System","GemTender":false,"DueDate":"07-01-2027","isServiceExpired":0,"IsCalendarFilter":false,"UserID":0,"IsLimitReached":false},{"QueryID":363981,"OrderID":281090,"QueryNm":"Data Centers","Keyword":"Data Center,Data Centre,Datacenter,Datacentre","CompitionTypeID":false,"KeywordNotIn":"Auction,Sale,Scrap","EnterBy":149,"EnterDt":"2026-01-07T00:00:00","Querytype":0,"Product":"data center Services","GemTender":false,"DueDate":"07-01-2027","isServiceExpired":0,"IsCalendarFilter":false,"UserID":0,"IsLimitReached":false},{"QueryID":363982,"OrderID":281090,"QueryNm":"HVAC","Keyword":"HVAC,Central AC,h v a c,h.v.a.c,h.v.a.c.","CompitionTypeID":false,"KeywordNotIn":"auction,sale,scrap,construction,civil,chemical,Electrification,laying,cleaning,gasket,sensors,material,materials","EnterBy":149,"EnterDt":"2026-01-07T00:00:00","Querytype":0,"Product":"Hvac","GemTender":false,"DueDate":"07-01-2027","isServiceExpired":0,"IsCalendarFilter":false,"UserID":0,"IsLimitReached":false},{"QueryID":363983,"OrderID":281090,"QueryNm":"Smart City","Keyword":"Smart City,Smart Cities,Smartcity,Smartcities","CompitionTypeID":false,"KeywordNotIn":"Auction,Sale,Scrap","EnterBy":149,"EnterDt":"2026-01-07T00:00:00","Querytype":0,"GemTender":false,"DueDate":"07-01-2027","isServiceExpired":0,"IsCalendarFilter":false,"UserID":0,"IsLimitReached":false},{"QueryID":363984,"OrderID":281090,"QueryNm":"LED WALL","Keyword":"Digital Signage,Digital Board,Led Wall Display,LED Video Wall,Display Wall,Wall display,Led Wall,Led Billboard,Led Display Board,Led Price Board,Price Display Board,Light Emitting Diode Board,Digital Display,Data Wall,Active LED Screen,Light Emitting Diode Display,Digital Wall,Digital Standee,Signage Display,Kiosk Machine,Interactive Display,Touch Kiosk,Touch Panel,Signage Solution,Content Management,Hoarding,Advertising LED screen,Advertisement  LED screen,LED screen,COMMERCIAL DISPLAY,LED Signage","CompitionTypeID":false,"KeywordNotIn":"auction,sale,scrap","EnterBy":149,"EnterDt":"2026-01-07T00:00:00","Querytype":0,"GemTender":false,"DueDate":"07-01-2027","isServiceExpired":0,"IsCalendarFilter":false,"UserID":0,"IsLimitReached":false},{"QueryID":363985,"OrderID":281090,"QueryNm":"Solar Power Plants","Keyword":"Solar energy,solar thermal,floating solar,solar-wind hybrid,Solar PV Module,Solar Photovoltaic,Solar Module,Photovoltaic Module,Rooftop Solar Power,Solar Rooftop Plant,Solar Rooftop System,Solar Power Plant,Solar Plant,Solar Ongrid,Solar Offgrid,Solar On Grid,Solar Off Grid,Solar Park,Solar Farm,Solar Power Project,Floating Solar,Floating Photovoltaic,Floating Photo Voltaic,Floating Solar Farm,Solar Panel,Solar Mounting Solution,Solar Panel Mounting,Solar PV Design,Solar PV Consulting,Solar Grid,Off Grid Roof,Solar PV System,Solar Power System,Solar Power Pack,Solar Energy Plant,Solar Pv Project,Solar Pv Power Plant,Solar Hybrid PV,Rooftop Solar,Solar Rooftop,Mounted Solar,Solar Carport,Photovoltaic System,Solar Mounting,Off Grid System,Rooftop Solar PV,On Grid Solar,Grid Connected Roof Top,Grid Connected Rooftop,Gridconnected Rooftop,PV Module,Photovoltaic Panel,Solar System,Solar Work,Solar Project,Solar Energy,PV Panel,Solar Micro,Grid Connected,Ground Mount Solar,Solar Cell,Mounted Solar PV,Offgrid Solar,Solar Related Service,Solar Hybrid,Smart Thermal Solar Panel,Module Mounting Structure,Ground Mounted Solar,Floated Solar Solution,Solar Solution,Solar Project Development,Solar Structure,Solar Roof Top,Roof Mount Structure,Solar Energy System,Solar Energy Equipment,Solar Erection,Solar AC,Solar DC,Solar Mounting Structures,Solar Pannel,Solar Asset Management,Solar Renewable,Ground-Mounted Solar,Inroof Solar,Solar Inverter,solar power plants,SOLAR FENCING,off grid solar,hybrid solar system","CompitionTypeID":false,"KeywordNotIn":"Auction,Sale,Scrap,pumping,pump","EnterBy":149,"EnterDt":"2026-01-07T00:00:00","Querytype":0,"Product":"Solar Power Plants,Solar Panel","GemTender":false,"DueDate":"07-01-2027","isServiceExpired":0,"IsCalendarFilter":false,"UserID":0,"IsLimitReached":false},{"QueryID":365030,"OrderID":281090,"QueryNm":"Lithium ion Tenders","StateIDs":"","CountryIDs":"101","Keyword":"Lithium ion","CompitionTypeID":false,"AuthorityIDs":"","KeywordNotIn":"","WithinKeyword":"","SqlQuery":"NULL","EnterBy":164,"EnterDt":"2026-01-18T00:00:00","Remarks":"","Querytype":0,"Product":"Lithium Batteries","InfoSource":"","City":"","GemTender":false,"DueDate":"07-01-2027","isServiceExpired":0,"IsCalendarFilter":false,"UserID":0,"IsLimitReached":false},{"QueryID":365031,"OrderID":281090,"QueryNm":"Bio pellet Tenders","StateIDs":"","CountryIDs":"101","Keyword":"Bio pellet","CompitionTypeID":false,"AuthorityIDs":"","KeywordNotIn":"","WithinKeyword":"","SqlQuery":"NULL","EnterBy":164,"EnterDt":"2026-01-18T00:00:00","Remarks":"","Querytype":0,"Product":"","InfoSource":"","City":"","GemTender":false,"DueDate":"07-01-2027","isServiceExpired":0,"IsCalendarFilter":false,"UserID":0,"IsLimitReached":false},{"QueryID":368352,"OrderID":281090,"QueryNm":"software de Tenders","StateIDs":"","CountryIDs":"101","Keyword":"software development","CompitionTypeID":false,"AuthorityIDs":"","KeywordNotIn":"auction sale scrap","WithinKeyword":"","SqlQuery":"NULL","EnterBy":164,"EnterDt":"2026-02-13T00:00:00","Remarks":"","Querytype":0,"Product":"Software,Enterprise Resource Planning,Computer Aided Design Software,Accounting Software,Website Designing and E commerce,Document Management Software,Antivirus Software,Customised Software Development,Educational Software,Application Software","InfoSource":"","City":"","GemTender":false,"DueDate":"07-01-2027","isServiceExpired":0,"IsCalendarFilter":false,"UserID":0,"IsLimitReached":false},{"QueryID":371969,"OrderID":281090,"QueryNm":"battery Tenders","StateIDs":"","CountryIDs":"101","Keyword":"battery","CompitionTypeID":false,"AuthorityIDs":"","KeywordNotIn":"","WithinKeyword":"","SqlQuery":"NULL","EnterBy":164,"EnterDt":"2026-03-18T00:00:00","Remarks":"","Querytype":0,"Product":"Battery and Cell,Rechargeable Batteries,Dry Cell Batteries","InfoSource":"","City":"","GemTender":false,"DueDate":"07-01-2027","isServiceExpired":0,"IsCalendarFilter":false,"UserID":0,"IsLimitReached":false}];
+               var _globalQueries = null;
+
+
+               // Loop through the queries and get the count dynamically
+               $.each(_indianQueries, function (index, query) {
+                   fetchTenderCount(query.QueryID, 1);
+               });
+
+               $.each(_globalQueries, function (index, query) {
+                   fetchTenderCount(query.QueryID, 2);
+               });
+
+           }
+
+          function fetchTenderCount(queryID, tenderType) {
+
+               $(".FreshSpanLoader_" + queryID).html("<img height='10px' width='10px' src='/image/loader.svg' />");
+               $.ajax({
+                   url: '/RegisterUser/GetTenderCount',
+                   type: 'GET',
+                   data: { QueryID: queryID, ServiceTypeID: tenderType },
+                   success: function (response) {
+
+                       $(".Fresh_" + queryID).html(response.count);
+                       $(".Fresh_" + queryID).removeClass("d-none");
+                       $(".FreshSpanLoader_" + queryID).html('');
+                   },
+                   error: function () {
+                       $(".Fresh_" + queryID).html("0");
+                       $(".FreshSpanLoader_" + queryID).html('');
+                   }
+               });
+           }
+
+          $("#btnSaveComplaint").on("click", function () {
+
+              var _tValidate = true;
+              var complaintType = $("#ComplaintTypeID").val();
+              var description = $("#complaintDescription").val().trim();
+
+              if (!complaintType || complaintType === "0") {
+                  toastr.error("Please select Complaint Type");
+                  $("#ComplaintTypeID").focus();
+                  _tValidate = false;
+              }
+
+              if (_tValidate && description === "") {
+                  toastr.error("Please Enter Complaint Description");
+                  $("#complaintDescription").focus();
+                  _tValidate = false;
+              }
+
+              if (!_tValidate) return false;
+              $.ajax({
+                  type: 'POST',
+                  url: '/RegisterUser/AddComplaint',
+                  data: $("#frmComplaint").serialize(),
+                  beforeSend: function () {
+                      $("#Loader").removeClass('d-none');
+                      $("#btnSaveComplaint").addClass("m-disabled-class");
+                  },
+                  success: function (data) {
+                      if (data.Result == "1") {
+                          $("#btnCloseComplaint").click();
+                          toastr.success("Complaint Log Successfully");
+                          ClearComplaintFormField();
+                          FillComplaintList();
+                      } else {
+                          if (data.ErrorMessage != "") {
+                              toastr.error(data.ErrorMessage);
+                          } else {
+                              window.location.href = data.url;
+                          }
+                      }
+
+                      $("#Loader").addClass('d-none');
+                      $("#btnSaveComplaint").removeClass("m-disabled-class");
+                  },
+                  error: function (xhr, status, error) {
+                      toastr.error("Something went wrong. Please try again.");
+                      $("#Loader").addClass('d-none');
+                      $("#btnSaveComplaint").removeClass("m-disabled-class");
+                  }
+              });
+
+          });
+
+          function ClearComplaintFormField() {
+
+              $("#ComplaintTypeID").val(null).trigger("change");
+
+              $("#complaintDescription").val("");
+          }
+
+          function FillComplaintList() {
+              $.ajax({
+                  type: "POST",
+                  url: "/RegisterUser/SearchComplaints",
+                  success: function (data) {
+                      if(data.Response)
+                      {
+                          $("#divComplaintList").html(data.Result);
+                      }
+                  }
+              });
+          }
+
+        function DeleteQuery(QueryID, ServiceType) {
+            if (!confirm("Are you sure want to Delete")) {
+                return;
+            }
+
+            if (!QueryID || QueryID <= 0) {
+                toastr.error("Invalid Query ID");
+                return;
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/registeruser/DeleteQueryByQueryID",
+                data: { QueryID: QueryID, ServiceType: ServiceType },
+                success: function (data) {
+
+                    var result = parseInt(data.Result);
+                    var message = data.Message || ""; // ✅ correct
+
+                    // ✅ Debug (optional)
+                    // alert(message);
+
+                    if (result > 0) {
+                        toastr.success(message || "Query Deleted Successfully");
+
+                        setTimeout(function () {
+                            var tab = (ServiceType == 5) ? "CBA" : "Tender";
+                            window.location.href = "/registeruser/dashboard?tab=" + tab;
+                        }, 1000);
+                    }
+                    else if (result === -1) {
+                        toastr.warning(message || "Please login again");
+                        window.location.href = "/account/logoff";
+                    }
+                    else if (result === -2) {
+                toastr.error(message || "Session expired. Please login again.");
+
+                    }
+                    else if (result === 0) {
+                        toastr.error(message || "Invalid request or unable to delete.");
+                    }
+                    else {
+                        toastr.error(message || "Contact Customer Care Executive");
+                    }
+                },
+                error: function () {
+                    toastr.error("Server error. Please try again.");
+                }
+            });
+        }
+
+        function loadActionTools(serviceTypeId) {
+
+              if (!serviceTypeId || serviceTypeId === 0)
+            return;
+
+              $.ajax({
+                    url: '/registeruser/GetActionTools',
+                  type: 'GET',
+                  data: {
+                      serviceTypeId: serviceTypeId,
+                          OrderId:serviceTypeId == 1 ? 281090 :
+                          serviceTypeId==5 ? 281091
+                            : 0    ,
+                             FavouriteTenders: serviceTypeId == 1
+              ? 0
+              : serviceTypeId == 5
+                  ? 0
+                  : 0,
+
+          InboxCount: serviceTypeId == 1
+              ? 90
+              : serviceTypeId == 5
+                  ? 24
+                  : 0,
+                  },
+                  success: function (result) {
+                      $('#actionToolsContainer').html(result);
+                  }
+              });
+
+          }
+
+          function HideActionTools(){
+                  $('#custom-tabs-four-BidderInsights-tab').on('shown.bs.tab', function() {
+                       $('#actionToolsContainer').addClass('d-none'); // Hide the content
+                 });
+
+                 // When Project tab is clicked, hide it
+                   $('#custom-tabs-four-Project-tab').on('shown.bs.tab', function() {
+                       $('#actionToolsContainer').addClass('d-none'); // Hide the content
+                 });
+
+                 // When Instant Loan tab is clicked, hide it
+                   $('#custom-tabs-four-InstantLoan-tab').on('shown.bs.tab', function() {
+                       $('#actionToolsContainer').addClass('d-none'); // Hide the content
+                 });
+          }
+
+          function InitMobileBottomNav() {
+              var $items = $('.mobile-bottom-nav .mbn-item');
+              if ($items.length === 0) return;
+
+              var headerOffset = 70; // fixed header height + small gap
+
+              // Smooth scroll to section on click
+              $items.on('click', function (e) {
+                  e.preventDefault();
+                  var targetId = $(this).data('target');
+                  var $target = $('#' + targetId);
+                  if ($target.length === 0) return;
+
+                  var top = $target.offset().top - headerOffset;
+                  $('html, body').animate({ scrollTop: top }, 350);
+
+                  $items.removeClass('active');
+                  $(this).addClass('active');
+              });
+
+              // Highlight active item based on scroll position
+              function setActiveOnScroll() {
+                  var scrollPos = $(window).scrollTop() + headerOffset + 10;
+                  var current = null;
+                  $items.each(function () {
+                      var $sec = $('#' + $(this).data('target'));
+                      if ($sec.length && $sec.offset().top <= scrollPos) {
+                          current = this;
+                      }
+                  });
+                  if (current) {
+                      $items.removeClass('active');
+                      $(current).addClass('active');
+                  }
+              }
+
+              $(window).on('scroll', setActiveOnScroll);
+              setActiveOnScroll();
+          }
+
+    </script>
+
+
+
+<ul id="ui-id-1" tabindex="0" class="ui-menu ui-widget ui-widget-content ui-autocomplete ui-front" unselectable="on" style="display: none;"></ul><div role="status" aria-live="assertive" aria-relevant="additions" class="ui-helper-hidden-accessible"></div><ul id="ui-id-2" tabindex="0" class="ui-menu ui-widget ui-widget-content ui-autocomplete ui-front" unselectable="on" style="display: none;"></ul><div role="status" aria-live="assertive" aria-relevant="additions" class="ui-helper-hidden-accessible"></div></body></html>
