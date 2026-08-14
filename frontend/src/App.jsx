@@ -148,7 +148,6 @@ function Agent({ onSessionComplete }) {
   const handleStart = async (choice) => {
     const siteName = choice === '1' ? 'IREPS' : 'Tender Detail';
     addUser(`Start ${siteName}${savePath ? ` → Save to: ${savePath}` : ''}`);
-    addBot(`Initializing ${siteName} session... monitoring live output below.`);
     setIsScraping(true);
     setLogs([]);
 
@@ -162,6 +161,8 @@ function Agent({ onSessionComplete }) {
       if (data.status === 'error') {
         addError(data.message);
         setIsScraping(false);
+      } else {
+        addBot(`Initializing ${siteName} session... monitoring live output below.`);
       }
     } catch (e) {
       addError('Could not reach the backend server.');
