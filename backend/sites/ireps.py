@@ -52,8 +52,7 @@ class IrepsScraper(BaseScraper):
         
         with sync_playwright() as pw:
             browser = pw.chromium.launch(
-                headless=False,
-                channel="chrome",
+                headless=True,
                 args=["--disable-blink-features=AutomationControlled"],
             )
             
@@ -103,8 +102,7 @@ class IrepsScraper(BaseScraper):
             self.log.info("Initializing background browser for scraping and downloading...")
             self._bg_pw = sync_playwright().start()
             self._bg_browser = self._bg_pw.chromium.launch(
-                headless=False,  # Keep visible for debugging
-                channel="chrome",
+                headless=True,
                 args=["--disable-blink-features=AutomationControlled"],
             )
             auth_file = STATE_DIR / "ireps_auth.json"

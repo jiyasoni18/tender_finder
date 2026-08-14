@@ -47,7 +47,6 @@ class TenderDetailScraper(BaseScraper):
             self._bg_pw = sync_playwright().start()
             self._bg_browser = self._bg_pw.chromium.launch(
                 headless=False,
-                channel="chrome",
                 args=["--disable-blink-features=AutomationControlled"],
             )
             
