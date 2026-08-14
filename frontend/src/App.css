@@ -363,10 +363,12 @@ body {
   background: #1e2433;
   border-radius: var(--radius);
   overflow: hidden;
+  min-height: 200px;
   max-height: 320px;
   display: flex;
   flex-direction: column;
   box-shadow: var(--shadow-md);
+  flex-shrink: 0;
 }
 
 .terminal-bar {
