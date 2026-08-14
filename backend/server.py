@@ -200,13 +200,16 @@ async def get_results():
         original_docs = []
 
         def _make_url(path_str: str, fname: str) -> str:
-            """Return the right URL depending on whether the path is absolute."""
+            \"\"\"Return the right URL depending on whether the path is absolute.\"\"\"
             p = Path(path_str)
             if p.is_absolute():
                 # Serve via the /file endpoint using the absolute path
-                return "/file?path=" + urllib.parse.quote(str(p), safe="")
+                return \"/file?path=\" + urllib.parse.quote(str(p), safe=\"\")
             else:
-                return f"/downloads/{tender_id}/{fname}"
+                # path_str contains the relative path (e.g. folder/file.pdf). 
+                # Replace Windows backslashes with forward slashes for the URL.
+                url_path = path_str.replace(\"\\\\\", \"/\")
+                return f\"/downloads/{url_path}\"
 
         # Build file URLs from the files list stored in DB
         files = row.get("files") or []
