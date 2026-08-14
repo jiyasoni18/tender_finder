@@ -178,12 +178,14 @@ function Agent({ onSessionComplete }) {
   };
 
   useEffect(() => {
-    if (!isScraping) return;
-    const interval = setInterval(async () => {
+    const checkStatus = async () => {
       try {
         const res = await fetch(`${API_BASE}/api/status`);
         const data = await res.json();
-        if (data.status === 'idle') {
+        
+        if (data.status === 'running' && !isScraping) {
+          setIsScraping(true);
+        } else if (data.status === 'idle' && isScraping) {
           setIsScraping(false);
           try {
             const rr = await fetch(`${API_BASE}/api/results`);
@@ -197,9 +199,12 @@ function Agent({ onSessionComplete }) {
           }
         }
       } catch (e) { /* ignore */ }
-    }, 3000);
+    };
+
+    checkStatus(); // Initial check
+    const interval = setInterval(checkStatus, 3000);
     return () => clearInterval(interval);
-  }, [isScraping]);
+  }, [isScraping, onSessionComplete]);
 
   return (
     <main className="agent-panel">
