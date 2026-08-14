@@ -59,7 +59,7 @@ function Dashboard({ refreshTrigger }) {
   const fetchResults = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`${API_BASE}/api/results`);
+      const res = await fetch(`${API_BASE}/api/results`, { cache: 'no-store' });
       const data = await res.json();
       setResults(data);
     } catch (e) {
@@ -180,7 +180,7 @@ function Agent({ onSessionComplete }) {
   useEffect(() => {
     const checkStatus = async () => {
       try {
-        const res = await fetch(`${API_BASE}/api/status`);
+        const res = await fetch(`${API_BASE}/api/status`, { cache: 'no-store' });
         const data = await res.json();
         
         if (data.status === 'running' && !isScraping) {
@@ -188,7 +188,7 @@ function Agent({ onSessionComplete }) {
         } else if (data.status === 'idle' && isScraping) {
           setIsScraping(false);
           try {
-            const rr = await fetch(`${API_BASE}/api/results`);
+            const rr = await fetch(`${API_BASE}/api/results`, { cache: 'no-store' });
             const rd = await rr.json();
             const ids = rd.slice(0, 5).map(t => t.id).join(', ');
             addBot(`Session complete. Captured: ${ids || 'none'}.`);
