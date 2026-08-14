@@ -32,8 +32,8 @@ The 12 sections must be:
 11. MANDATORY SUBMISSION CHECKLIST — Extract EVERY document explicitly required in the tender text for bid submission. Present as a numbered list. Include document name, format (if specified), and any size/validity requirements. If the PDF lists specific forms, certificates, or declarations by name — list each one exactly as stated. Do NOT use generic placeholders; only list what is actually mentioned in the provided text.
 12. HOW & WHERE TO APPLY — Extract from the tender text: the exact portal name and URL where bids must be submitted (e.g. IREPS, GeM, CPP Portal, TenderDetail, etc.), any login/registration steps mentioned, the submission mode (online/offline/both), and any important submission instructions. If a specific URL is mentioned in the text, include it verbatim.
 
-Provide your best professional estimation for sections where the tender text doesn't have explicit data.
-
+Provide your best professional estimation for analytical sections (7, 8, 9, 10) if explicit data is missing.
+HOWEVER, for factual sections (1, 2, 3, 4, 11, 12) like ECV, EMD, Dates, and Quantities: NEVER invent or estimate numbers. If the data is missing from the text and metadata, you MUST output "Not Specified".
 Tender metadata:
 - ID: {doc_id}
 - Source: {source}
