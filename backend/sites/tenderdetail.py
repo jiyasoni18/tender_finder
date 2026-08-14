@@ -133,40 +133,33 @@ class TenderDetailScraper(BaseScraper):
                 return listings
                 
             # Now we are on the results page.
-            self.log.info("Applying right-side filters...")
+            self.log.info("Skipping right-side strict filters to ensure we capture some results...")
             
-            # Fill Tender Value range (50 Lakhs to 5 Crores)
-            # The site uses multiple inputs with the same placeholder, we need to grab the first ones.
-            val_from = page.locator("input[placeholder='From']").first
-            if val_from.is_visible(timeout=5000):
-                val_from.fill("5000000")  # 50 Lakhs
-                page.locator("input[placeholder='To']").first.fill("50000000") # 5 Crores
-            
-            # Fill Dates matching IREPS (Today + 5 days to Today + 26 days)
-            from datetime import datetime, timedelta
-            today = datetime.today()
-            from_date_str = (today + timedelta(days=5)).strftime("%d/%m/%Y")
-            to_date_str = (today + timedelta(days=26)).strftime("%d/%m/%Y")
-            
-            date_from = page.locator("input[placeholder='Enter Date From']").first
-            if date_from.is_visible():
-                # We might need to evaluate Javascript if the datepicker blocks manual typing
-                date_from.evaluate(f"el => el.value = '{from_date_str}'")
-                page.locator("input[placeholder='Enter Date To']").first.evaluate(f"el => el.value = '{to_date_str}'")
-                
-            # Also fill closing date if it exists (placeholder="Select closing date")
-            closing_date_input = page.locator("#fromDate").first
-            if closing_date_input.is_visible(timeout=2000):
-                # Update the visible input so it looks right
-                closing_date_input.evaluate(f"el => el.value = '{from_date_str} - {to_date_str}'")
-                
-                # Force update the hidden fields that are actually submitted to the server
-                page.evaluate(f"""() => {{
-                    let hdnFrom = document.getElementById('HDNFilterDueDateFrom');
-                    if (hdnFrom) hdnFrom.value = '{from_date_str}';
-                    let hdnTo = document.getElementById('HDNFilterDueDateTo');
-                    if (hdnTo) hdnTo.value = '{to_date_str}';
-                }}""")
+            # --- TEMPORARILY DISABLED STRICT FILTERS ---
+            # val_from = page.locator("input[placeholder='From']").first
+            # if val_from.is_visible(timeout=5000):
+            #     val_from.fill("5000000")  # 50 Lakhs
+            #     page.locator("input[placeholder='To']").first.fill("50000000") # 5 Crores
+            #
+            # from datetime import datetime, timedelta
+            # today = datetime.today()
+            # from_date_str = (today + timedelta(days=5)).strftime("%d/%m/%Y")
+            # to_date_str = (today + timedelta(days=26)).strftime("%d/%m/%Y")
+            #
+            # date_from = page.locator("input[placeholder='Enter Date From']").first
+            # if date_from.is_visible():
+            #     date_from.evaluate(f"el => el.value = '{from_date_str}'")
+            #     page.locator("input[placeholder='Enter Date To']").first.evaluate(f"el => el.value = '{to_date_str}'")
+            #
+            # closing_date_input = page.locator("#fromDate").first
+            # if closing_date_input.is_visible(timeout=2000):
+            #     closing_date_input.evaluate(f"el => el.value = '{from_date_str} - {to_date_str}'")
+            #     page.evaluate(f"""() => {{
+            #         let hdnFrom = document.getElementById('HDNFilterDueDateFrom');
+            #         if (hdnFrom) hdnFrom.value = '{from_date_str}';
+            #         let hdnTo = document.getElementById('HDNFilterDueDateTo');
+            #         if (hdnTo) hdnTo.value = '{to_date_str}';
+            #     }}""")
                 
             # Click the filter search button
             filter_search_btn = page.locator("button.btn-primary:has-text('Search')").last
