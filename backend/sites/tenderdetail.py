@@ -46,7 +46,7 @@ class TenderDetailScraper(BaseScraper):
             self.log.info("Starting persistent browser for TenderDetail...")
             self._bg_pw = sync_playwright().start()
             self._bg_browser = self._bg_pw.chromium.launch(
-                headless=False,
+                headless=True,
                 args=["--disable-blink-features=AutomationControlled"],
             )
             
