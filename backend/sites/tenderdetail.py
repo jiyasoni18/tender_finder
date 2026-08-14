@@ -187,15 +187,15 @@ class TenderDetailScraper(BaseScraper):
                 
                 # Parse value
                 val = None
-                val_match = re.search(r'₹\s*([\d\.]+\s*(?:Lakh|Crore|K|M)?)', text_block, re.IGNORECASE)
+                val_match = re.search(r'₹\s*([\d\.]+\s*(?:Lakh|Lacs?|L|Crore|Cr|K|M)?)', text_block, re.IGNORECASE)
                 if val_match:
                     val_str_clean = val_match.group(1).lower().replace(",", "")
                     try:
                         m = re.search(r'([\d\.]+)', val_str_clean)
                         if m:
                             num = float(m.group(1))
-                            if "lakh" in val_str_clean: num *= 100000
-                            elif "crore" in val_str_clean: num *= 10000000
+                            if "lakh" in val_str_clean or "lac" in val_str_clean or val_str_clean.endswith("l"): num *= 100000
+                            elif "crore" in val_str_clean or "cr" in val_str_clean: num *= 10000000
                             elif "k" in val_str_clean: num *= 1000
                             elif "m" in val_str_clean: num *= 1000000
                             val = num
@@ -304,14 +304,14 @@ class TenderDetailScraper(BaseScraper):
 
             # Parse the exact value from the table
             val_str = details.get("Tender Value", "")
-            val_match = re.search(r'([\d\.]+)\s*(Lakh|Crore|K|M)?', val_str, re.IGNORECASE)
+            val_match = re.search(r'([\d\.]+)\s*(Lakh|Lacs?|L|Crore|Cr|K|M)?', val_str, re.IGNORECASE)
             parsed_val = None
             if val_match:
                 try:
                     num = float(val_match.group(1))
                     unit = (val_match.group(2) or "").lower()
-                    if "lakh" in unit: num *= 100000
-                    elif "crore" in unit: num *= 10000000
+                    if "lakh" in unit or "lac" in unit or unit == "l": num *= 100000
+                    elif "crore" in unit or "cr" in unit: num *= 10000000
                     elif "k" in unit: num *= 1000
                     elif "m" in unit: num *= 1000000
                     parsed_val = num
