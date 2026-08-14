@@ -112,7 +112,15 @@ def run_scraper(site_choice: str) -> None:
         for t in threads:
             t.start()
 
-        for t in threads:
+        # Wait only for the Downloader to finish its job
+        threads[0].join()
+        
+        # Tell the other background threads (RangeChecker, Uploader, RetryWorker) to stop
+        if pipeline_instance:
+            pipeline_instance.request_stop()
+
+        # Wait for the background threads to cleanly exit
+        for t in threads[1:]:
             t.join()
 
         logging.info("Pipeline stopped cleanly.")
