@@ -86,11 +86,16 @@ class Downloader(threading.Thread):
             # Claim the id first so two runs can't double-download it.
             if not self.ledger.mark_seen(listing.doc_id):
                 continue
+            original_id = listing.doc_id
             try:
                 doc: TenderDoc = self.scraper.download(listing)
             except Exception as exc:  # noqa: BLE001
                 self.log.error("Download failed for %s: %s", listing.doc_id, exc)
                 continue
+            
+            if doc.doc_id != original_id:
+                self.ledger.update_id(original_id, doc.doc_id)
+
             self.log.info("Downloaded %s -> Queue A", doc.doc_id)
             self.pipeline.queue_a.put(doc)
             self.downloaded_count += 1

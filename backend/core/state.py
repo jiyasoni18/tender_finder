@@ -102,6 +102,14 @@ class Ledger:
                     row.reject_reason = reason
                     db.commit()
 
+    def update_id(self, old_id: str, new_id: str) -> None:
+        with self._lock:
+            with get_session() as db:
+                row = db.query(TenderRow).filter(TenderRow.id == old_id).first()
+                if row:
+                    row.id = new_id
+                    db.commit()
+
     def mark_completed(self, doc_id: str) -> None:
         with self._lock:
             with get_session() as db:
