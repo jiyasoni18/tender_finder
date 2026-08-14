@@ -6,10 +6,6 @@ services:
     dockerContext: ./backend
     plan: free
     healthCheckPath: /api/status
-    disk:
-      name: tender-data
-      mountPath: /app/downloads
-      sizeGB: 1
     envVars:
       - key: GEMINI_API_KEY
         sync: false
