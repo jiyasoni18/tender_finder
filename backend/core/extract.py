@@ -25,7 +25,7 @@ except ImportError:  # keep the pipeline importable without the dep installed
 
 # ₹ 12,34,567.00  |  Rs. 1234567  |  INR 1,234,567  |  1234567/-
 _VALUE_RE = re.compile(
-    r"(?:₹|rs\.?|inr)\s*([0-9][0-9,]*(?:\.[0-9]+)?)|([0-9][0-9,]{4,}(?:\.[0-9]+)?)\s*/-",
+    r"(?:₹|rs\.?|inr)\s*([0-9][0-9,]*(?:\.[0-9]+)?)\s*(Lakhs?|Lacs?|L|Crores?|Cr|K|M)?|([0-9][0-9,]{4,}(?:\.[0-9]+)?)\s*/-",
     re.IGNORECASE,
 )
 
@@ -66,8 +66,8 @@ _LABELLED_VALUE_RE = re.compile(
     r"(?:estimated\s+cost|advertised\s+value|advertisement\s+value|tender\s+value|approximate\s+value"
     r"|contract\s+value|value\s+of\s+work|estimate(?:\s+of\s+work)?)"
     r"[^0-9₹Rr]{0,60}"            # allow label/table separators (including newlines from PDF tables)
-    r"(?:₹\s*|Rs?\.?\s*)?"
-    r"([0-9][0-9,]*(?:\.[0-9]+)?)",
+    r"(?:₹\s*|Rs?\.?\s*|INR\s*)?"
+    r"([0-9][0-9,]*(?:\.[0-9]+)?)\s*(Lakhs?|Lacs?|L|Crores?|Cr|K|M)?",
     re.IGNORECASE | re.DOTALL,
 )
 
@@ -83,15 +83,29 @@ def extract_value(text: str) -> float | None:
     # --- Strategy 1: label-anchored -----------------------------------------
     for m in _LABELLED_VALUE_RE.finditer(text):
         num = _clean_number(m.group(1))
-        if num and num >= 1000:          # ignore obviously-tiny amounts
-            return num
+        unit = (m.group(2) or "").lower()
+        if num is not None:
+            if "lakh" in unit or "lac" in unit or unit == "l": num *= 100000
+            elif "crore" in unit or "cr" in unit: num *= 10000000
+            elif "k" in unit: num *= 1000
+            elif "m" in unit: num *= 1000000
+
+            if num >= 1000:          # ignore obviously-tiny amounts
+                return num
 
     # --- Strategy 2: largest currency-prefixed amount -----------------------
     best: float | None = None
     for m in _VALUE_RE.finditer(text):
-        num = _clean_number(m.group(1) or m.group(2))
+        num = _clean_number(m.group(1) or m.group(3))
+        unit = (m.group(2) or "").lower() if m.group(1) else ""
         if num is None:
             continue
+            
+        if "lakh" in unit or "lac" in unit or unit == "l": num *= 100000
+        elif "crore" in unit or "cr" in unit: num *= 10000000
+        elif "k" in unit: num *= 1000
+        elif "m" in unit: num *= 1000000
+            
         if best is None or num > best:
             best = num
     return best
