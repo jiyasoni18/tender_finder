@@ -49,10 +49,13 @@ class IrepsScraper(BaseScraper):
 
         self.log.info("Opening browser for IREPS OTP login...")
         auth_file = STATE_DIR / "ireps_auth.json"
+        import sys
+        import os
+        is_headless = sys.platform.startswith("linux") and not os.environ.get("DISPLAY")
         
         with sync_playwright() as pw:
             browser = pw.chromium.launch(
-                headless=False,
+                headless=is_headless,
                 args=["--disable-blink-features=AutomationControlled"],
             )
             
