@@ -24,7 +24,13 @@ except ImportError:
 # --------------------------------------------------------------------------- #
 BASE_DIR = Path(__file__).resolve().parent
 
-DOWNLOADS_DIR = Path(r"C:\Users\DELL\Downloads\tender_details")
+# Allow persisting custom save path
+_save_path_file = BASE_DIR / ".save_path"
+if _save_path_file.exists():
+    _custom_path = _save_path_file.read_text().strip()
+    DOWNLOADS_DIR = Path(_custom_path) if _custom_path else BASE_DIR / "downloads"
+else:
+    DOWNLOADS_DIR = BASE_DIR / "downloads"
 REJECTED_DIR = BASE_DIR / "rejected"     # failed range check
 COMPLETED_DIR = BASE_DIR / "completed"   # uploaded to Lark successfully
 LOGS_DIR = BASE_DIR / "logs"

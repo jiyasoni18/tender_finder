@@ -1,13 +1,20 @@
 # Secrets
+backend/.env
 .env
 
 # Runtime artifacts
-downloads/*
-rejected/*
-completed/*
-logs/*
-.state/
-!**/.gitkeep
+backend/downloads/
+backend/rejected/
+backend/completed/
+backend/logs/
+backend/reports/
+backend/.state/
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/dist-ssr/
+frontend/*.local
 
 # Python
 __pycache__/

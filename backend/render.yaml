@@ -1,0 +1,35 @@
+services:
+  - type: web
+    name: tenderfinder-backend
+    env: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    plan: free
+    healthCheckPath: /api/status
+    disk:
+      name: tender-data
+      mountPath: /app/downloads
+      sizeGB: 1
+    envVars:
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: IREPS_USER
+        sync: false
+      - key: IREPS_PASS
+        sync: false
+      - key: TENDERDETAIL_USER
+        sync: false
+      - key: TENDERDETAIL_PASS
+        sync: false
+      - key: ENABLE_IREPS
+        value: "true"
+      - key: ENABLE_MOCK_SITE
+        value: "false"
+      - key: MAX_DOWNLOADS
+        value: "5"
+      - key: LOG_LEVEL
+        value: "INFO"
+      - key: LARK_MODE
+        value: "noop"
+      - key: DATABASE_URL
+        sync: false

@@ -39,7 +39,7 @@ _CLOSING_HINTS = ("closing", "last date", "due date", "submission", "bid end", "
 _PUBLISH_HINTS = ("published", "publish date", "advertisement", "issue date", "start date")
 
 
-def read_pdf_text(pdf_path: Path, max_pages: int = 4) -> str:
+def read_pdf_text(pdf_path: Path, max_pages: int = 10) -> str:
     if pdfplumber is None:
         log.warning("pdfplumber not installed; cannot read %s", pdf_path.name)
         return ""

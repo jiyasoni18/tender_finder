@@ -1,8 +1,0 @@
-# Core runtime deps.
-# The pipeline itself uses only the standard library (threading + queue), so it
-# runs even with none of these installed — features degrade gracefully.
-
-pdfplumber>=0.11.0     # PDF text extraction for the range checker
-requests>=2.31.0       # Lark webhook / bot API calls
-playwright>=1.44.0     # real site scraping (IREPS / GeM). After install run:
-                       #   playwright install chromium
