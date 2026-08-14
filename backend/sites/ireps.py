@@ -270,37 +270,38 @@ class IrepsScraper(BaseScraper):
         dest_dir = base_dir / safe_id
         dest_dir.mkdir(parents=True, exist_ok=True)
         
-        dest_file = dest_dir / f"{safe_id}.pdf"
-        
-        # Call fetch_pdf with the exact file path
-        path = self.fetch_pdf(listing, dest_file)
+        # fetch_pdf now returns a list of all downloaded paths
+        paths = self.fetch_pdf(listing, dest_dir)
+        first_path = paths[0] if paths else (dest_dir / f"{safe_id}.pdf")
         
         return TenderDoc(
             doc_id=listing.doc_id,
             source=self.name,
             title=listing.title,
             detail_url=listing.detail_url,
-            pdf_path=path,
+            pdf_path=first_path,
             value=listing.value,
             closing_date=listing.closing_date,
             published_date=listing.published_date,
             metadata=dict(listing.extra),
         )
 
-    def fetch_pdf(self, listing: Listing, dest: Path) -> Path:
+    def fetch_pdf(self, listing: Listing, dest_dir: Path) -> list:
         """
-        Navigate directly to the NIT page by POSTing the tenderAnonymsOid,
-        click 'Download Tender Doc', then handle the resulting download tab.
+        Navigate to the NIT page, find ALL download buttons/links, and download
+        every document into dest_dir.  Returns a list of Path objects for every
+        file that was successfully saved.
         """
         page = self._bg_page
         if not page:
             raise RuntimeError("Browser page not open. Did scraping fail?")
 
-        self.log.info("Downloading PDF for %s...", listing.doc_id)
+        self.log.info("Downloading ALL docs for %s...", listing.doc_id)
         nit_oid = listing.extra.get("nit_oid", "")
+        downloaded_paths: list = []
 
         try:
-            dest.parent.mkdir(parents=True, exist_ok=True)
+            dest_dir.mkdir(parents=True, exist_ok=True)
 
             if not nit_oid:
                 # Try to get it from the live page row as fallback
@@ -317,8 +318,8 @@ class IrepsScraper(BaseScraper):
                             nit_oid = m.group(1)
 
             if not nit_oid:
-                self.log.warning("No tenderAnonymsOid for %s – cannot download PDF.", listing.doc_id)
-                return dest
+                self.log.warning("No tenderAnonymsOid for %s – cannot download.", listing.doc_id)
+                return downloaded_paths
 
             nit_url = (
                 f"{BASE}/epsn/nitViewAnonyms/rfq/nitPublish.do"
@@ -326,187 +327,197 @@ class IrepsScraper(BaseScraper):
             )
             self.log.info("Opening NIT page: %s", nit_url)
 
-            # Initialize tab2 here so finally block can always reference it
-            tab2 = None
-            tab2_url = None
+            import re, requests as _requests
+
             nit_page = self._bg_context.new_page()
             try:
                 nit_page.goto(nit_url, timeout=30000, wait_until="networkidle")
 
-                # (Element dump removed — was only needed for discovery)
+                # ── Collect all download candidates ──────────────────────────
+                # Strategy A: onclick="window.open('/ireps/upload/files/…/doc.pdf')"
+                pdf_urls_from_onclick: list[str] = []
+                for el in nit_page.locator("a[onclick*='window.open'], input[onclick*='window.open'], button[onclick*='window.open']").all():
+                    try:
+                        oc = el.get_attribute("onclick") or ""
+                        # grab every path inside window.open('…')
+                        for m in re.finditer(r"window\.open\('([^']+)'", oc, re.I):
+                            url = urljoin(BASE, m.group(1))
+                            if url not in pdf_urls_from_onclick:
+                                pdf_urls_from_onclick.append(url)
+                    except Exception:
+                        pass
 
-                # --- Find "Download Tender Doc" button -----------------------
-                import re
-                pdf_btn = None
-                # Strategy 1 – by value attribute (covers <input type=button value='...'> )
-                for el in nit_page.locator("input[type='button'], input[type='submit'], input[type='image']").all():
-                    val = (el.get_attribute("value") or "").strip()
-                    if re.search(r"download\b|tender\s*doc|pdf\b", val, re.I):
-                        pdf_btn = el
-                        self.log.info("Found pdf_btn via value attr: %r", val)
-                        break
+                if pdf_urls_from_onclick:
+                    self.log.info("Found %d window.open PDF URL(s) via onclick.", len(pdf_urls_from_onclick))
+                    cookies_list = self._bg_context.cookies()
+                    session_cookies = {c["name"]: c["value"] for c in cookies_list}
+                    headers = {
+                        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36",
+                        "Referer": nit_url,
+                    }
+                    for idx, pdf_url in enumerate(pdf_urls_from_onclick):
+                        try:
+                            fname = Path(pdf_url.split("?")[0]).name or f"doc_{idx+1}.pdf"
+                            file_dest = dest_dir / fname
+                            if file_dest.exists():
+                                file_dest = dest_dir / f"{idx+1}_{fname}"
+                            r = _requests.get(pdf_url, cookies=session_cookies, headers=headers, timeout=60, stream=True)
+                            r.raise_for_status()
+                            with open(file_dest, "wb") as f:
+                                for chunk in r.iter_content(chunk_size=65536):
+                                    if chunk:
+                                        f.write(chunk)
+                            self.log.info("✓ Saved (%d/%d): %s (%d bytes)", idx+1, len(pdf_urls_from_onclick), file_dest, file_dest.stat().st_size)
+                            downloaded_paths.append(file_dest)
+                        except Exception as e:
+                            self.log.warning("Failed to download %s: %s", pdf_url, e)
 
-                # Strategy 2 – by inner text (covers <button> and <a>)
-                if pdf_btn is None:
-                    for el in nit_page.locator("button, a, span").all():
-                        txt = (el.inner_text() or "").strip()
-                        if re.search(r"download\b|tender\s*doc|pdf\b", txt, re.I) and ("download" in txt.lower() or "pdf" in txt.lower()):
-                            pdf_btn = el
-                            self.log.info("Found pdf_btn via inner_text: %r", txt)
-                            break
+                # Strategy B: click every download-looking button and capture
+                # the resulting file / new tab.  We look for buttons NOT already
+                # handled by Strategy A.
+                download_btns = []
+                for el in nit_page.locator("input[type='button'], input[type='submit'], input[type='image'], button, a").all():
+                    try:
+                        val = (el.get_attribute("value") or "").strip()
+                        txt = ""
+                        try:
+                            txt = (el.inner_text() or "").strip()
+                        except Exception:
+                            pass
+                        oc  = (el.get_attribute("onclick") or "").lower()
+                        combined = f"{val} {txt} {oc}"
+                        if re.search(r"download|tender\s*doc|pdf", combined, re.I):
+                            # Skip elements whose onclick we already handled via window.open
+                            if "window.open" in oc:
+                                continue
+                            download_btns.append(el)
+                    except Exception:
+                        pass
 
-                # Strategy 3 – onclick contains download/NIT keywords
-                if pdf_btn is None:
-                    for el in nit_page.locator("input, button, a, img").all():
-                        oc = (el.get_attribute("onclick") or "").lower()
-                        if "downloaddoc" in oc or "downloadnit" in oc or "download" in oc or "viewnit" in oc:
-                            pdf_btn = el
-                            self.log.info("Found pdf_btn via onclick: %r", oc[:80])
-                            break
+                self.log.info("Found %d clickable download button(s) on NIT page.", len(download_btns))
 
-                if pdf_btn is None:
+                for idx, btn in enumerate(download_btns):
+                    extra_tabs: list = []
+                    try:
+                        # Try to expect a new page (popup) first
+                        try:
+                            with self._bg_context.expect_page(timeout=8000) as pi:
+                                btn.click(force=True)
+                            tab2 = pi.value
+                            tab2.wait_for_load_state("domcontentloaded", timeout=15000)
+                            tab2_url = tab2.url
+                            extra_tabs.append(tab2)
+                            self.log.info("Button %d opened new tab: %s", idx+1, tab2_url)
+                        except Exception:
+                            tab2 = None
+                            tab2_url = None
+
+                        if tab2_url and (
+                            ".pdf" in tab2_url.lower()
+                            or "/pdfdocs/" in tab2_url
+                            or "/upload/files/" in tab2_url
+                        ):
+                            # Tab is a direct PDF link
+                            cookies_list = self._bg_context.cookies()
+                            session_cookies = {c["name"]: c["value"] for c in cookies_list}
+                            headers = {
+                                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36",
+                                "Referer": nit_url,
+                            }
+                            fname = Path(tab2_url.split("?")[0]).name or f"doc_{idx+1}.pdf"
+                            file_dest = dest_dir / fname
+                            if file_dest.exists():
+                                file_dest = dest_dir / f"{idx+1}_{fname}"
+                            r = _requests.get(tab2_url, cookies=session_cookies, headers=headers, timeout=60, stream=True)
+                            r.raise_for_status()
+                            with open(file_dest, "wb") as f:
+                                for chunk in r.iter_content(chunk_size=65536):
+                                    if chunk:
+                                        f.write(chunk)
+                            self.log.info("✓ Tab-PDF saved: %s", file_dest)
+                            downloaded_paths.append(file_dest)
+
+                        elif tab2_url:
+                            # Tab opened but is not a direct PDF — scan for download links inside
+                            for b in tab2.locator("input[type='button'], input[type='submit'], button, a, input[type='image']").all():
+                                try:
+                                    combined2 = " ".join(filter(None, [
+                                        b.get_attribute("value") or "",
+                                        b.get_attribute("src") or "",
+                                        b.get_attribute("title") or "",
+                                        b.get_attribute("onclick") or "",
+                                        (b.inner_text() or ""),
+                                    ])).lower()
+                                    if any(kw in combined2 for kw in ["download", "pdf", "nit"]):
+                                        with tab2.expect_download(timeout=60000) as dli:
+                                            b.click(force=True)
+                                        dl = dli.value
+                                        fname = dl.suggested_filename or f"doc_{idx+1}_{len(downloaded_paths)}.pdf"
+                                        file_dest = dest_dir / fname
+                                        if file_dest.exists():
+                                            file_dest = dest_dir / f"{len(downloaded_paths)}_{fname}"
+                                        dl.save_as(file_dest)
+                                        self.log.info("✓ Tab2-inner download saved: %s", file_dest)
+                                        downloaded_paths.append(file_dest)
+                                except Exception:
+                                    pass
+
+                        else:
+                            # No new tab — try direct download from the button
+                            try:
+                                with nit_page.expect_download(timeout=30000) as dli:
+                                    btn.click(force=True)
+                                dl = dli.value
+                                fname = dl.suggested_filename or f"doc_{idx+1}.pdf"
+                                file_dest = dest_dir / fname
+                                if file_dest.exists():
+                                    file_dest = dest_dir / f"{idx+1}_{fname}"
+                                dl.save_as(file_dest)
+                                self.log.info("✓ Direct download saved: %s", file_dest)
+                                downloaded_paths.append(file_dest)
+                            except Exception as e:
+                                self.log.warning("Direct download failed for button %d: %s", idx+1, e)
+
+                    except Exception as e:
+                        self.log.warning("Error processing download button %d for %s: %s", idx+1, listing.doc_id, e)
+                    finally:
+                        for t in extra_tabs:
+                            try:
+                                t.close()
+                            except Exception:
+                                pass
+
+                if not downloaded_paths:
                     self.log.error(
-                        "Could not locate Download Tender button on NIT page for %s. "
-                        "Dumping elements on page:",
+                        "No documents downloaded for %s. Dumping all clickable elements:",
                         listing.doc_id,
                     )
-                    # Dump elements to help debugging
                     for el in nit_page.locator("input, button, a, img").all():
                         try:
                             tag = el.evaluate("el => el.tagName")
                             val = el.get_attribute("value") or ""
-                            txt = el.inner_text().strip() if tag in ["BUTTON", "A", "SPAN"] else ""
+                            txt = ""
+                            try:
+                                txt = el.inner_text().strip() if tag in ["BUTTON", "A", "SPAN"] else ""
+                            except Exception:
+                                pass
                             oc = el.get_attribute("onclick") or ""
                             src = el.get_attribute("src") or ""
-                            self.log.info(f"[EL] {tag} | val: {val} | txt: {txt} | oc: {oc} | src: {src}")
+                            self.log.info("[EL] %s | val: %s | txt: %s | oc: %s | src: %s", tag, val, txt, oc, src)
                         except Exception:
                             pass
-                    return dest
-
-                # --- Click the button; handle popup-or-download -------------
-                download_obj = None
-                try:
-                    with self._bg_context.expect_page(timeout=10000) as pi:
-                        pdf_btn.click(force=True)
-                    tab2 = pi.value
-                    tab2.wait_for_load_state("domcontentloaded", timeout=15000)
-                    tab2_url = tab2.url
-                    self.log.info("Second tab opened: %s", tab2_url)
-                except Exception:
-                    pass  # No new tab — maybe direct download
-
-                if tab2_url and (".pdf" in tab2_url.lower() or "/pdfdocs/" in tab2_url or "/upload/files/" in tab2_url):
-                    # Tab2 IS the PDF. Download it using requests with the session cookies.
-                    import requests
-                    cookies_list = self._bg_context.cookies()
-                    session_cookies = {c["name"]: c["value"] for c in cookies_list}
-                    headers = {
-                        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36",
-                        "Referer": nit_url,
-                    }
-                    self.log.info("Downloading PDF directly from URL: %s", tab2_url)
-                    r = requests.get(tab2_url, cookies=session_cookies, headers=headers, timeout=60, stream=True)
-                    r.raise_for_status()
-                    with open(dest, "wb") as f:
-                        for chunk in r.iter_content(chunk_size=65536):
-                            if chunk:
-                                f.write(chunk)
-                    self.log.info("✓ Download saved: %s (%d bytes)", dest, dest.stat().st_size)
-                    return dest
-
-                elif tab2_url:
-                    # Tab2 opened but URL is not a direct PDF — look for download links in tab2
-                    downloaded_paths = []
-                    for b in tab2.locator("input[type='button'], input[type='submit'], button, a, input[type='image']").all():
-                        try:
-                            combined = " ".join(filter(None, [
-                                b.get_attribute("value") or "",
-                                b.get_attribute("src") or "",
-                                b.get_attribute("title") or "",
-                                b.get_attribute("onclick") or "",
-                                (b.inner_text() or ""),
-                            ])).lower()
-                            if any(kw in combined for kw in ["download", "pdf", "nit"]):
-                                with tab2.expect_download(timeout=60000) as dli:
-                                    b.click(force=True)
-                                download_obj = dli.value
-                                
-                                # Use the suggested filename from the server, save into the tender's folder
-                                filename = download_obj.suggested_filename or f"{listing.doc_id}_{len(downloaded_paths)}.pdf"
-                                file_dest = dest.parent / filename
-                                
-                                # Avoid overwriting if multiple files have the exact same name
-                                if file_dest.exists():
-                                    file_dest = dest.parent / f"{len(downloaded_paths)}_{filename}"
-                                    
-                                download_obj.save_as(file_dest)
-                                downloaded_paths.append(file_dest)
-                                self.log.info("✓ Download saved via tab2 button: %s", file_dest)
-                        except Exception:
-                            pass
-
-                    if downloaded_paths:
-                        return downloaded_paths[0]
-                    else:
-                        self.log.warning("No download found in tab2 for %s — trying fast-path from NIT page", listing.doc_id)
-
-                # Fast-path: extract PDF URLs directly from onclick attributes on NIT page
-                # e.g. onclick="window.open('/ireps/upload/files/072026/.../TenderDoc.pdf');"
-                import requests, re as _re2
-                pdf_url = None
-                for el in nit_page.locator("a[onclick*='window.open']").all():
-                    try:
-                        oc = el.get_attribute("onclick") or ""
-                        m = _re2.search(r"window\.open\('([^']+\.pdf[^']*)'", oc, _re2.I)
-                        if m:
-                            pdf_url = urljoin(BASE, m.group(1))
-                            self.log.info("Fast-path PDF URL: %s", pdf_url)
-                            break
-                    except Exception:
-                        pass
-
-                if pdf_url:
-                    cookies_list = self._bg_context.cookies()
-                    session_cookies = {c["name"]: c["value"] for c in cookies_list}
-                    headers = {
-                        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36",
-                        "Referer": nit_url,
-                    }
-                    r = requests.get(pdf_url, cookies=session_cookies, headers=headers, timeout=60, stream=True)
-                    r.raise_for_status()
-                    with open(dest, "wb") as f:
-                        for chunk in r.iter_content(chunk_size=65536):
-                            if chunk:
-                                f.write(chunk)
-                    self.log.info("✓ Fast-path download saved: %s (%d bytes)", dest, dest.stat().st_size)
-                    return dest
-
-                # Last resort: try intercepting download directly from nit_page
-                try:
-                    with nit_page.expect_download(timeout=60000) as dli:
-                        pdf_btn.click(force=True)
-                    download_obj = dli.value
-                    download_obj.save_as(dest)
-                    self.log.info("✓ Download saved (direct): %s", dest)
-                    return dest
-                except Exception as e:
-                    self.log.warning("All download strategies failed for %s: %s", listing.doc_id, e)
-
 
             finally:
-                if tab2:
-                    try:
-                        tab2.close()
-                    except Exception:
-                        pass
                 try:
                     nit_page.close()
                 except Exception:
                     pass
 
         except Exception as e:
-            self.log.error("Failed to download PDF for %s: %s", listing.doc_id, e)
-            return dest
+            self.log.error("Failed to download docs for %s: %s", listing.doc_id, e)
+
+        self.log.info("Finished: %d file(s) downloaded for %s", len(downloaded_paths), listing.doc_id)
+        return downloaded_paths
 
     def close(self) -> None:
         try:

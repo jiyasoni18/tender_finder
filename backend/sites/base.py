@@ -20,7 +20,8 @@ from dataclasses import dataclass, field
 from datetime import date
 from pathlib import Path
 
-from config import DOWNLOADS_DIR, SiteConfig
+import config
+from config import SiteConfig
 from core.logging_setup import get_logger
 from core.models import TenderDoc
 
@@ -67,7 +68,9 @@ class BaseScraper(abc.ABC):
     # -- shared helpers ---------------------------------------------------- #
     def download(self, listing: Listing) -> TenderDoc:
         """Fetch the PDF and wrap everything in a TenderDoc for Queue A."""
-        dest = DOWNLOADS_DIR / f"{self.name}_{_safe(listing.doc_id)}.pdf"
+        tender_folder = config.DOWNLOADS_DIR / _safe(listing.doc_id)
+        tender_folder.mkdir(parents=True, exist_ok=True)
+        dest = tender_folder / f"{self.name}_{_safe(listing.doc_id)}.pdf"
         path = self.fetch_pdf(listing, dest)
         return TenderDoc(
             doc_id=listing.doc_id,
