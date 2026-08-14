@@ -8,7 +8,8 @@ backend/rejected/
 backend/completed/
 backend/logs/
 backend/reports/
-backend/.state/
+backend/.state/*
+!backend/.state/td_auth.json
 
 # Frontend
 frontend/node_modules/
