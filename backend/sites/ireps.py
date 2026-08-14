@@ -78,6 +78,9 @@ class IrepsScraper(BaseScraper):
             if is_logged_in:
                 self.log.info("Already logged in via saved session! Skipping manual OTP.")
             else:
+                self.log.info("Navigating to login page...")
+                page.goto("https://ireps.gov.in/epsn/jsp/login.jsp", timeout=60000)
+                
                 self.log.info("=" * 60)
                 self.log.info("IREPS LOGIN: Browser is open.")
                 self.log.info("1. Enter mobile number, solve CAPTCHA, enter OTP.")
