@@ -186,6 +186,21 @@ async def get_status():
     return {"status": "idle"}
 
 
+from fastapi import UploadFile, File
+
+@app.post("/api/upload-ireps-session")
+async def upload_ireps_session(file: UploadFile = File(...)):
+    """Upload a local ireps_auth.json to bypass cloud OTP login."""
+    try:
+        content = await file.read()
+        auth_file = config.STATE_DIR / "ireps_auth.json"
+        config.STATE_DIR.mkdir(parents=True, exist_ok=True)
+        auth_file.write_bytes(content)
+        return {"status": "success", "message": "IREPS session uploaded successfully!"}
+    except Exception as e:
+        return {"status": "error", "message": f"Upload failed: {e}"}
+
+
 @app.get("/api/results")
 async def get_results():
     """Read passed tenders from the database."""

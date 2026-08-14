@@ -148,9 +148,6 @@ function Agent({ onSessionComplete }) {
   const handleStart = async (choice) => {
     const siteName = choice === '1' ? 'IREPS' : 'Tender Detail';
     addUser(`Start ${siteName}${savePath ? ` → Save to: ${savePath}` : ''}`);
-    setIsScraping(true);
-    setLogs([]);
-
     try {
       const res = await fetch(`${API_BASE}/api/start`, {
         method: 'POST',
@@ -158,15 +155,35 @@ function Agent({ onSessionComplete }) {
         body: JSON.stringify({ choice, save_path: savePath })
       });
       const data = await res.json();
-      if (data.status === 'error') {
-        addError(data.message);
-        setIsScraping(false);
-      } else {
+      if (data.status === 'success') {
+        const siteName = choice === '1' ? 'IREPS' : 'Tender Detail';
         addBot(`Initializing ${siteName} session... monitoring live output below.`);
+        setIsScraping(true);
+      } else {
+        addBot(`Failed to start: ${data.message}`);
       }
     } catch (e) {
-      addError('Could not reach the backend server.');
-      setIsScraping(false);
+      addBot(`Error connecting to server: ${e.message}`);
+    }
+  };
+
+  const handleFileUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    addBot(`Uploading session file ${file.name}...`);
+    try {
+      const res = await fetch(`${API_BASE}/api/upload-ireps-session`, {
+        method: 'POST',
+        body: formData
+      });
+      const data = await res.json();
+      addBot(data.message);
+    } catch (error) {
+      addBot(`Upload failed: ${error.message}`);
     }
   };
 
@@ -259,9 +276,15 @@ function Agent({ onSessionComplete }) {
               />
             </div>
             <div className="site-buttons">
-              <button className="btn-start btn-ireps" onClick={() => handleStart('1')}>
-                Analyze IREPS
-              </button>
+              <div className="ireps-group" style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+                <button className="btn-start btn-ireps" onClick={() => handleStart('1')}>
+                  Analyze IREPS
+                </button>
+                <label className="upload-label" style={{ fontSize: '12px', color: '#666', cursor: 'pointer', textAlign: 'center' }}>
+                  <input type="file" style={{ display: 'none' }} accept=".json" onChange={handleFileUpload} />
+                  📤 Upload Auth JSON
+                </label>
+              </div>
               <button className="btn-start btn-td" onClick={() => handleStart('2')}>
                 Analyze Tender Detail
               </button>
