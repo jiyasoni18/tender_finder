@@ -58,15 +58,19 @@ class Ledger:
     def is_new(self, doc_id: str) -> bool:
         with self._lock:
             with get_session() as db:
-                row = db.query(TenderRow).filter(TenderRow.id == doc_id).first()
+                row = db.query(TenderRow).filter(
+                    (TenderRow.id == doc_id) | (TenderRow.id.like(f\"{doc_id}-%\"))
+                ).first()
                 return row is None
 
-    def mark_seen(self, doc_id: str, source: str = "", detail_url: str = "",
+    def mark_seen(self, doc_id: str, source: str = \"\", detail_url: str = \"\",
                   value: float | None = None, closing_date: str | None = None) -> bool:
-        """Register a doc_id. Returns True if it was new, False if duplicate."""
+        \"\"\"Register a doc_id. Returns True if it was new, False if duplicate.\"\"\"
         with self._lock:
             with get_session() as db:
-                row = db.query(TenderRow).filter(TenderRow.id == doc_id).first()
+                row = db.query(TenderRow).filter(
+                    (TenderRow.id == doc_id) | (TenderRow.id.like(f\"{doc_id}-%\"))
+                ).first()
                 if row:
                     return False  # duplicate
                 row = TenderRow(
