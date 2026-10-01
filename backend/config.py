@@ -19,6 +19,8 @@ try:
 except ImportError:
     pass
 
+from settings import settings
+
 # --------------------------------------------------------------------------- #
 # Paths
 # --------------------------------------------------------------------------- #
@@ -55,23 +57,14 @@ def _get_bool(name: str, default: bool) -> bool:
 # --------------------------------------------------------------------------- #
 @dataclass
 class RangeRules:
-    # Tender value window, in rupees. Set a bound to None to disable it.
-    min_value: float | None = 5_000_000           # ₹50 lakh minimum
-    max_value: float | None = 500_000_000          # ₹5 crore maximum
-
-    # Closing-date window. A tender passes only if its closing date is on or
-    # after `closing_from` and on or before `closing_to`. None disables a bound.
-    closing_from: date | None = date.today()    # don't bother with expired ones
+    min_value: float | None = settings.min_price
+    max_value: float | None = settings.max_price
+    closing_from: date | None = date.today()
     closing_to: date | None = None
-
-    # Optional publish-date window (when the tender was advertised).
     published_from: date | None = None
     published_to: date | None = None
-
-    # If a required field can't be extracted from the PDF, do we reject it
-    # (True, safe default) or let it pass (False)?
-    reject_on_missing_value: bool = True   # reject tenders if value can't be read, so operator can review them
-    reject_on_missing_date: bool = False
+    reject_on_missing_value: bool = settings.reject_on_missing_value
+    reject_on_missing_date: bool = settings.reject_on_missing_date
 
 
 RANGE_RULES = RangeRules()
@@ -82,13 +75,12 @@ RANGE_RULES = RangeRules()
 # --------------------------------------------------------------------------- #
 @dataclass
 class SiteConfig:
-    name: str                       # must match a registered scraper (see sites/registry.py)
+    name: str
     enabled: bool = True
     base_url: str = ""
-    username_env: str = ""          # name of the env var holding the username
-    password_env: str = ""          # name of the env var holding the password
-    poll_interval_seconds: int = 60  # Worker 1 "wait 10 sec" knob, per site
-    # Free-form extra settings a specific scraper may need (search filters, etc.)
+    username_env: str = ""
+    password_env: str = ""
+    poll_interval_seconds: int = 60
     options: dict = field(default_factory=dict)
 
     @property
@@ -101,35 +93,36 @@ class SiteConfig:
 
 
 SITES: list[SiteConfig] = [
-    # The mock site needs no credentials and runs offline. It exists so you can
-    # watch the whole pipeline work before wiring real portals. Disable it once
-    # the real scrapers are ready.
     SiteConfig(
         name="mock",
-        enabled=_get_bool("ENABLE_MOCK_SITE", True),
+        enabled=settings.enable_mock_site,
         poll_interval_seconds=8,
         options={"docs_per_batch": 5},
     ),
     SiteConfig(
         name="ireps",
-        enabled=_get_bool("ENABLE_IREPS", False),
+        enabled=settings.enable_ireps,
         base_url="https://www.ireps.gov.in",
         username_env="IREPS_USER",
         password_env="IREPS_PASS",
         poll_interval_seconds=3600,
         options={
-            # e.g. restrict to a department / tender type. Consumed by sites/ireps.py
             "tender_type": "works",
+            "keywords": [k.strip() for k in settings.ireps_keywords.split(",")],
+            "department": settings.ireps_department,
+            "railway_pu": settings.ireps_railway_pu
         },
     ),
     SiteConfig(
         name="gem",
-        enabled=_get_bool("ENABLE_GEM", False),
+        enabled=settings.enable_gem,
         base_url="https://bidplus.gem.gov.in",
         username_env="GEM_USER",
         password_env="GEM_PASS",
         poll_interval_seconds=120,
-        options={},
+        options={
+            "keywords": [k.strip() for k in settings.gem_keywords.split(",")]
+        },
     ),
     SiteConfig(
         name="tenderdetail",
@@ -139,17 +132,24 @@ SITES: list[SiteConfig] = [
         password_env="TENDERDETAIL_PASS",
         poll_interval_seconds=3600,
         options={
-            "keywords": ["Cctv", "cc", "smart City gift city"]
+            "keywords": [k.strip() for k in settings.tenderdetail_keywords.split(",")]
         },
     ),
     SiteConfig(
         name="nprocure",
-        enabled=_get_bool("ENABLE_NPROCURE", True),
+        enabled=settings.enable_nprocure,
         base_url="https://tender.nprocure.com",
         poll_interval_seconds=3600,
         options={
-            "client_name": "Surat Municipal Corporation"
+            "client_name": settings.nprocure_client_name
         },
+    ),
+    SiteConfig(
+        name="gem",
+        enabled=True,
+        base_url="https://bidplus.gem.gov.in/all-bids",
+        poll_interval_seconds=3600,
+        options={},
     ),
 ]
 

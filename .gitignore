@@ -67,3 +67,15 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+
+# -----------------------------------------------------------------------------
+# Temporary & Scratch Files
+# -----------------------------------------------------------------------------
+backend/patch_*.py
+backend/test_*.py
+backend/fix_*.py
+backend/scratch_*.py
+backend/force_*.py
+backend/check_*.py
+backend/final_*.py
+fix_*.py
