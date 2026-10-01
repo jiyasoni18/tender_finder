@@ -16,7 +16,8 @@ from config import REJECTED_DIR
 import config
 from core.extract import enrich_from_pdf, read_pdf_text
 from core.summarize import generate_tender_report
-from core.report import generate_single_report
+from core.report import generate_single_report, generate_final_report
+from core.excel_generator import generate_boq_excel
 from core.logging_setup import get_logger
 from core.models import Status, TenderDoc
 from core.rules import check_ranges
@@ -89,6 +90,7 @@ class RangeChecker(threading.Thread):
                 doc.report_html = report_html
                 self.log.info("Generated summary (%d chars)", len(summary_txt))
                 generate_single_report(doc)
+                generate_boq_excel(doc)
             else:
                 self.log.warning("No readable PDF text found for %s — skipping Gemini summary.", doc.doc_id)
 
@@ -119,14 +121,21 @@ class RangeChecker(threading.Thread):
     def _reject(self, doc: TenderDoc) -> None:
         self.log.info("REJECT %s (%s)", doc, doc.reject_reason)
 
-        # Delete the tender's local folder (no need to keep rejected files on disk)
-        if doc.pdf_path and doc.pdf_path.exists():
-            pdf_parent = doc.pdf_path.parent
-            try:
-                if pdf_parent.is_dir():
-                    shutil.rmtree(pdf_parent, ignore_errors=True)
-            except OSError as exc:
-                self.log.warning("Could not delete rejected folder: %s", exc)
+        keep_folder = False
+        if doc.reject_reason and "value could not be extracted" in doc.reject_reason.lower():
+            keep_folder = True
+
+        if not keep_folder:
+            # Delete the tender's local folder (no need to keep rejected files on disk)
+            if doc.pdf_path and doc.pdf_path.exists():
+                pdf_parent = doc.pdf_path.parent
+                try:
+                    if pdf_parent.is_dir():
+                        shutil.rmtree(pdf_parent, ignore_errors=True)
+                except OSError as exc:
+                    self.log.warning("Could not delete rejected folder: %s", exc)
+        else:
+            self.log.info("Keeping folder for %s so operator can review missing value/advertisement.", doc.doc_id)
 
         # Record rejection in DB
         self.ledger.mark_rejected(doc_id=doc.doc_id, reason=doc.reject_reason or "")

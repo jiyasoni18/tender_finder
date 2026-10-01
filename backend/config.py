@@ -53,7 +53,7 @@ def _get_bool(name: str, default: bool) -> bool:
 # --------------------------------------------------------------------------- #
 # Range rules  (Worker 2)  -- edit these to match what you want to keep
 # --------------------------------------------------------------------------- #
-@dataclass(frozen=True)
+@dataclass
 class RangeRules:
     # Tender value window, in rupees. Set a bound to None to disable it.
     min_value: float | None = 5_000_000           # ₹50 lakh minimum
@@ -70,7 +70,7 @@ class RangeRules:
 
     # If a required field can't be extracted from the PDF, do we reject it
     # (True, safe default) or let it pass (False)?
-    reject_on_missing_value: bool = False   # let tenders pass if value can't be read from PDF
+    reject_on_missing_value: bool = True   # reject tenders if value can't be read, so operator can review them
     reject_on_missing_date: bool = False
 
 
@@ -140,6 +140,15 @@ SITES: list[SiteConfig] = [
         poll_interval_seconds=3600,
         options={
             "keywords": ["Cctv", "cc", "smart City gift city"]
+        },
+    ),
+    SiteConfig(
+        name="nprocure",
+        enabled=_get_bool("ENABLE_NPROCURE", True),
+        base_url="https://tender.nprocure.com",
+        poll_interval_seconds=3600,
+        options={
+            "client_name": "Surat Municipal Corporation"
         },
     ),
 ]

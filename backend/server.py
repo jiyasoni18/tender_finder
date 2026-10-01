@@ -83,17 +83,25 @@ def _get_ledger() -> Ledger:
     return _ledger
 
 
-def run_scraper(site_choice: str) -> None:
+def run_scraper(site_choice: str, extra_options: dict | None = None) -> None:
     global pipeline_instance
     try:
         if site_choice == "1":
             site_conf = next((s for s in SITES if s.name == "ireps"), None)
+        elif site_choice == "3":
+            site_conf = next((s for s in SITES if s.name == "nprocure"), None)
         else:
             site_conf = next((s for s in SITES if s.name == "tenderdetail"), None)
 
         if not site_conf:
-            logging.error("Invalid site selected")
+            logging.error("No site config found for choice %s", site_choice)
             return
+
+        # Inject user-supplied search options into the site config
+        if extra_options:
+            import copy
+            site_conf = copy.deepcopy(site_conf)
+            site_conf.options.update({k: v for k, v in extra_options.items() if v})
 
         site_conf.enabled = True
 
@@ -146,8 +154,26 @@ async def websocket_endpoint(websocket: WebSocket):
 async def start_scraper(site: dict):
     global pipeline_thread, pipeline_instance
 
-    choice = site.get("choice", "2")
+    choice = str(site.get("choice", "2")).strip()
     save_path = site.get("save_path", "").strip()
+    extra_options = {
+        "department":  site.get("department", "").strip(),
+        "date_from":   site.get("date_from", "").strip(),
+        "date_to":     site.get("date_to", "").strip(),
+        "max_tenders": site.get("max_tenders", ""),
+        "railway_pu":  site.get("railway_pu", "").strip(),
+        "client_name": site.get("nprocure_client", "").strip(),
+        "keywords":    site.get("keywords", "").strip(),
+    }
+    
+    import config
+    try:
+        min_v = site.get("price_min", "")
+        max_v = site.get("price_max", "")
+        config.RANGE_RULES.min_value = float(min_v) if min_v else None
+        config.RANGE_RULES.max_value = float(max_v) if max_v else None
+    except ValueError:
+        pass
 
     if save_path:
         custom_dir = Path(save_path)
@@ -164,7 +190,7 @@ async def start_scraper(site: dict):
     if pipeline_instance and not pipeline_instance.stopping:
         return {"status": "error", "message": "Scraper is already running"}
 
-    pipeline_thread = threading.Thread(target=run_scraper, args=(choice,), daemon=True)
+    pipeline_thread = threading.Thread(target=run_scraper, args=(choice, extra_options), daemon=True)
     pipeline_thread.start()
 
     return {"status": "success", "message": f"Started scraping site {choice}"}

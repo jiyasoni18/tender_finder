@@ -34,6 +34,24 @@ The 12 sections must be:
 
 Provide your best professional estimation for analytical sections (7, 8, 9, 10) if explicit data is missing.
 HOWEVER, for factual sections (1, 2, 3, 4, 11, 12) like ECV, EMD, Dates, and Quantities: NEVER invent or estimate numbers. If the data is missing from the text and metadata, you MUST output "Not Specified".
+
+IMPORTANT BOQ JSON REQUIREMENT:
+You MUST also output a structured JSON representation of the Schedule of Rates (BOQ).
+Place this JSON block at the very end of your response inside a script tag like this exactly:
+<script id="boq-json" type="application/json">
+[
+  {{
+    "s_no": 1,
+    "description": "Item Description...",
+    "qty": 50,
+    "unit": "Sheet",
+    "rate": 451,
+    "basic_value": 22550
+  }}
+]
+</script>
+If no BOQ/Schedule of Rates is found in the text, output an empty array: []
+Ensure the JSON is strictly valid. Do not use markdown formatting backticks inside or around the script tag.
 Tender metadata:
 - ID: {doc_id}
 - Source: {source}

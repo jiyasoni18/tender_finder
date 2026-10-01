@@ -112,7 +112,7 @@ class TenderDetailScraper(BaseScraper):
 
         page = self._bg_page
         keywords = self.config.options.get("keywords", [])
-        search_query = ", ".join(keywords)
+        search_query = keywords if isinstance(keywords, str) else ", ".join(keywords)
 
         try:
             self.log.info(f"Searching for combined keywords: {search_query}")

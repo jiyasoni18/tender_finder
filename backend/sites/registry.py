@@ -8,12 +8,14 @@ from sites.gem import GemScraper
 from sites.ireps import IrepsScraper
 from sites.mock import MockScraper
 from sites.tenderdetail import TenderDetailScraper
+from sites.nprocure import NprocureScraper
 
 _REGISTRY: dict[str, type[BaseScraper]] = {
     MockScraper.name: MockScraper,
     IrepsScraper.name: IrepsScraper,
     GemScraper.name: GemScraper,
     TenderDetailScraper.name: TenderDetailScraper,
+    NprocureScraper.name: NprocureScraper,
 }
 
 

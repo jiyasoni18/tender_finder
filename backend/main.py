@@ -40,7 +40,7 @@ def build_threads(pipeline: Pipeline, ledger: Ledger, scrapers: dict) -> list[th
     for site in enabled_sites:
         threads.append(Downloader(site, pipeline, ledger, scraper=scrapers.get(site.name)))
 
-    threads.append(RangeChecker(pipeline))
+    threads.append(RangeChecker(pipeline, ledger))
     threads.append(Uploader(pipeline, ledger))
     threads.append(RetryWorker(pipeline, ledger))
     return threads
@@ -51,7 +51,8 @@ def main() -> int:
     print("Welcome to Tender Finder!")
     print("1. IREPS (ireps.gov.in)")
     print("2. Tender Detail (tenderdetail.com)")
-    choice = input("Which site would you like to scrape? Enter 1 or 2: ").strip()
+    print("3. nProcure (tender.nprocure.com)")
+    choice = input("Which site would you like to scrape? Enter 1, 2, or 3: ").strip()
     
     # Disable all sites first
     for site in SITES:
@@ -64,6 +65,10 @@ def main() -> int:
     elif choice == "2":
         for site in SITES:
             if site.name == "tenderdetail":
+                site.enabled = True
+    elif choice == "3":
+        for site in SITES:
+            if site.name == "nprocure":
                 site.enabled = True
     else:
         print("Invalid choice. Exiting.")

@@ -406,11 +406,11 @@ body {
 
 .t-line { color: #4ade80; }
 
-/* Agent Input */
 .agent-input-area {
   background: var(--surface);
   border-top: 1px solid var(--border);
   padding: 1.25rem 1.5rem;
+  flex-shrink: 0;
 }
 
 .controls { display: flex; flex-direction: column; gap: 1rem; }
@@ -488,10 +488,114 @@ body {
 .btn-stop:hover { background: #fee2e2; }
 
 /* ──────────────────────────────────────────────────────────────────
+   Search Options Form
+─────────────────────────────────────────────────────────────────── */
+.search-options-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 1rem;
+  overflow: hidden;
+}
+
+.options-header {
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  background: var(--bg);
+  cursor: pointer;
+  border-bottom: 1px solid var(--border);
+}
+
+.search-options-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.option-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.option-field label {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.option-field input,
+.option-field select {
+  padding: 0.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  color: var(--text);
+  background: #ffffff;
+  outline: none;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+.option-field input:focus,
+.option-field select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+}
+
+/* N/A / Manual Review Styles */
+.na-filter-banner {
+  background: #fffbeb;
+  border-bottom: 1px solid #fde68a;
+  padding: 0.75rem;
+  font-size: 0.85rem;
+  color: #92400e;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+.na-filter-banner:hover {
+  background: #fef3c7;
+}
+.na-filter-banner.active {
+  background: #fee2e2;
+  color: #991b1b;
+  border-bottom-color: #fecaca;
+}
+.na-filter-toggle {
+  font-weight: 600;
+  font-size: 0.8rem;
+}
+
+.tender-card.manual-review {
+  border-left-color: #f59e0b;
+  background: #fffbeb;
+}
+.badge-na {
+  background: #fef3c7;
+  color: #b45309;
+}
+.na-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #b45309;
+}
+.manual-review-notice {
+  font-size: 0.8rem;
+  color: #92400e;
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  background: rgba(245, 158, 11, 0.1);
+  border-radius: 6px;
+}
+
+/* ──────────────────────────────────────────────────────────────────
    Responsive — stack on narrow screens
 ─────────────────────────────────────────────────────────────────── */
 @media (max-width: 700px) {
   .app-shell { flex-direction: column; }
   .sidebar   { width: 100%; min-width: unset; border-right: none; border-bottom: 1px solid var(--border); max-height: 45vh; }
   .tender-list { max-height: 160px; }
+  .search-options-grid { grid-template-columns: 1fr; }
 }
