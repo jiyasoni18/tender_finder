@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 11px;
+            color: #000;
+            margin: 0;
+            padding: 20px;
+        }
+        h2 {
+            background-color: #1a365d;
+            color: white;
+            padding: 8px 12px;
+            font-size: 14px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            page-break-after: avoid;
+        }
+        h3 {
+            font-size: 12px;
+            margin-top: 15px;
+            margin-bottom: 8px;
+            font-weight: bold;
+            page-break-after: avoid;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+        }
+        tr {
+            page-break-inside: avoid;
+        }
+        th, td {
+            border: 1px solid #e5e7eb;
+            padding: 8px 10px;
+            vertical-align: top;
+        }
+        th {
+            background-color: #1a365d;
+            color: white;
+            text-align: left;
+            font-weight: bold;
+        }
+        tr:nth-child(even) td.col-right {
+            background-color: #f9fafb;
+        }
+        td.col-left {
+            background-color: #f3f4f6;
+            font-weight: bold;
+            width: 25%;
+        }
+        .status-match {
+            background-color: #dcfce7;
+            font-weight: bold;
+            text-align: center;
+        }
+        .status-partial {
+            background-color: #fef08a;
+            font-weight: bold;
+            text-align: center;
+        }
+        .status-nomatch {
+            background-color: #fecaca;
+            font-weight: bold;
+            text-align: center;
+        }
+        .critical { color: #dc2626; font-weight: bold; }
+        .high { color: #dc2626; font-weight: bold; }
+        .medium { color: #d97706; font-weight: bold; }
+        .low { color: #16a34a; font-weight: bold; }
+        
+        .header-box {
+            background-color: #1a365d;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .header-box h1 {
+            margin: 0 0 10px 0;
+            font-size: 24px;
+        }
+        .header-box p {
+            margin: 0;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header-box">
+        <h1>{{TENDER_NO}}</h1>
+        <p>{{TENDER_TITLE}}</p>
+    </div>
+    
+    {{CONTENT}}
+    
+</body>
+</html>

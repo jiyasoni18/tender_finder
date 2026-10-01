@@ -89,14 +89,27 @@ def generate_tender_report(doc: TenderDoc, pdf_text: str) -> tuple[str, str]:
     )
 
     try:
-        response = client.models.generate_content(
-            model='gemini-2.5-flash',
-            contents=prompt,
-        )
+        import time
+        FALLBACK_MODELS = ["gemini-3.8-flash", "gemini-3.5-flash", "gemini-3.6-flash"]
+        response = None
+        for model_name in FALLBACK_MODELS:
+            try:
+                log.info(f"Trying model: {model_name}")
+                response = client.models.generate_content(
+                    model=model_name,
+                    contents=prompt,
+                )
+                log.info(f"Success with model: {model_name}")
+                break
+            except Exception as e:
+                log.warning(f"Model {model_name} failed: {str(e)[:80]}")
+                if model_name == FALLBACK_MODELS[-1]:
+                    raise e
+                time.sleep(2)
         html_content = response.text
 
         # Clean up Markdown code blocks if Gemini added them
-        html_content = re.sub(r"^```(?:html)?\s*", "", html_content, flags=re.MULTILINE)
+        html_content = re.sub(r"^```(?:markdown|html)?\s*", "", html_content, flags=re.MULTILINE)
         html_content = re.sub(r"```\s*$", "", html_content, flags=re.MULTILINE)
 
         # Extract the short summary
