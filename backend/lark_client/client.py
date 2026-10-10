@@ -24,9 +24,9 @@ import hmac
 import time
 from pathlib import Path
 
-from config import LARK, LarkConfig
-from core.logging_setup import get_logger
-from core.models import TenderDoc
+from app.core.config import LARK, LarkConfig
+from app.core.logging_setup import get_logger
+from app.core.models import TenderDoc
 
 try:
     import requests  # type: ignore

@@ -18,10 +18,10 @@ import signal
 import sys
 import threading
 
-from config import PIPELINE, SITES
-from core.logging_setup import get_logger
-from core.state import SHUTDOWN, Ledger, Pipeline
-from core.report import generate_final_report
+from app.core.config import PIPELINE, SITES
+from app.core.logging_setup import get_logger
+from app.core.state import SHUTDOWN, Ledger, Pipeline
+from app.core.report import generate_final_report
 from sites.registry import build_scraper
 from workers.downloader import Downloader
 from workers.range_checker import RangeChecker

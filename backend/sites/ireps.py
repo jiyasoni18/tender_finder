@@ -13,7 +13,7 @@ from __future__ import annotations
 from pathlib import Path
 from urllib.parse import urljoin
 
-from config import STATE_DIR
+from app.core.config import STATE_DIR
 from sites.base import BaseScraper, Listing
 
 try:
@@ -305,7 +305,7 @@ class IrepsScraper(BaseScraper):
                     continue
                 
                 try:
-                    from config import parse_date
+                    from app.core.config import parse_date
                     dt = parse_date(due_date_raw)
                     if dt:
                         # Extract the tenderAnonymsOid from the onclick of the viewNIT link
@@ -359,7 +359,7 @@ class IrepsScraper(BaseScraper):
 
     def download(self, listing: Listing) -> TenderDoc:
         """Override to save files in the exact folder structure requested by the user."""
-        from core.models import TenderDoc
+        from app.core.models import TenderDoc
         
         # IREPS tender IDs are often purely numeric (e.g., 60265262). 
         # Add the title to make the folder name readable.
@@ -370,7 +370,7 @@ class IrepsScraper(BaseScraper):
         folder_name = f"{listing.doc_id}_{safe_title}"
         safe_id = "".join(c if c.isalnum() or c in "-_" else "_" for c in folder_name)[:150]
         
-        import config
+        import app.core.config as config
         base_dir = config.DOWNLOADS_DIR
         dest_dir = base_dir / safe_id
         dest_dir.mkdir(parents=True, exist_ok=True)

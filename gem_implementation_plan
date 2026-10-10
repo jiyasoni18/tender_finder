@@ -1,0 +1,33 @@
+# Goal Description
+
+The goal is to fix a UI bug where the "GeM Documents" list stays visible underneath the "Custom Declarations" step, and to introduce a new "Final Document Ordering" step. This new step will allow the user to see a line-by-line list of all documents (both AI-mapped standards and custom generated declarations) and rearrange their order before the final merge.
+
+## Proposed Changes
+
+### Frontend (`index.html`)
+
+- **[MODIFY] `index.html`**
+  - Fix `showStep3b()` to correctly hide `gemDocsCard` so the screens no longer overlap.
+  - Redesign `step4Card` into a "Final Review & Document Ordering" screen.
+  - When transitioning to Step 4, dynamically gather all standard selected documents (from Step 1) and all custom generated declarations (from Step 3b).
+  - Render them as a list with "Up" and "Down" arrows to allow the user to arrange them exactly how they want them to appear in the final merged PDF.
+  - Add a "Remove" button next to each item so users can discard any document at the very last second.
+  - Upon clicking "Merge All Documents Now", package this exact order into a new JSON variable (`ordered_docs`) and send it to the backend.
+
+### Backend (`app/api/main.py`)
+
+- **[MODIFY] `main.py` (generate step)**
+  - Update the `generate` logic to accept the new `ordered_docs` parameter.
+  - Keep the existing generation logic (filling Word docs, converting to PDFs).
+  - Instead of blindly appending documents to the final list, store the generated PDFs in a dictionary.
+  - Construct the final PDF list to be merged by iterating through the user's `ordered_docs` array, ensuring the final merged PDF strictly respects the user's chosen arrangement.
+
+## Verification Plan
+
+### Manual Verification
+1. Map a few documents in Step 1, leaving some blank.
+2. Generate a custom declaration in Step 3b.
+3. Verify that Step 1 is hidden while in Step 3b.
+4. Proceed to Step 4. Verify that the standard documents and the custom declaration appear in a single unified list.
+5. Rearrange the list using the UI controls.
+6. Click Merge and verify the final downloaded PDF matches the exact order configured in the UI.

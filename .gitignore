@@ -79,3 +79,10 @@ backend/force_*.py
 backend/check_*.py
 backend/final_*.py
 fix_*.py
+
+aquint/
+arkonic/
+backend/documents railway/
+*.pdf
+*.docx
+

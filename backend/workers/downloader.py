@@ -11,10 +11,10 @@ from __future__ import annotations
 
 import threading
 
-from config import PIPELINE, SiteConfig
-from core.logging_setup import get_logger
-from core.models import TenderDoc
-from core.state import Ledger, Pipeline
+from app.core.config import PIPELINE, SiteConfig
+from app.core.logging_setup import get_logger
+from app.core.models import TenderDoc
+from app.core.state import Ledger, Pipeline
 from sites.registry import build_scraper
 
 
@@ -84,7 +84,13 @@ class Downloader(threading.Thread):
                 break
                 
             # Claim the id first so two runs can't double-download it.
-            if not self.ledger.mark_seen(listing.doc_id):
+            if not self.ledger.mark_seen(
+                listing.doc_id, 
+                source=self.site.name, 
+                detail_url=listing.detail_url, 
+                value=listing.value, 
+                closing_date=listing.closing_date
+            ):
                 continue
             original_id = listing.doc_id
             try:

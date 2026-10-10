@@ -6,7 +6,7 @@ from typing import Iterator
 from playwright.sync_api import sync_playwright
 
 from sites.base import BaseScraper, Listing
-import config
+import app.core.config as config
 
 class NprocureScraper(BaseScraper):
     name = "nprocure"

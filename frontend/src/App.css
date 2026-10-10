@@ -638,7 +638,7 @@ body {
 }
 .page-content {
   flex: 1;
-  overflow: hidden;
+  overflow-y: auto;
   position: relative;
 }
 
@@ -896,7 +896,7 @@ body {
   flex: 1;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow-y: auto;
   padding: 2rem;
   gap: 2rem;
 }

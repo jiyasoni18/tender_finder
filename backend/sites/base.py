@@ -20,10 +20,10 @@ from dataclasses import dataclass, field
 from datetime import date
 from pathlib import Path
 
-import config
-from config import SiteConfig
-from core.logging_setup import get_logger
-from core.models import TenderDoc
+import app.core.config as config
+from app.core.config import SiteConfig
+from app.core.logging_setup import get_logger
+from app.core.models import TenderDoc
 
 
 @dataclass

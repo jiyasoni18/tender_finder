@@ -1,0 +1,433 @@
+requirements:
+- id: STARTUP_CERTIFICATE
+  category: A
+  filename_hint: STARTUPS_CERTIFICATE.pdf
+  aliases:
+  - startup certificate
+  - stamp duty fee for bank guarantee
+  - bid security
+  - bank guarantee
+  - emd
+  - earnest money
+  - certificate issued by dipp
+- id: CERTIFICATE_TO_BE_SUBMITTED
+  category: B
+  filename_hint: 1.CERTIFICATE TO BE SUBMITTED.docx
+  aliases:
+  - certificate to be submitted
+  - format for certificate
+  - annexure-v
+  - annexure v
+  - certificate & documents in support
+  - certificate documents in support
+  - detailed documents
+  - certificate of registration
+  - rules & regulations
+  - notarized affidavit
+- id: L1_DECLARATION
+  category: B
+  filename_hint: 2.DECLARATION FORM FOR RELATIVE.docx
+  aliases:
+  - declaration form for relative
+  - l1 declaration
+  - declaration form regarding familiarization
+  - declaration form
+  - familiarization with site
+  - declaration regarding familiarization
+  - retired railway employees
+  - undertaking
+  - railway employee
+  - no relative
+- id: RETIRED_RAILWAY_EMPLOYEES
+  category: B
+  filename_hint: 3.DECLATION FOR RETIRED RAILWAY EMPLOYEES.docx
+  aliases:
+  - retired railway employees
+  - employment/partnershipetc
+  - employment/partnership
+  - retired railway
+  - railway employee
+- id: PRESCRIBED_FORMAT_CERT
+  category: B
+  filename_hint: 4.certificate in the prescribed format.docx
+  aliases:
+  - annexure-v(a)
+  - annexure v(a)
+  - annexure-v (a)
+  - annexure va
+  - annexure-va
+  - certificate in the prescribed format
+  - prescribed format
+  - other than company
+  - proprietary firm
+  - in case of other than company
+  - authorized signatory
+- id: AOA_MOA
+  category: A
+  filename_hint: 5.AOA.MOA.CIN.POA.pdf
+  aliases:
+  - aoa
+  - moa
+  - constitution of firm
+  - memorandum of association
+  - articles of association
+  - article of association
+  - cin
+  - the tenderer(s) shall clearly specify
+  - constitution of their firm
+  - constitution of their concern
+  - certificate of incorporation
+  - status of the firm
+  - supporting documents
+  - moa aoa
+- id: ENGINEERING_ORGANISATION
+  category: B
+  filename_hint: 6.ENGINEERING ORGANISATION AVAILABLE.docx
+  aliases:
+  - engineering organisation
+  - engineering organization
+  - personnel / organization
+  - personnel / organisation
+  - personnel on hand
+  - list of personnel
+  - organization on hand
+- id: LIST_OF_WORK_COMPLETED
+  category: B
+  filename_hint: 7.LIST OF WORK COMPLETED.docx
+  aliases:
+  - list of work completed
+  - completed works
+  - past performance
+  - work experience certificate
+  - contracting experience
+  - similar works
+  - supporting documents
+  - technical eligibility criteria
+  - completion certificate
+  - works completed
+- id: LIST_OF_WORK_IN_HAND
+  category: B
+  filename_hint: 8.LIST OF WORK IN HAND.docx
+  aliases:
+  - list of work in hand
+  - works on hand
+  - work in hand
+  - list of works
+- id: MANDATE_FORM
+  category: B
+  filename_hint: 9.MANDATE FORM.docx
+  aliases:
+  - mandate form
+  - bank mandate
+  - bank details
+  - covering letter
+  - electronic transfer
+  - firms details
+  - constitution of firm
+  - notarized affidavit
+- id: PLANT_AND_MACHINERY
+  category: B
+  filename_hint: 10.PLANT AND MACHINERY.docx
+  aliases:
+  - plant and machinery
+  - plant & machinery
+  - details of plant and machinery
+  - plant and machinery available
+  - proposed to be inducted
+  - construction machinery
+- id: STATEMENT_OF_DEVIATIONS_1
+  category: B
+  filename_hint: 12.STATEMENT OF DEVIATIONS - FORMAT-1.docx
+  aliases:
+  - statement of deviations
+  - deviation format 1
+  - technical specification sheet
+  - compliance (yes/no)
+  - compliance (yeyes/no)
+  - technical specification
+  - commercial-compliance
+  - special technical criteria
+- id: STATEMENT_OF_DEVIATIONS_2
+  category: B
+  filename_hint: 13.STATEMENT OF DEVIATIONS - FORMAT-2.docx
+  aliases:
+  - deviation format 2
+  - statement of deviations format 2
+- id: TENDER_FORM_FIRST_SHEET
+  category: B
+  filename_hint: 14.TENDER FORM (FIRST SHEET).docx
+  aliases:
+  - tender form first sheet
+  - first sheet of tender form
+  - 'tender form: - first sheet'
+  - first sheet & second sheet
+  - 'tender form:'
+  - tender forms shall
+  - tender form
+  - cover letter
+  - tender forms
+  - complete address of the firm
+- id: TENDER_FORM_SEC_SHEET
+  category: B
+  filename_hint: 15.TENDER FORM (SEC SHEET).docx
+  aliases:
+  - tender form second sheet
+  - second sheet of tender form
+  - tender form (sec sheet)
+  - technical eligibility criteria
+  - constitution of concern
+  - tender form
+  - company profile
+  - "company/firm pro\uFB01le"
+- id: TECHNICAL_MANPOWER
+  category: B
+  filename_hint: 16.Technical_Non_Technical_Manpower_Details.docx
+  aliases:
+  - technical manpower
+  - non-technical manpower
+  - manpower details
+  - technical_non_technical
+  - list of personnel
+- id: PLANT_MACHINERY_FORMAT_2
+  category: B
+  filename_hint: 17._PLANT_MACHINERY FORMAT 2.docx
+  aliases:
+  - plant machinery format 2
+  - plant_machinery format 2
+  - plant & machinery
+  - plant and machinery
+  - construction machinery
+- id: MAKE_IN_INDIA
+  category: B
+  filename_hint: 18.make in india.docx
+  aliases:
+  - make in india
+  - local content
+  - local content requirement
+- id: TURNOVER_FORMAT
+  category: A
+  filename_hint: TURNOVER (3 YEARS).pdf
+  aliases:
+  - turnover format
+  - annexure-vib
+  - annexure-v-vib
+  - financial eligibility
+  - annual contractual turnover
+  - financial eligibility criteria
+  - minimum average annual
+  - special financial criteria
+  - as per item no 10.0 of gcc 2022
+  - annexure-vib
+- id: BALANCE_SHEET
+  category: A
+  filename_hint: balance sheet.pdf
+  aliases:
+  - balance sheet
+  - audited balance sheet
+  - financial statement
+  - audit report
+  - financial eligibility criteria
+  - annual contractual turnover
+  - audited balance sheets
+  - average annual turnover
+- id: BLACKLIST_UNDERTAKING
+  category: B
+  filename_hint: 20.Black_listed_by_Govt_Authority.docx
+  aliases:
+  - blacklisted
+  - debarred
+  - black listed
+  - not blacklisted
+  - not debarred
+  - malicious code
+  - no malicious code
+  - non blacklisted
+- id: OEM_AUTHORIZATION_DECLARATION
+  category: B
+  filename_hint: 22.Declaration for Submission of OEM Authorization Certificate.docx
+  aliases:
+  - oem
+  - authorized dealer
+  - single tender with oem
+  - no financial criteria is required
+  - make and model
+- id: MAF_DECLARATION
+  category: B
+  filename_hint: 21.MAF.docx
+  aliases:
+  - manufacturers authorization form
+  - maf
+  - oem authorization
+  - original equipment manufacturer
+  - manufacturer authorization
+  - similar works
+  - manufacturer's authorization form
+- id: EXPERIENCE_ACQUAINT
+  category: A
+  filename_hint: 29_EXPERIENCE CERTIFICATE.pdf
+  aliases:
+  - experience
+  - experience acquaint
+  - experience certificate
+  - similar nature of work
+  - similar work
+  - similar works
+  - composite works
+  - work experience certificate
+  - completion certificate
+  - loa
+  - credential
+  - annexure 1
+  - technical-compliances
+  - tenderer previous experience
+  - successfully completed
+  - ip based cctv
+  - attested certificates
+  - technical eligibility
+- id: MSME_CERTIFICATE
+  category: A
+  filename_hint: MSME.pdf
+  aliases:
+  - msme
+  - nsic
+  - micro small medium
+- id: POWER_OF_ATTORNEY_BR
+  category: A
+  filename_hint: 11.POWER OF ATTORNEY_BR.pdf
+  aliases:
+  - power of attorney board resolution
+  - power of attorney br
+  - board resolution
+  - power of attorney
+  - poa
+  - constitution of the firm
+  - moa / aoa
+  - certificate of incorporation
+  - memorandum of association
+- id: STARTUPS_CERTIFICATE
+  category: A
+  filename_hint: 19.Startups Certificate.pdf
+  aliases:
+  - startups
+  - dipp
+  - startup
+  - start-up
+  - bid security
+- id: JV_PARTNERSHIP_DECLARATION
+  category: B
+  filename_hint: 23.Declaration of Non-Applicability of JV and Partnership.docx
+  aliases:
+  - joint venture
+  - jv
+  - partnership deed
+  - mou
+  - partnership firm
+  - llp agreement
+  - certificate of incorporation
+  - copy of resolution
+- id: TURNOVER_3_YEARS
+  category: A
+  filename_hint: TURNOVER (3 YEARS).pdf
+  aliases:
+  - turnover certificate
+  - turnover 3 years
+  - turnover (3 years)
+  - annual contractual turnover
+  - audited balance sheets
+  - contractual payments
+  - average annual contractual turnover
+- id: PAN_CARD
+  category: A
+  filename_hint: PAN_CARD.pdf
+  aliases:
+  - permanent account number
+  - pan card
+  - pan number
+  - pan and gstin
+  - pan of the firm
+  - gst & pan
+  - registration certificate
+- id: BANK_DETAILS_CONSTITUTION
+  category: B
+  filename_hint: 24.BANK DETAILS AND CONSTITUTION.docx
+  aliases:
+  - constitution of firm
+  - bank details
+  - annexure-i
+  - annexure i
+  - bank account details
+  - declaration regarding constitution
+  - firms details
+  - proprietary concern
+  - joint venture
+  - notarized affidavit
+  - general condition
+  - hindu undivided family
+- id: BID_SECURITY
+  category: A
+  filename_hint: ''
+  aliases:
+  - bid security
+  - bank guarantee
+  - e-payment
+  - earnest money
+- id: GST_DECLARATION
+  category: A
+  filename_hint: GST.pdf
+  aliases:
+  - gst
+  - gstin
+  - gst compliant
+  - gst compliance
+  - gst registration
+  - gst certificate
+  - goods and services tax
+  - rates are inclusive of gst
+  - inclusive of gst
+  - quoted rates are inclusive
+  - gst law
+  - gst registration certificate
+- id: NO_SPECIAL_CONDITIONS
+  category: B
+  filename_hint: 26.NO SPECIAL CONDITIONS DECLARATION.docx
+  aliases:
+  - special condition
+  - special conditions
+  - any special condition
+  - stipulations
+- id: SIGNALING_EXPERIENCE
+  category: A
+  filename_hint: 27_Signaling Merge.pdf
+  aliases:
+  - similar work in signaling
+  - signaling work
+  - signalling work
+  - signaling experience
+  - signalling experience
+- id: TELECOME_EXPERIENCE
+  category: A
+  filename_hint: 28.Telecome Work.pdf
+  aliases:
+  - similar work in telecome
+  - similar work in telecom
+  - telecome work
+  - telecom work
+  - telecome experience
+  - telecom experience
+  - technical eligibility criteria
+  - signalling or telecom
+- id: LIST_OF_COURT_CASES
+  category: B
+  filename_hint: 30.NO COURT CASE.docx
+  aliases:
+  - list of court cases
+  - no court case
+  - court case
+  - pending court cases
+- id: LIST_OF_ARBITRATION_CASES
+  category: B
+  filename_hint: 31.LIST OF ARBITRATION CASES.docx
+  aliases:
+  - list of arbitration cases
+  - arbitration cases
+  - arbitration

@@ -12,10 +12,10 @@ import shutil
 import threading
 from queue import Empty
 
-from config import COMPLETED_DIR
-from core.logging_setup import get_logger
-from core.models import Status, TenderDoc
-from core.state import SHUTDOWN, Ledger, Pipeline
+from app.core.config import COMPLETED_DIR
+from app.core.logging_setup import get_logger
+from app.core.models import Status, TenderDoc
+from app.core.state import SHUTDOWN, Ledger, Pipeline
 from lark_client import LarkError, build_lark_client
 
 

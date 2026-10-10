@@ -10,9 +10,9 @@ from datetime import datetime
 import re
 import requests
 
-from config import STATE_DIR
+from app.core.config import STATE_DIR
 from sites.base import BaseScraper, Listing
-from core.models import TenderDoc
+from app.core.models import TenderDoc
 
 try:
     from playwright.sync_api import sync_playwright  # type: ignore
@@ -229,7 +229,7 @@ class TenderDetailScraper(BaseScraper):
         Override to prevent BaseScraper from creating a TDR-only folder.
         fetch_pdf will create the correct combined 'TDR-TenderNo' folder itself.
         """
-        from core.models import TenderDoc
+        from app.core.models import TenderDoc
         # Pass None as dest — fetch_pdf ignores it and builds the folder itself
         path = self.fetch_pdf(listing, None)
         return TenderDoc(
@@ -324,7 +324,7 @@ class TenderDetailScraper(BaseScraper):
                     self.log.info(f"Skipping {listing.doc_id}: Value {parsed_val} is out of range (50L-5Cr)")
                     return None
             
-            import config
+            import app.core.config as config
             tender_folder = config.DOWNLOADS_DIR / safe_combined
             tender_folder.mkdir(parents=True, exist_ok=True)
             
@@ -352,7 +352,7 @@ class TenderDetailScraper(BaseScraper):
                         continue
                         
                     if not href.startswith("http"):
-                        from config import SiteConfig
+                        from app.core.config import SiteConfig
                         href = f"https://www.tenderdetail.com{href}"
                         
                     resp = page.request.get(href)

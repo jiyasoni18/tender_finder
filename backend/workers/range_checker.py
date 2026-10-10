@@ -12,16 +12,16 @@ import shutil
 import threading
 from queue import Empty
 
-from config import REJECTED_DIR
-import config
-from core.extract import enrich_from_pdf, read_pdf_text
-from core.summarize import generate_tender_report
-from core.report import generate_single_report, generate_final_report
-from core.excel_generator import generate_boq_excel
-from core.logging_setup import get_logger
-from core.models import Status, TenderDoc
-from core.rules import check_ranges
-from core.state import SHUTDOWN, Pipeline
+from app.core.config import REJECTED_DIR
+import app.core.config as config
+from app.core.extract import enrich_from_pdf, read_pdf_text
+from app.core.summarize import generate_tender_report
+from app.core.report import generate_single_report, generate_final_report
+from app.core.excel_generator import generate_boq_excel
+from app.core.logging_setup import get_logger
+from app.core.models import Status, TenderDoc
+from app.core.rules import check_ranges
+from app.core.state import SHUTDOWN, Pipeline
 
 
 class RangeChecker(threading.Thread):

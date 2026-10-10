@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from config import SiteConfig
+from app.core.config import SiteConfig
 from sites.base import BaseScraper
 from sites.gem import GemScraper
 from sites.ireps import IrepsScraper
