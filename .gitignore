@@ -42,6 +42,8 @@ htmlcov/
 # Backend - Runtime & Temporary Artifacts
 backend/downloads/
 downloads/
+backend/temp/
+temp/
 backend/rejected/
 backend/completed/
 backend/logs/

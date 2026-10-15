@@ -338,24 +338,28 @@ async def upload_lark(
     file: UploadFile = File(...),
     custom_rows: str = Form("")
 ):
+    temp_path = None
     try:
         temp_dir = config.BASE_DIR / "temp"
         temp_dir.mkdir(exist_ok=True)
-        temp_path = temp_dir / file.filename
+        import uuid
+        safe_name = f"{uuid.uuid4().hex[:8]}_{file.filename}"
+        temp_path = temp_dir / safe_name
         
         with open(temp_path, "wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
             
         from app.lark_upload import process_lark_upload
         result = process_lark_upload(str(temp_path), custom_rows)
-        
-        # Clean up temp file
-        if temp_path.exists():
-            temp_path.unlink()
-            
         return result
     except Exception as e:
         return {"status": "error", "message": str(e)}
+    finally:
+        if temp_path and temp_path.exists():
+            try:
+                temp_path.unlink()
+            except Exception:
+                pass
 
 @app.get("/api/analytics")
 async def get_analytics():
