@@ -6,7 +6,7 @@ try:
 except ImportError:
     HAS_GEMINI = False
 
-def map_requirements_batch(reqs, catalog):
+def map_requirements_batch(reqs, catalog, portal_type="ireps"):
     """
     Takes a list of requirements: [{"row": index, "name": text}]
     and the catalog.
@@ -55,6 +55,8 @@ STRICT MAPPING RULES:
 - If a requirement does not clearly map to anything in the catalog, return an empty array for that row.
 - Return ONLY valid JSON in the exact following format. Do not include markdown codeblocks or any other text.
 
+{"GEM_RULES"}
+
 Format:
 {{
   "1": ["ID_1", "ID_2"],
@@ -62,6 +64,15 @@ Format:
   "3": ["ID_3"]
 }}
 """
+    
+    gem_rules = ""
+    if portal_type.lower() == "gem":
+        gem_rules = """
+- GeM SPECIFIC RULE (CRITICAL): If the requirement asks to upload a specific format provided in the ATC (e.g. mentions "Form A", "Form B", "Form C", "Annexure", or "given format"), DO NOT map it to ANY of the generic catalog IDs (like AOA or Near Relation Certificates). You MUST return an empty array [] so the system can extract the exact format from the ATC document.
+- EXCEPTION to GeM RULE: If the requirement is specifically for "Bid Security", "EMD", or "Earnest Money Deposit" exemption, you MUST map it to STARTUPS_CERTIFICATE (and MSME_CERTIFICATE if applicable), even if it mentions a form.
+"""
+    
+    prompt = prompt.replace('{"GEM_RULES"}', gem_rules)
     
     import time
     # Order: fastest/cheapest with quota first, escalate if needed

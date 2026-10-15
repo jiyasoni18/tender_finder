@@ -148,8 +148,13 @@ because the buyer can and does cross-check the two against each other.
 | 29 | `Technical Specifications.docx` | **Technical Specifications — Compliance** statement. | Technical compliance, specification compliance |
 | 30 | `PROFORMA OF.docx` | **Clause-by-Clause Compliance / Statement of Deviations** proforma (drafted for Maharashtra Telecom Circle — retitle per tender). | Clause by clause compliance, deviation statement, compliance statement |
 | 31 | `SUBMITTED ON (LH).docx` | One-line letterhead note: "ALL DOCUMENTS REQUIRED FOR THIS TENDER ARE ALREADY SUBMITTED IN OTHER ATTACHMENTS" — a **filler for unused upload slots**. | Filler, placeholder, already submitted |
+| 31b | `6.ENGINEERING ORGANISATION AVAILABLE.docx` ⭐ | **Engineering Organisation Available on Hand & Proposed to be Engaged** — structured staff matrix listing names, qualifications, designations, and years of experience (Sudip Chakraborty GM, Devendra Parmar GM, Khushal Gadher PM, Aaditya Raj PC, Shivam Yadav PC, Himanshu Yadav PC). Pre-signed with stamp. | Engineering organisation available, qualified experienced personnel, technical manpower, key personnel, technical personnel deployed, personnel working for tenderer |
 
 ## 5. Make-in-India / GFR / procurement-rule certificates
+
+> ⚠️ **Rule 175 (Code of Integrity) vs Rule 151 (Debarment)**:
+> - **Rule 175 GFR 2017 (Code of Integrity & Conflict of Interest)**: Asks to declare abiding by the Code of Integrity for Public Procurement (Rule 175) and report any previous transgressions in the last 3 years (`(a) NIL`, `(b) NIL`). **When the ATC provides an Annexure (like Annexure-I), extract it directly from the ATC to preserve exact wording. NEVER replace it with Rule 151.**
+> - **Rule 151 GFR 2017 (Debarment)**: File #39 (`Declaration by the Bidder in compliance with Rule 151 of GFR 2017.docx`) contains the specific non-conviction declaration under the Prevention of Corruption Act 1988 and IPC. Use this only when Rule 151 Debarment is required and no ATC format is provided.
 
 | # | File | What it actually is | Match keywords |
 |---|------|---------------------|----------------|

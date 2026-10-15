@@ -141,6 +141,61 @@ class NprocureScraper(BaseScraper):
                                 self.log.info("Skipping tender %s: closing date (%s) is > 10 days from today", tender_id, closing_date_obj)
                                 continue
 
+                        # Keyword Filtering Logic
+                        text_to_check = (title + " " + brief_text).lower()
+                        
+                        # 1. Always Exclude
+                        if "amc" in text_to_check.split() or "annual maintenance contract" in text_to_check:
+                            self.log.info("Skipping tender %s: Contains excluded keyword (AMC).", tender_id)
+                            continue
+                            
+                        # 2. Check Allowed Keywords
+                        group_a = [
+                            "solar", "solar stud", "rooftop solar",
+                            "surveillance", "cctv", "camera",
+                            "smart city", "smart", "citiis",
+                            "iccc", "command & control", "command and control centre", "control centre",
+                            "itms", "tms", "traffic", "traffic signal", "atcs", "anpr", "rlvd", "vms", "variable message sign", "e-challan", "traffic management",
+                            "telecom", "tower", "radio", "walkie-talkie", "wi-fi", "public address",
+                            "ofc", "optical fibre", "optical fiber", "duct", "hdd",
+                            "scada", "iot", "sensor", "gps", "vehicle tracking", "ccms streetlight", "data centre", "server"
+                        ]
+                        
+                        group_b = [
+                            "drainage", "storm-water", "manhole", "machine-hole", 
+                            "water pipeline", "leak repair", "di/ci", "desilting", 
+                            "jetting machine", "water tanker", "tank cleaning"
+                        ]
+                        
+                        # Group C (Needs approval, but if we don't include them they get skipped. We'll skip them for now to be safe, or include if user requested it to be separated)
+                        
+                        all_keywords = group_a + group_b
+                        
+                        # Check if at least one keyword is present
+                        # We use word boundaries for short acronyms like "tms", "ofc", "iot" to prevent partial matches
+                        matched = False
+                        for kw in all_keywords:
+                            if len(kw) <= 4:
+                                if re.search(r'\b' + re.escape(kw) + r'\b', text_to_check):
+                                    matched = True
+                                    break
+                            else:
+                                if kw in text_to_check:
+                                    matched = True
+                                    break
+                                    
+                        # Also check if the user provided custom keywords in the UI search options
+                        ui_keywords = self.config.options.get("keywords", "").lower().strip()
+                        if ui_keywords:
+                            for ui_kw in [k.strip() for k in ui_keywords.split(",") if k.strip()]:
+                                if ui_kw in text_to_check:
+                                    matched = True
+                                    break
+                                    
+                        if not matched:
+                            self.log.info("Skipping tender %s: No matching keywords found.", tender_id)
+                            continue
+
                         # Look for links in the row
                         links = row.locator("a").all()
                         url = sub_page.url

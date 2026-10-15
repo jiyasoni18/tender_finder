@@ -3,7 +3,14 @@ import asyncio
 import logging
 import threading
 import urllib.parse
+import re
+import requests
 from pathlib import Path
+
+try:
+    import pymupdf as fitz
+except ImportError:
+    import fitz
 
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Request
 from app.core.pdf_generator import generate_pdf_from_html
@@ -75,7 +82,10 @@ async def generate_batch_summaries():
         
         for row in passed:
             tender_id = row["id"]
-            tender_dir = config.DOWNLOADS_DIR / tender_id
+            source = row.get("source", "")
+            tender_dir = config.DOWNLOADS_DIR / source / tender_id
+            if not tender_dir.exists():
+                tender_dir = config.DOWNLOADS_DIR / tender_id
             
             summary_name = f"Summary_{tender_id}.md"
             summary_path = tender_dir / "summary" / summary_name
@@ -102,15 +112,13 @@ async def generate_batch_summaries():
                 try:
                     logging.info(f"Generating AI Summary for {tender_id}...")
                     atc_path = None
-                    import fitz
-                    import requests
                     try:
                         doc = fitz.open(str(pdf_path))
                         for page in doc:
                             for link in page.get_links():
                                 uri = link.get("uri", "")
                                 if uri and ("get_atc_document" in uri.lower() or "atc" in uri.lower() or "slafds" in uri.lower()):
-                                    atc_res = requests.get(uri, verify=False, timeout=30)
+                                    atc_res = requests.get(uri, verify=False, timeout=(5, 10))
                                     if atc_res.status_code == 200:
                                         ext = ".pdf"
                                         if ".docx" in uri.lower(): ext = ".docx"
@@ -209,10 +217,89 @@ async def generate_batch_summaries():
     return {"status": "success", "message": "Batch summarization started."}
 
 
-@router.post("/api/summary/generate")
-async def generate_summary(file: UploadFile = File(...)):
+def get_document_library_and_profile(site: str, comp: str) -> tuple[str, str, str]:
     """
-    Phase 2: Generate a summary from an uploaded NIT document.
+    Returns (company_display_name, short_name, document_library_rules_markdown)
+    tailored to the selected portal (IREPS / GeM) and company (Arkonic / Aquint).
+    """
+    site_lower = site.lower().strip()
+    comp_lower = comp.lower().strip()
+    root_dir = Path(r"c:\Users\DELL\Downloads\tender_finder\tender_finder")
+    
+    if "arkon" in comp_lower:
+        company_display = "ARKONIK FIBERTECH INDIA PRIVATE LIMITED"
+        short_name = "Arkonik"
+        gem_lib = root_dir / "GEM_DOCUMENT_LIBRARY.md"
+        base_md = gem_lib.read_text(encoding="utf-8") if gem_lib.exists() else ""
+        
+        if site_lower == "gem":
+            md_content = base_md
+        else:
+            # Arkonic on IREPS / Railway
+            md_content = f"""# Railway/IREPS Document Library — ARKONIK FIBERTECH INDIA PRIVATE LIMITED
+Entity: ARKONIK FIBERTECH INDIA PRIVATE LIMITED (Ahmedabad, Gujarat)
+CIN: U74996GJ2023PTC140363
+MSME: Udyam-GJ-01-0352752 (Micro, Services) | DPIIT Startup: DIPP251312
+Authorised Signatory / Director: Dharamrajsinh Narendrasinh Vaghela
+
+## Railway/IREPS Mapping Rules for Arkonic:
+- Board Resolution / Power of Attorney: MAP: `BR.pdf` (or `POAA FORMATE.odt`)
+- Financial Turnover (last 3 years): MAP: `KYC DOCS/ARKONIK TURNOVER DONE.pdf`
+- Certificate of Incorporation / CIN: MAP: `KYC DOCS/INC-24_Certificate of Incorporation Pursuant To Change of Name_AA6440272 (1).pdf`
+- Similar Work Experience: MAP: `KYC DOCS/arkonik EXPERIENCE.pdf`
+- Statutory KYC: PAN (`KYC DOCS/Arkonic PAN.pdf`), GST (`KYC DOCS/ARKONIK GST.pdf`), MSME (`KYC DOCS/Arkonik MSME.pdf`), Startup (`KYC DOCS/ARKONIK STARTUP.pdf`), Balance Sheet (`KYC DOCS/Arkonik Fibetech BSheet 01-04-25 to 31-03-26_CA certified.pdf`), PF/ESIC (`KYC DOCS/Arkonik PF Certificate.pdf`, `KYC DOCS/ESIC certificate......pdf`), Bank Solvency (`Arkonik Solcency SBI.pdf`)
+- Relative Declaration: MAP+EDIT: `Near Relation Certificates.docx`
+- Statement of Deviations: MAP+EDIT: `statement of deviations.docx` (filled Nil)
+- Compliance Certificate: MAP+EDIT: `Certificate from Bidder for compliance.docx`
+- Non-Blacklisting / Debarment: MAP: `DECLARATION REGARDING NON BLACKLIST by GST authorities.pdf`
+- Other per-tender Railway annexures: CREATE on company letterhead
+
+{base_md}
+"""
+    else:
+        # Aquint
+        company_display = "AQUINT INFRATELE INDIA PRIVATE LIMITED"
+        short_name = "Aquint"
+        rail_lib = root_dir / "aquint" / "RAILWAY_DOCUMENT_LIBRARY.md"
+        if not rail_lib.exists():
+            rail_lib = root_dir / "AQUIANT_DOCUMENT_LIBRARY.md"
+        base_rail_md = rail_lib.read_text(encoding="utf-8") if rail_lib.exists() else ""
+        
+        if site_lower == "ireps":
+            md_content = base_rail_md
+        else:
+            # Aquint on GeM
+            md_content = f"""# GeM Document Library — AQUINT INFRATELE INDIA PRIVATE LIMITED
+Entity: AQUINT INFRATELE INDIA PRIVATE LIMITED (Ahmedabad, Gujarat)
+MSME: UDYAM-GJ-01-0133628 (General category) | DPIIT Startup Registered
+Average Annual Contractual Turnover: ₹22.96 Cr (CA certified Proforma-2)
+Telecom / OFC Experience: ₹94.38 Lakhs (GeM/Indian Air Force work order)
+
+## GeM Mapping Rules for Aquint:
+- Board Resolution / Power of Attorney: MAP: `11.POWER OF ATTORNEY_BR.pdf` or `POWER OF ATTORNEY.pdf`
+- Bidder Turnover: MAP: `TURNOVER (3 YEARS).pdf`
+- Certificate of Incorporation / CIN / Constitution: MAP: `5.AOA.MOA.CIN.POA.pdf` or `Certificate_of_Incorporation.pdf`
+- Experience / Past Performance: MAP: `EXPERIENCE AQUINT.pdf`, `28.Telecome Work.pdf`
+- Statutory KYC: PAN (`PAN_CARD.pdf`), GST (`GST.pdf`), MSME (`MSME.pdf`), Startup (`STARTUPS_CERTIFICATE.pdf`), Audited Balance Sheet (`balance sheet.pdf`), ITR 3 Years (`ITR LAST THREE YEARS.pdf`), EPF (`PF_CERTIFICATE.pdf`), Bank Mandate / Cancelled Cheque (`SBI_CANCEL_CHEQUE.pdf`, `9.MANDATE FORM.docx`)
+- Common Undertakings: `2.DECLARATION FORM FOR RELATIVE.docx`, `12.STATEMENT OF DEVIATIONS - FORMAT-1.docx`, `20.Black_listed_by_Govt_Authority.docx`, `18.make in india.docx`, `23.Declaration of Non-Applicability of JV and Partnership.docx`
+- Any special ATC formats provided by buyer: MAP directly from buyer ATC format or CREATE on letterhead
+
+{base_rail_md}
+"""
+
+    return company_display, short_name, md_content
+
+
+@router.post("/api/summary/generate")
+async def generate_summary(
+    file: UploadFile = File(...),
+    website: str = Form("ireps"),
+    company: str = Form("Aquint"),
+    atc_file: UploadFile | None = File(None),
+    atc_file_name: str | None = Form(None),
+):
+    """
+    Phase 2: Generate a summary from an uploaded NIT document with tailored website & company document mapping.
     """
     try:
         content = await file.read()
@@ -220,45 +307,56 @@ async def generate_summary(file: UploadFile = File(...)):
         file_path.parent.mkdir(parents=True, exist_ok=True)
         file_path.write_bytes(content)
         
-        # Look for ATC link in PDF
+        base_name = file.filename.replace(".pdf", "")
+        clean_tender_no = re.sub(r'[\\/*?:"<>|]', "_", base_name)
         atc_path = None
-        import fitz
-        import re
-        import requests
-        try:
-            doc = fitz.open(str(file_path))
-            for page in doc:
-                for link in page.get_links():
-                    uri = link.get("uri", "")
-                    if uri and ("get_atc_document" in uri.lower() or "atc" in uri.lower() or "slafds" in uri.lower()):
-                        logging.info(f"Found ATC link: {uri}")
-                        atc_res = requests.get(uri, verify=False, timeout=30)
-                        if atc_res.status_code == 200:
-                            ext = ".pdf"
-                            if ".docx" in uri.lower(): ext = ".docx"
-                            elif ".doc" in uri.lower(): ext = ".doc"
-                            base_name = file.filename.replace(".pdf", "")
-                            atc_path = file_path.with_name(f"ATC_{base_name}{ext}")
-                            atc_path.write_bytes(atc_res.content)
-                            logging.info(f"Downloaded ATC document to {atc_path}")
+        
+        if website.lower() == "gem":
+            if atc_file:
+                atc_content = await atc_file.read()
+                atc_path = config.DOWNLOADS_DIR / atc_file.filename
+                atc_path.write_bytes(atc_content)
+            elif atc_file_name:
+                cand = config.DOWNLOADS_DIR / atc_file_name
+                if cand.exists():
+                    atc_path = cand
+                elif (file_path.parent / atc_file_name).exists():
+                    atc_path = file_path.parent / atc_file_name
+            
+            if not atc_path:
+                try:
+                    from app.routers.docs import download_and_unify_gem_atc
+                    unified_atc, count = download_and_unify_gem_atc(file_path, clean_tender_no, orig_stem=base_name)
+                    if unified_atc and unified_atc.exists():
+                        atc_path = unified_atc
+                except Exception as e:
+                    logging.warning(f"Could not download unified ATC for summary: {e}")
+        else:
+            # Fallback link search for IREPS or general tenders
+            try:
+                doc = fitz.open(str(file_path))
+                for page in doc:
+                    for link in page.get_links():
+                        uri = link.get("uri", "")
+                        if uri and ("get_atc_document" in uri.lower() or "atc" in uri.lower() or "slafds" in uri.lower()):
+                            headers = { "User-Agent": "Mozilla/5.0", "Accept": "*/*" }
+                            atc_res = requests.get(uri, verify=False, timeout=(5, 10), headers=headers)
+                            if atc_res.status_code == 200:
+                                ext = ".pdf"
+                                if ".docx" in uri.lower(): ext = ".docx"
+                                elif ".doc" in uri.lower(): ext = ".doc"
+                                atc_path = file_path.with_name(f"ATC_{clean_tender_no}{ext}")
+                                atc_path.write_bytes(atc_res.content)
+                            break
+                    if atc_path:
                         break
-                if atc_path:
-                    break
-        except Exception as e:
-            logging.warning(f"Could not extract ATC link: {e}")
+            except Exception as e:
+                logging.warning(f"Could not extract ATC link: {e}")
         
         if not config.GEMINI_API_KEY:
             raise ValueError("GEMINI_API_KEY not configured in backend.")
             
-        def get_md_content(comp: str):
-            if comp.lower() == "arkonic":
-                path = Path(r"c:\Users\DELL\Downloads\tender_finder\tender_finder\GEM_DOCUMENT_LIBRARY.md")
-                return path.read_text(encoding="utf-8") if path.exists() else ""
-            elif comp.lower() == "aquiant":
-                # Changed from Desktop path to the local project path
-                path = Path(r"c:\Users\DELL\Downloads\tender_finder\tender_finder\AQUIANT_DOCUMENT_LIBRARY.md")
-                return path.read_text(encoding="utf-8") if path.exists() else ""
-            return ""
+        company_display, short_company, md_content = get_document_library_and_profile(website, company)
         
         # Extract checklist text from ATC document (.docx or .pdf)
         atc_checklist_text = ""
@@ -305,8 +403,7 @@ async def generate_summary(file: UploadFile = File(...)):
                 
                 elif atc_str.endswith(".pdf"):
                     # --- PDF extraction ---
-                    import fitz as fitz_pdf
-                    atc_doc = fitz_pdf.open(str(atc_path))
+                    atc_doc = fitz.open(str(atc_path))
                     all_text_parts = []
                     checklist_found = False
                     
@@ -327,14 +424,18 @@ async def generate_summary(file: UploadFile = File(...)):
                     
                     full_atc_text = "\n".join(all_text_parts)
                     
-                    # Try to find "Check List" section
-                    idx = full_atc_text.find("Check List")
-                    if idx >= 0:
-                        # Take text from Check List onwards (up to 10000 chars)
-                        atc_checklist_text = full_atc_text[idx:idx + 10000]
+                    # Try to find "Section-10" or "Check List" section
+                    found_idx = -1
+                    for marker in ["Section-10", "section-10", "Check List", "check list", "Checklist", "checklist", "List of documents to be submitted"]:
+                        idx = full_atc_text.find(marker)
+                        if idx >= 0:
+                            found_idx = idx
+                            break
+
+                    if found_idx >= 0:
+                        atc_checklist_text = full_atc_text[found_idx:found_idx + 15000]
                     else:
-                        # Use full text (truncated to avoid prompt overflow)
-                        atc_checklist_text = full_atc_text[:15000]
+                        atc_checklist_text = full_atc_text[:20000]
                     
                     atc_doc.close()
                 
@@ -343,10 +444,6 @@ async def generate_summary(file: UploadFile = File(...)):
                     
             except Exception as e:
                 logging.warning(f"Could not extract ATC checklist: {e}")
-            
-        target_company = "aquiant"
-        md_content = get_md_content(target_company)
-        company_display = "Aquint Infratele India Pvt. Ltd." if target_company == "aquiant" else "Arkonik Fibertech (I) Pvt. Ltd."
         
         uploaded_files = []
         uploaded_files.append(gemini_client.files.upload(file=str(file_path)))
@@ -356,8 +453,8 @@ async def generate_summary(file: UploadFile = File(...)):
         atc_section = ""
         if atc_checklist_text:
             atc_section = f"""
-        CRITICAL: Below is the EXACT checklist extracted from the ATC document 'Section-1 (Part B) [Check List for Bidder]'.
-        You MUST use this EXACT list for Section 05. Do NOT invent or modify document names. Map each item below one-by-one:
+        CRITICAL: Below is the EXACT checklist extracted from the ATC document 'Section-10 / Check List for Bidder'.
+        You MUST use this EXACT list for Section 06. Do NOT invent or modify document names. Map each item below one-by-one:
         
         --- START OF ATC CHECKLIST ---
         {atc_checklist_text}
@@ -365,11 +462,12 @@ async def generate_summary(file: UploadFile = File(...)):
         """
         
         prompt = f"""
-        You are an expert procurement consultant producing a professional-grade tender analysis.
-        Read the attached Tender Document (NIT){"and the attached ATC document" if atc_path else ""} thoroughly.
+        You are an expert procurement consultant producing a professional-grade tender analysis for portal {website.upper()}.
+        Read the attached Tender Document (NIT){" and the attached ATC document" if atc_path else ""} thoroughly.
         Cross-reference the tender requirements against our company's Document Library rules provided below.
         
-        Our Company: {company_display}
+        Our Company: {company_display} ({short_company})
+        Bidding Portal: {website.upper()}
         Document Library Rules:
         {md_content}
         
@@ -429,7 +527,7 @@ async def generate_summary(file: UploadFile = File(...)):
         Provide a detailed table allocating the monthly ECV by vertical (Service Head, Monthly Value, % of Monthly Revenue), followed by a Key Takeaway.
         b. **Price scenarios** — show a table of different discount levels and their impact.
         c. **Honest price assessment** — is this tender worth bidding on at the ECV considering minimum wages and actual costs?
-        d. **Recommendation** — should Arkonik bid? At what price? What is the profit strategy?
+        d. **Recommendation** — should {short_company} bid? At what price? What is the profit strategy?
         e. **MSE advantage** — how does our MSE/Startup status help here?
         
         ### 04. RISK ASSESSMENT
@@ -446,12 +544,12 @@ async def generate_summary(file: UploadFile = File(...)):
         a. **FINANCIAL ELIGIBILITY** table:
         | What is Asked | How Much / What Exactly | What We Have | Status |
         |---|---|---|---|
-        Cover: Average yearly turnover, value of past work, audited balance sheets, GST registration, company type, blacklisting status.
+        Cover: Average yearly turnover, value of past work, audited balance sheets, GST registration, company type, blacklisting status for {company_display}.
         
         b. **TECHNICAL ELIGIBILITY** table:
         | What is Asked | How Much / What Exactly | What We Have | Status |
         |---|---|---|---|
-        Cover: Past experience requirements, manpower, equipment, deployment plans, certifications needed.
+        Cover: Past experience requirements, manpower, equipment, deployment plans, certifications needed for {company_display}.
         
         ### 06. MANDATORY SUBMISSION CHECKLIST & DOCUMENT MAPPING
         Note on Mapping Logic: 
@@ -463,17 +561,17 @@ async def generate_summary(file: UploadFile = File(...)):
         |---|---|---|---|
         
         RULES for this section:
-        - Copy document names WORD FOR WORD from the ATC checklist provided above
-        - For Action & File: use 'MAP: [exact file path]' or 'CREATE: [explanation]' or 'MANUAL REQUIREMENT: [explanation]'.
+        - Copy document names WORD FOR WORD from the ATC/tender checklist provided
+        - For Action & File: use 'MAP: [exact file path]' from {company_display}'s document library rules or 'CREATE: [explanation]' or 'MANUAL REQUIREMENT: [explanation]'.
         - The Review column must explain what to check before uploading, what to watch out for, and whether the bid will be rejected without this document
-        - Include ALL documents from the ATC checklist — do NOT skip any
+        - Include ALL documents from the checklist — do NOT skip any
         - If there are sub-items (like 2(i) and 2(ii)), each gets its own row
         
         CRITICAL REQUIREMENTS:
         1. Be EXHAUSTIVE. Extract every detail from the tender — do not summarize briefly.
-        2. For Section 06, use the EXACT checklist from the ATC document. Do NOT create your own list.
-        3. Each checklist item MUST appear as a separate row. If there are 21 items, output 21+ rows.
-        4. Map each document against our Document Library Rules to determine Action & file.
+        2. For Section 06, use the EXACT checklist from the ATC/tender document. Do NOT create your own list.
+        3. Each checklist item MUST appear as a separate row.
+        4. Map each document strictly against {company_display}'s Document Library Rules provided above to determine Action & file.
         5. The analysis should be detailed enough that someone who hasn't read the tender can understand everything.
         6. Include specific numbers, amounts, dates, names, and addresses wherever available.
         """
@@ -501,7 +599,7 @@ async def generate_summary(file: UploadFile = File(...)):
         
         template_path = Path("backend/core/pdf_template.html")
         if not template_path.exists():
-            template_path = Path("core/pdf_template.html") # Try alternate relative path
+            template_path = Path("core/pdf_template.html")
             
         if template_path.exists():
             template = template_path.read_text(encoding="utf-8")
@@ -509,17 +607,19 @@ async def generate_summary(file: UploadFile = File(...)):
             template = "<html><body>{{CONTENT}}</body></html>"
             
         tender_no = file.filename.replace(".pdf", "")
-        full_html = template.replace("{{TENDER_NO}}", tender_no).replace("{{TENDER_TITLE}}", "Tender Summary").replace("{{CONTENT}}", html_content)
+        full_html = template.replace("{{TENDER_NO}}", tender_no).replace("{{TENDER_TITLE}}", f"Tender Summary ({website.upper()} - {short_company})").replace("{{CONTENT}}", html_content)
         
-        summary_name = f"Summary_{tender_no}.pdf"
+        summary_name = f"Summary_{tender_no}_{website.upper()}_{short_company}.pdf"
         summary_path = config.DOWNLOADS_DIR / "summary" / summary_name
         summary_path.parent.mkdir(parents=True, exist_ok=True)
         await asyncio.to_thread(generate_pdf_from_html, full_html, str(summary_path))
         
         return {
             "status": "success",
-            "message": f"Summary generated for {file.filename}",
-            "summary_url": f"/downloads/summary/{summary_name}"
+            "message": f"Summary generated for {file.filename} ({website.upper()} - {short_company})",
+            "summary_url": f"/downloads/summary/{summary_name}",
+            "website": website,
+            "company": company_display
         }
     except Exception as e:
         logging.error(f"Generate Summary error: {e}")

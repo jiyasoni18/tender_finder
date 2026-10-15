@@ -52,7 +52,7 @@ def get_catalog_path(portal_type="ireps"):
 
 def get_docs_dir(company_name=""):
     c_lower = str(company_name).lower()
-    if "arkonik" in c_lower:
+    if "arkon" in c_lower:
         return Path(r"c:\Users\DELL\Downloads\tender_finder\tender_finder\arkonic")
     else:
         return Path(r"c:\Users\DELL\Downloads\tender_finder\tender_finder\aquint")
@@ -62,12 +62,95 @@ def get_signature_path(company_name="", signatory_name=""):
     c_lower = str(company_name).lower()
     sig_lower = str(signatory_name).lower().strip()
     
-    if "arkonik" in c_lower:
+    if "arkon" in c_lower:
         if "twinkle chudawat" in sig_lower:
             return docs_dir / "dharam sir wife.jpeg"
         return docs_dir / "dharam sir.jpeg"
     else:
         return docs_dir / "bhargav sir2.jpeg"
+
+def get_letterhead_path(company_name=""):
+    c_lower = str(company_name).lower()
+    if "arkon" in c_lower:
+        p = Path(r"c:\Users\DELL\Downloads\tender_finder\tender_finder\ARKONIC LH.docx")
+        if p.exists():
+            return p
+        return BASE_DIR.parent / "ARKONIC LH.docx"
+    else:
+        p = Path(r"c:\Users\DELL\Downloads\tender_finder\tender_finder\AQ LETTER.docx")
+        if p.exists():
+            return p
+        return BASE_DIR.parent / "AQ LETTER.docx"
+
+def is_letterhead_required(raw_text="", line=""):
+    combined = (str(raw_text) + " " + str(line)).lower()
+    keywords = [
+        "letter head", "letterhead", "on company letterhead",
+        "on the letter head", "on bidder's letterhead", "on letter head of",
+        "(on the letterhead", "(on the letter head", "(on company letterhead",
+        "on the letterhead of the bidder", "on the letter head of the bidder",
+        "on the letter head of the tenderer", "to be typed on the letter head",
+        "on bidder letterhead", "bidder's letter head"
+    ]
+    return any(k in combined for k in keywords)
+
+def create_doc_from_letterhead(letterhead_path, output_path, raw_text):
+    import docx
+    lh_p = Path(letterhead_path) if letterhead_path else None
+    if lh_p and lh_p.exists() and lh_p.suffix.lower() == ".docx":
+        doc = docx.Document(str(lh_p))
+        body = doc._element.body
+        sectPr = body.xpath('./w:sectPr')
+        body.clear_content()
+        if sectPr:
+            body.append(sectPr[0])
+    else:
+        doc = docx.Document()
+
+    for p in str(raw_text).split('\n'):
+        p_clean = p.strip()
+        if p_clean:
+            doc.add_paragraph(p_clean)
+
+    doc.save(str(output_path))
+    return doc
+
+def apply_letterhead_to_docx(target_docx_path, letterhead_path):
+    import docx
+    lh_p = Path(letterhead_path) if letterhead_path else None
+    if not lh_p or not lh_p.exists() or lh_p.suffix.lower() != ".docx":
+        return
+    try:
+        t_doc = docx.Document(str(target_docx_path))
+        if t_doc.sections and len(t_doc.sections[0].header.part.rels) > 0:
+            return  # Already has header letterhead
+            
+        lh_doc = docx.Document(str(lh_p))
+        lh_body = lh_doc._element.body
+        sectPr = lh_body.xpath('./w:sectPr')
+        lh_body.clear_content()
+        if sectPr:
+            lh_body.append(sectPr[0])
+            
+        src_body = t_doc._element.body
+        for child in list(src_body):
+            if child.tag.endswith('sectPr'):
+                continue
+            if sectPr:
+                sectPr[0].addprevious(child)
+            else:
+                lh_body.append(child)
+                
+        for rel_id, rel in t_doc.part.rels.items():
+            if rel_id not in lh_doc.part.rels:
+                try:
+                    lh_doc.part.rels[rel_id] = rel
+                except Exception:
+                    pass
+        lh_doc.save(str(target_docx_path))
+        print(f"  [Letterhead] Successfully applied letterhead to {target_docx_path.name}")
+    except Exception as e:
+        print(f"  [!] Failed to apply letterhead to {target_docx_path}: {e}")
 
 def load_catalog(portal_type="ireps"):
     catalog_path = get_catalog_path(portal_type)
@@ -85,7 +168,7 @@ def find_file_in_company_dir(canonical_id, company_name=""):
     docs_dir = get_docs_dir(company_name)
     c_lower = str(company_name).lower()
     
-    if "arkonik" in c_lower:
+    if "arkon" in c_lower:
         mapping = {
             "AOA_MOA": ["AOA.pdf.pdf", "MOA.pdf.pdf", "AOA_DNV & TDV(2).pdf", "MOA_DNV & TDV(2).pdf"],
             "POWER_OF_ATTORNEY_BR": ["BR.pdf"],
@@ -110,9 +193,13 @@ def find_file_in_company_dir(canonical_id, company_name=""):
             "STATEMENT_OF_DEVIATIONS_2": ["statement of deviations.docx"],
             "CERTIFICATE_TO_BE_SUBMITTED": ["Certificate from Bidder for compliance.docx"],
             "BLACKLIST_UNDERTAKING": ["DECLARATION REGARDING NON BLACKLIST by GST authorities.pdf"],
-            "L1_DECLARATION": ["Near Relation Certificates.docx", "Declaration form for relative.docx"],
+            "L1_DECLARATION": ["Near Relation Certificates.docx", "2.DECLARATION FORM FOR RELATIVE.docx", "Declaration form for relative.docx"],
             "PRESCRIBED_FORMAT_CERT": ["Certificate for fundamental principles of public buying.docx"],
-            "EXPERIENCE_ACQUAINT": ["arkonik EXPERIENCE.pdf"]
+            "EXPERIENCE_ACQUAINT": ["arkonik EXPERIENCE.pdf"],
+            "ENGINEERING_ORGANISATION": ["6.ENGINEERING ORGANISATION AVAILABLE.docx"],
+            "TECHNICAL_MANPOWER": ["6.ENGINEERING ORGANISATION AVAILABLE.docx"],
+            "TECHNICAL_PERSONNEL": ["6.ENGINEERING ORGANISATION AVAILABLE.docx"],
+            "QUALIFIED_PERSONNEL": ["6.ENGINEERING ORGANISATION AVAILABLE.docx"]
         }
         if canonical_id in mapping:
             for possible_name in mapping[canonical_id]:
@@ -120,6 +207,33 @@ def find_file_in_company_dir(canonical_id, company_name=""):
                     if possible_name in files:
                         return Path(root) / possible_name
                         
+    # Robust fallback for L1_DECLARATION (Declaration Form for Relative) across companies
+    if canonical_id == "L1_DECLARATION":
+        possible_rel_names = [
+            "2.declaration form for relative.docx",
+            "declaration form for relative.docx",
+            "near relation certificates.docx",
+            "near relative certificate.docx",
+            "declaration regarding relative.docx"
+        ]
+        for root, dirs, files in os.walk(docs_dir):
+            for f in files:
+                if f.lower() in possible_rel_names:
+                    return Path(root) / f
+
+    # Robust fallback for ENGINEERING_ORGANISATION / TECHNICAL_MANPOWER across companies
+    if canonical_id in ["ENGINEERING_ORGANISATION", "TECHNICAL_MANPOWER", "TECHNICAL_PERSONNEL", "QUALIFIED_PERSONNEL"]:
+        possible_eng_names = [
+            "6.engineering organisation available.docx",
+            "engineering organisation available.docx",
+            "engineering organization available.docx",
+            "16.technical_non_technical_manpower_details.docx"
+        ]
+        for root, dirs, files in os.walk(docs_dir):
+            for f in files:
+                if f.lower() in possible_eng_names:
+                    return Path(root) / f
+
     # Fallback to catalog filename_hint if no mapping exists
     catalog = load_catalog("ireps")
     entry = next((item for item in catalog if item["id"] == canonical_id), None)
@@ -161,9 +275,17 @@ def map_with_keywords(line, catalog):
     if ('constitution of firm' in line_lower or 'annexure-i' in line_lower or 'annexure i' in line_lower) and ('bank details' in line_lower or 'bank account' in line_lower):
         return ['BANK_DETAILS_CONSTITUTION', 'TENDER_FORM_FIRST_SHEET']
 
-    # 3c. NEAR RELATIVE CERTIFICATE OVERRIDE
-    if 'near relative' in line_lower or 'relative certificate' in line_lower:
-        return [] # Let the AI or catalog mapping handle it so we don't trigger multi-entity rule below
+    # 3c. RELATIVE DECLARATION OVERRIDE
+    if any(k in line_lower for k in [
+        'near relative', 'relative certificate', 'declaration form for relative',
+        'declaration for relative', 'declaration regarding relative',
+        'declaration regarding relatives', 'declaration of relative',
+        'declaration of relatives', 'near relation', 'relation certificate',
+        'no relative', 'no near relative', 'certificate of no relative',
+        'relatives employed', 'relative employed', 'relative in railway',
+        'relatives in railway'
+    ]) or ('relative' in line_lower and any(w in line_lower for w in ['declaration', 'certificate', 'form', 'format', 'undertaking', 'affidavit'])):
+        return ['L1_DECLARATION']
 
     # 4. AOA/MOA vs POA vs JV
     is_generic_constitution = 'constitution of their firm' in line_lower or 'status of firm' in line_lower
@@ -202,8 +324,18 @@ def map_with_keywords(line, catalog):
                     
         if results:
             return results        
+    # 4b. ENGINEERING ORGANISATION / TECHNICAL PERSONNEL OVERRIDE
+    is_personnel = any(x in line_lower for x in [
+        'engineering organisation', 'engineering organization',
+        'experienced personnel', 'qualified personnel', 'technical personnel',
+        'technical manpower', 'manpower details', 'deployed for the work',
+        'key personnel', 'technical staff', 'engineering staff'
+    ])
+    if is_personnel:
+        return ['ENGINEERING_ORGANISATION']
+
     # 5. EXPERIENCE OVERRIDE
-    is_experience = any(x in line_lower for x in ['similar work', 'similar nature', 'experience', 'credential', 'completion certificate', ' loa ', 'letter of acceptance'])
+    is_experience = not is_personnel and any(x in line_lower for x in ['similar work', 'similar nature', 'experience', 'credential', 'completion certificate', ' loa ', 'letter of acceptance'])
     
     if is_experience and ('signal' in line_lower or 'signalling' in line_lower):
         return ['SIGNALING_EXPERIENCE']
@@ -331,6 +463,12 @@ def load_company_data(company_name=""):
     if master_data_path.exists():
         with open(master_data_path, 'r') as f:
             data = yaml.safe_load(f) or {}
+    else:
+        json_path = docs_dir / "company_profile.json"
+        if json_path.exists():
+            import json
+            with open(json_path, 'r', encoding='utf-8') as f:
+                data = json.load(f) or {}
             
     # Inject reference texts from documents directory
     doc_dir = get_docs_dir(company_name)
@@ -380,61 +518,95 @@ def fill_docx_template(template_path, output_path, replacements, signature_path=
         print(f"Failed to open {template_path} as docx: {e}")
         shutil.copy(template_path, output_path)
         return
-    for paragraph in doc.paragraphs:
+    import re
+    place_val = "Ahmedabad"
+    date_val = str(replacements.get("{{DATE}}") or replacements.get("{{CLOSING_DATE}}") or replacements.get("date") or "").strip()
+
+    def document_has_signature(doc_obj):
+        body = doc_obj._element.body
+        if len(body.xpath('.//w:drawing')) > 0 or len(body.xpath('.//w:pict')) > 0 or len(body.xpath('.//a:blip')) > 0:
+            return True
+        return False
+
+    def safe_replace_text_in_paragraph(p, replacer_fn):
+        has_drawing = bool(p._element.xpath('.//w:drawing') or p._element.xpath('.//w:pict') or p._element.xpath('.//a:blip'))
+        old_text = p.text
+        new_text = replacer_fn(old_text)
+        if old_text == new_text:
+            return
+        if not has_drawing:
+            p.text = new_text
+            return
+        # Paragraph contains drawings/signature! NEVER touch or delete runs with drawings
+        text_runs = [r for r in p.runs if not (r._element.xpath('.//w:drawing') or r._element.xpath('.//w:pict') or r._element.xpath('.//a:blip'))]
+        if not text_runs:
+            return
+        text_runs[0].text = new_text
+        for r in text_runs[1:]:
+            r.text = ""
+
+    def replacer(text):
         for key, value in replacements.items():
-            if key in paragraph.text:
-                for run in paragraph.runs:
-                    if key in run.text:
-                        run.text = run.text.replace(key, str(value))
-                if key in paragraph.text:
-                    paragraph.text = paragraph.text.replace(key, str(value))
-                    
-        import re
-        if "{{DATE}}" in replacements:
-            date_val = str(replacements["{{DATE}}"])
-            # Replace blank date lines like 'Date: _______' or 'Date: .........'
-            if re.search(r'(?i)\bdate\s*:\s*[_]{3,}', paragraph.text):
-                paragraph.text = re.sub(r'(?i)(\bdate\s*:\s*)[_]{3,}', r'\1' + date_val, paragraph.text)
-            if re.search(r'(?i)\bdate\s*:\s*[\.]{3,}', paragraph.text):
-                paragraph.text = re.sub(r'(?i)(\bdate\s*:\s*)[\.]{3,}', r'\1' + date_val, paragraph.text)
-            if re.search(r'(?i)\bdated\s*:\s*[_]{3,}', paragraph.text):
-                paragraph.text = re.sub(r'(?i)(\bdated\s*:\s*)[_]{3,}', r'\1' + date_val, paragraph.text)
-            if re.search(r'(?i)\bdated\s*:\s*[\.]{3,}', paragraph.text):
-                paragraph.text = re.sub(r'(?i)(\bdated\s*:\s*)[\.]{3,}', r'\1' + date_val, paragraph.text)
+            if key in text:
+                text = text.replace(key, str(value))
+
+        t_no = str(replacements.get("{{TENDER_NO}}") or replacements.get("tender_no") or "").strip()
+        t_name = str(replacements.get("{{TENDER_NAME}}") or replacements.get("tender_name") or "").strip()
+        if t_no:
+            text = re.sub(r'\{\{\s*tender\s*no\.?\s*\}\}', t_no, text, flags=re.IGNORECASE)
+            text = re.sub(r'\{\{\s*tender\s*number\s*\}\}', t_no, text, flags=re.IGNORECASE)
+        if t_name:
+            text = re.sub(r'\{\{\s*tender\s*name\s*\}\}', t_name, text, flags=re.IGNORECASE)
+
+        if place_val:
+            # Case-insensitive placeholders
+            text = re.sub(r'\{\{\s*place\s*\}\}', place_val, text, flags=re.IGNORECASE)
+            text = re.sub(r'\[\s*place\s*\]', place_val, text, flags=re.IGNORECASE)
+            text = re.sub(r'<\s*place\s*>', place_val, text, flags=re.IGNORECASE)
+            text = re.sub(r'\[MISSING:\s*.*?(?:place|location).*?\]', place_val, text, flags=re.IGNORECASE)
+            text = re.sub(r'(?i)(\bplace\s*:\s*)(?:(?!\bdate\b)[^\n\r\t])*(?=\bdate\b)', r'\g<1>' + place_val + '    ', text)
+            text = re.sub(r'(?i)(\bplace\s*:\s*)(?:(?!\bdate\b)[^\n\r\t])*', r'\g<1>' + place_val, text)
+            text = re.sub(r'(?i)(\bplace\s*:\s*)(?:' + place_val + r'\s*)+', r'Place: ' + place_val + ' ', text)
+
+        if date_val:
+            text = re.sub(r'\{\{\s*date\s*\}\}', date_val, text, flags=re.IGNORECASE)
+            text = re.sub(r'\{\{\s*closing_date\s*\}\}', date_val, text, flags=re.IGNORECASE)
+            text = re.sub(r'(?i)(\bdate\s*:\s*)[_]{2,}', r'\g<1>' + date_val, text)
+            text = re.sub(r'(?i)(\bdate\s*:\s*)[\.]{2,}', r'\g<1>' + date_val, text)
+            text = re.sub(r'(?i)(\bdate\s*)…+', r'\g<1>: ' + date_val, text)
+            text = re.sub(r'(?i)(\bdated\s*:\s*)[_]{2,}', r'\g<1>' + date_val, text)
+            text = re.sub(r'(?i)(\bdated\s*:\s*)[\.]{2,}', r'\g<1>' + date_val, text)
+            text = re.sub(r'\[MISSING:\s*.*?(?:date|closing date).*?\]', date_val, text, flags=re.IGNORECASE)
+
+        # Remove [Signature of ...] text placeholder
+        text = re.sub(r'\[Signature\s*(?:of\s*[^\]]*)?\]', '', text, flags=re.IGNORECASE)
+
+        # Remove any [MISSING: ...] tags for email, mobile, phone, telephone, fax, contact
+        text = re.sub(r'\[MISSING:\s*.*?(?:email|mobile|phone|telephone|fax|contact).*?\]', '', text, flags=re.IGNORECASE)
+
+        # Remove email and mobile lines in the signature / lower block
+        text = re.sub(r'(?i)^\s*(?:email(?:\s*address|\s*id)?|mobile(?:\s*no\.?|\s*number|\s*num\.?)?|telephone(?:\s*no\.?|\s*number)?|phone(?:\s*no\.?|\s*number)?|contact(?:\s*no\.?|\s*number)?)\s*:.*$(?:\n)?', '', text, flags=re.MULTILINE)
+
+        return text
+
+    for paragraph in doc.paragraphs:
+        safe_replace_text_in_paragraph(paragraph, replacer)
                     
     for table in doc.tables:
         for row in table.rows:
             for cell in row.cells:
                 for paragraph in cell.paragraphs:
-                    for key, value in replacements.items():
-                        if key in paragraph.text:
-                            for run in paragraph.runs:
-                                if key in run.text:
-                                    run.text = run.text.replace(key, str(value))
-                            if key in paragraph.text:
-                                paragraph.text = paragraph.text.replace(key, str(value))
-                                
-                    import re
-                    if "{{DATE}}" in replacements:
-                        date_val = str(replacements["{{DATE}}"])
-                        if re.search(r'(?i)\bdate\s*:\s*[_]{3,}', paragraph.text):
-                            paragraph.text = re.sub(r'(?i)(\bdate\s*:\s*)[_]{3,}', r'\1' + date_val, paragraph.text)
-                        if re.search(r'(?i)\bdate\s*:\s*[\.]{3,}', paragraph.text):
-                            paragraph.text = re.sub(r'(?i)(\bdate\s*:\s*)[\.]{3,}', r'\1' + date_val, paragraph.text)
-                        if re.search(r'(?i)\bdated\s*:\s*[_]{3,}', paragraph.text):
-                            paragraph.text = re.sub(r'(?i)(\bdated\s*:\s*)[_]{3,}', r'\1' + date_val, paragraph.text)
-                        if re.search(r'(?i)\bdated\s*:\s*[\.]{3,}', paragraph.text):
-                            paragraph.text = re.sub(r'(?i)(\bdated\s*:\s*)[\.]{3,}', r'\1' + date_val, paragraph.text)
+                    safe_replace_text_in_paragraph(paragraph, replacer)
                                 
     if signature_path and Path(signature_path).exists() and company_data:
-        # If the document already has images (inline shapes), assume it already contains a signature or letterhead
-        if len(doc.inline_shapes) > 0:
-            print("Document already contains an image (likely a signature or letterhead). Skipping signature insertion.")
+        # If the document already has images (drawings/pict), preserve it without inserting duplicate
+        if document_has_signature(doc):
+            print("Document already contains an image (likely a signature or letterhead). Skipping duplicate signature insertion.")
             inserted = True
         else:
             inserted = False
             
-        sig_keywords = ["signature of tenderer", "authorized signatory", "signature of the proprietor", "signature of bidder", "signature", "seal", "signatory"]
+        sig_keywords = ["signature of the tenderer", "signature of tenderer", "authorized signatory", "signature of the proprietor", "signature of bidder", "signature", "seal", "signatory"]
         signatory_name = company_data.get("signatory", {}).get("name", "")
         signatory_designation = company_data.get("signatory", {}).get("designation", "")
         company_name = company_data.get("company", {}).get("legal_name", "")
@@ -454,7 +626,9 @@ def fill_docx_template(template_path, output_path, replacements, signature_path=
                                         r.add_picture(str(signature_path), width=Inches(1.5))
                                     except:
                                         pass
-                                    paragraph.insert_paragraph_before(f"{signatory_name}\n{signatory_designation}\n{company_name}")
+                                    has_name_desig = any(w in p_lower for w in ["name:", "designation:", "name of", signatory_name.lower()])
+                                    if not has_name_desig:
+                                        paragraph.insert_paragraph_before(f"{signatory_name}\n{signatory_designation}\n{company_name}")
                                     inserted = True
                                     break
                         if inserted: break
@@ -474,8 +648,10 @@ def fill_docx_template(template_path, output_path, replacements, signature_path=
                         except Exception as e:
                             print(f"Error adding signature image: {e}")
                         
-                        info_p = paragraph.insert_paragraph_before(f"{signatory_name}\n{signatory_designation}\n{company_name}")
-                        info_p.style = paragraph.style
+                        has_name_desig = any(w in p_lower for w in ["name:", "designation:", "name of", signatory_name.lower()])
+                        if not has_name_desig:
+                            info_p = paragraph.insert_paragraph_before(f"{signatory_name}\n{signatory_designation}\n{company_name}")
+                            info_p.style = paragraph.style
                         inserted = True
                         break
                                     
@@ -538,7 +714,7 @@ def convert_to_pdf_if_docx(docx_path):
     return docx_path
 
 def get_tender_out_dir(tender_no, user_inputs, portal_type="ireps"):
-    plc = user_inputs.get("place") or "PLACE"
+    plc = user_inputs.get("place") or user_inputs.get("tender_place") or "PLACE"
     closing_dt = user_inputs.get("closing_date")
     
     import re
@@ -566,27 +742,35 @@ def get_tender_out_dir(tender_no, user_inputs, portal_type="ireps"):
         if t_safe:
             folder_name += f"_{t_safe}"
         folder_name += f"_{date_safe}"
+    elif portal_type.lower() == "nprocure":
+        prefix = "nProcure"
+        folder_name = f"{prefix}_{plc_safe}"
+        if t_safe:
+            folder_name += f"_{t_safe}"
+        folder_name += f"_{date_safe}"
     else:
         prefix = "Railway"
         folder_name = f"{prefix}_{plc_safe}_{date_safe}"
         if t_safe:
             folder_name += f"_{t_safe}"
         
-    return TENDERS_DIR / folder_name
+    base_mapping_dir = Path(r"C:\Users\DELL\Downloads\Doc mapping")
+    return base_mapping_dir / portal_type.lower() / folder_name
 
-def process_requirements(requirements_list, tender_no, catalog, is_excel=False, user_inputs=None, user_merges=None, dry_run=False, extra_pdfs=None, gcc_results=None, letterhead_path=None, custom_annexure_paths=None, portal_type="ireps", combine_flags=None):
+def process_requirements(requirements_list, tender_no, catalog, is_excel=False, user_inputs=None, user_merges=None, dry_run=False, extra_pdfs=None, gcc_results=None, letterhead_path=None, custom_annexure_paths=None, portal_type="ireps", combine_flags=None, user_declarations=None, user_doc_selections=None):
     if user_inputs is None: user_inputs = {}
     if user_merges is None: user_merges = {}
     if combine_flags is None: combine_flags = {}
     if extra_pdfs is None: extra_pdfs = {}
     if gcc_results is None: gcc_results = {}
+    if user_declarations is None: user_declarations = {}
+    if user_doc_selections is None: user_doc_selections = {}
     
     company_name = user_inputs.get("company_name", "AQUIANT INFRATELE INDIA PRIVATE LIMITED")
     
     tender_out_dir = get_tender_out_dir(tender_no, user_inputs, portal_type)
-    if not dry_run:
-        if not tender_out_dir.exists():
-            tender_out_dir.mkdir(parents=True, exist_ok=True)
+    if not tender_out_dir.exists():
+        tender_out_dir.mkdir(parents=True, exist_ok=True)
             
     api_key = os.environ.get("GEMINI_API_KEY")
     
@@ -602,7 +786,7 @@ def process_requirements(requirements_list, tender_no, catalog, is_excel=False, 
             needs_ai = True
             
     if needs_ai:
-        ai_mappings.update(map_requirements_batch(requirements_list, catalog))
+        ai_mappings.update(map_requirements_batch(requirements_list, catalog, portal_type=portal_type.lower()))
     
     results = {}
     missing_fields = set()
@@ -644,8 +828,14 @@ def process_requirements(requirements_list, tender_no, catalog, is_excel=False, 
         generated_pdf_paths = []
         
         line_lower = str(line).lower()
-        if 'letter head' in line_lower or 'letterhead' in line_lower:
-            needs_letterhead = True
+        if portal_type.lower() in ["gem", "nprocure"]:
+            lh_p = get_letterhead_path(company_name)
+            if not lh_p or not Path(lh_p).exists():
+                if 'letter head' in line_lower or 'letterhead' in line_lower:
+                    needs_letterhead = True
+        else:
+            if 'letter head' in line_lower or 'letterhead' in line_lower:
+                needs_letterhead = True
             
 
         
@@ -665,11 +855,32 @@ def process_requirements(requirements_list, tender_no, catalog, is_excel=False, 
             canonical_ids = map_with_keywords(line, catalog)
             if canonical_ids:
                 print(f"  [Keyword Mapper] matched: {canonical_ids}")
+                
+        if portal_type.lower() == "gem" and any(term in line_lower for term in ["bank guarantee", "emd", "bid security", "earnest money", "security deposit"]):
+            canonical_ids = ["STARTUP_CERTIFICATE"]
+            print("  [GeM EMD Override] Mapped to STARTUP_CERTIFICATE")
         
+        COMPULSORY_KEYWORDS = [
+            "certificate to be submitted",
+            "declaration form for relative",
+            "declaration for retired railway employees",
+            "power of attorney board resolution",
+            "statement of deviations",
+            "near relative",
+            "relative certificate"
+        ]
+        is_compulsory_fixed = (portal_type.lower() == "ireps") and (
+            any(ck in line_lower for ck in COMPULSORY_KEYWORDS) or
+            ("L1_DECLARATION" in canonical_ids) or
+            ("RETIRED_RAILWAY_EMPLOYEES" in canonical_ids) or
+            ("STATEMENT_OF_DEVIATIONS_1" in canonical_ids) or
+            ("CERTIFICATE_TO_BE_SUBMITTED" in canonical_ids)
+        )
+
         import re
         match = re.search(r'\b(form|annexure|appendix|proforma)\b[ \-]?([a-z0-9]+(?:\([a-z0-9]+\))?)\b', line_lower)
-        is_explicit_form = bool(match)
-        explicit_form_name = match.group(0).replace('-', ' ').replace('_', ' ') if match else None
+        is_explicit_form = bool(match) and not is_compulsory_fixed
+        explicit_form_name = match.group(0).replace('-', ' ').replace('_', ' ') if (match and not is_compulsory_fixed) else None
         
         if is_explicit_form and match:
             ignored_suffixes = {"of", "in", "to", "for", "and", "the", "a", "is", "as", "by", "on"}
@@ -677,21 +888,27 @@ def process_requirements(requirements_list, tender_no, catalog, is_excel=False, 
                 is_explicit_form = False
                 explicit_form_name = None
         
+        is_ireps = (portal_type.lower() == "ireps")
+        doc_enabled = True
+        if user_doc_selections and str(key) in user_doc_selections:
+            doc_enabled = bool(user_doc_selections[str(key)])
+
         # Check if the user uploaded a custom annexure for this explicitly
-        matched_custom_annexure = None
+        matched_custom_annexures = []
         if custom_annexure_paths:
             if isinstance(custom_annexure_paths, dict) and str(key) in custom_annexure_paths:
-                matched_custom_annexure = Path(custom_annexure_paths[str(key)][0])
+                matched_custom_annexures = [Path(p) for p in custom_annexure_paths[str(key)]]
             elif explicit_form_name and isinstance(custom_annexure_paths, list):
                 for p in custom_annexure_paths:
                     p_stem = Path(p).stem.lower().replace('-', ' ').replace('_', ' ')
                     if explicit_form_name in p_stem:
-                        matched_custom_annexure = Path(p)
+                        matched_custom_annexures.append(Path(p))
                         break
+        matched_custom_annexure = matched_custom_annexures[0] if matched_custom_annexures else None
             
         GENERIC_IDS = {"PRESCRIBED_FORMAT_CERT", "CERTIFICATE_TO_BE_SUBMITTED"}
         
-        if is_explicit_form and not matched_custom_annexure:
+        if is_explicit_form and not matched_custom_annexure and not is_compulsory_fixed:
             is_valid_annexure_v = explicit_form_name in ["annexure v", "annexure v a", "annexure va", "annexure v(a)", "annexure v (a)"]
             
             if str(key) in gcc_results and not is_valid_annexure_v:
@@ -720,61 +937,78 @@ def process_requirements(requirements_list, tender_no, catalog, is_excel=False, 
         needs_info = False
         _is_annex_v_and_va = False  # Tracks if this row is the combined Annexure-V + V(A) pair
         
-        if matched_custom_annexure:
+        if matched_custom_annexures:
             found = True
-            notes.append(f"Mapped to custom uploaded annexure: {matched_custom_annexure.name}")
-            print(f"  [+] Matched to custom upload: {matched_custom_annexure.name}")
-            if not dry_run:
-                try:
-                    dest_path = tender_out_dir / f"{idx + 1:02d}_{matched_custom_annexure.name}"
-                    shutil.copy(str(matched_custom_annexure), str(dest_path))
-                    if str(dest_path).lower().endswith(".docx"):
-                        from app.internal.intake.smart_filler import smart_fill_docx
-                        company_data = load_company_data(company_name)
-                        documents_dir = get_docs_dir(company_name)
-                        
-                        # Apply smart AI filling first
-                        result = smart_fill_docx(str(dest_path), company_data, documents_dir, user_inputs)
-                        
-                        # Apply regex-based date and signature injection
-                        company = company_data.get("company", {})
-                        signatory = company_data.get("signatory", {})
-                        statutory = company_data.get("statutory", {})
-                        replacements = {
-                            "{{COMPANY_NAME}}": user_inputs.get("company_name") or company.get("legal_name", "[COMPANY_NAME]"),
-                            "{{DIVISION}}": user_inputs.get("railway") or "[RAILWAY/DIVISION]",
-                            "{{DIVISON}}": user_inputs.get("railway") or "[RAILWAY/DIVISION]",
-                            "{{RAILWAY}}": user_inputs.get("railway") or "[RAILWAY/DIVISION]",
-                            "{{TENDER_NO}}": user_inputs.get("tender_no") or tender_no or "[TENDER_NO]",
-                            "{{TENDER_NAME}}": user_inputs.get("tender_name") or "[TENDER_NAME]",
-                            "{{PLACE}}": user_inputs.get("place") or company.get("registered_address", "Ahmedabad"),
-                            "{{DATE}}": user_inputs.get("closing_date") or str(datetime.date.today().strftime("%d/%m/%Y")),
-                            "{{DAYS}}": user_inputs.get("days") or "30",
-                            "{{SIGNATORY_NAME}}": user_inputs.get("signatory_name") or signatory.get("name", "[SIGNATORY_NAME]"),
-                            "{{SIGNATORY_DESIGNATION}}": user_inputs.get("signatory_designation") or signatory.get("designation", "[DESIGNATION]"),
-                            "{{ISSUING_AUTHORITY}}": user_inputs.get("issuing_authority") or "[ISSUING_AUTHORITY]",
-                            "{{BID_SECURITY_AMOUNT}}": user_inputs.get("bid_security_amount") or "[BID_SECURITY_AMOUNT]",
-                            "{{EXECUTE_CONTRACT_DAYS}}": user_inputs.get("execute_contract_days") or "7",
-                            "{{COMMENCE_WORK_DAYS}}": user_inputs.get("commence_work_days") or "15",
-                            "{{STARTUP_DEPT}}": user_inputs.get("startup_dept") or "[STARTUP_DEPT]",
-                            "{{STARTUP_REG_NO}}": user_inputs.get("startup_reg_no") or "[STARTUP_REG_NO]",
-                            "{{STARTUP_VALID_UPTO}}": user_inputs.get("startup_valid_upto") or "[STARTUP_VALID_UPTO]",
-                            "{{GSTIN}}": statutory.get("gstin") or "[GSTIN]",
-                        }
-                        sig_name = user_inputs.get("signatory_name", "")
-                        sig_path = get_signature_path(company_name, sig_name)
-                        fill_docx_template(dest_path, dest_path, replacements, signature_path=sig_path, company_data=company_data)
-                        
-                        final_pdf = convert_to_pdf_if_docx(dest_path)
-                        generated_pdf_paths.append(final_pdf)
-                        if result and result.get("success"):
-                            notes.append("Filled custom uploaded docx using AI and templates.")
+            for m_annex in matched_custom_annexures:
+                notes.append(f"Mapped to custom uploaded annexure: {m_annex.name}")
+                print(f"  [+] Matched to custom upload: {m_annex.name}")
+                if not dry_run and doc_enabled:
+                    try:
+                        dest_path = tender_out_dir / f"{idx + 1:02d}_{m_annex.name}"
+                        shutil.copy(str(m_annex), str(dest_path))
+                        if str(dest_path).lower().endswith(".docx"):
+                            from app.internal.intake.smart_filler import smart_fill_docx
+                            company_data = load_company_data(company_name)
+                            documents_dir = get_docs_dir(company_name)
+                            
+                            # Apply smart AI filling first
+                            result = smart_fill_docx(str(dest_path), company_data, documents_dir, user_inputs)
+                            
+                            # Apply regex-based date and signature injection
+                            company = company_data.get("company", {})
+                            signatory = company_data.get("signatory", {})
+                            statutory = company_data.get("statutory", {})
+                            replacements = {
+                                "{{COMPANY_NAME}}": user_inputs.get("company_name") or company.get("legal_name", "[COMPANY_NAME]"),
+                                "{{DIVISION}}": user_inputs.get("railway") or "[RAILWAY/DIVISION]",
+                                "{{DIVISON}}": user_inputs.get("railway") or "[RAILWAY/DIVISION]",
+                                "{{RAILWAY}}": user_inputs.get("railway") or "[RAILWAY/DIVISION]",
+                                "{{TENDER_NO}}": user_inputs.get("tender_no") or tender_no or "[TENDER_NO]",
+                                "{{TENDER_NAME}}": user_inputs.get("tender_name") or "[TENDER_NAME]",
+                                "{{PLACE}}": "Ahmedabad",
+                                "{{TENDER_PLACE}}": user_inputs.get("place") or "",
+                                "{{DATE}}": user_inputs.get("closing_date") or str(datetime.date.today().strftime("%d/%m/%Y")),
+                                "{{DAYS}}": user_inputs.get("days") or "30",
+                                "{{SIGNATORY_NAME}}": user_inputs.get("signatory_name") or signatory.get("name", "[SIGNATORY_NAME]"),
+                                "{{SIGNATORY_DESIGNATION}}": user_inputs.get("signatory_designation") or signatory.get("designation", "[DESIGNATION]"),
+                                "{{ISSUING_AUTHORITY}}": user_inputs.get("issuing_authority") or "[ISSUING_AUTHORITY]",
+                                "{{BID_SECURITY_AMOUNT}}": user_inputs.get("bid_security_amount") or "[BID_SECURITY_AMOUNT]",
+                                "{{EXECUTE_CONTRACT_DAYS}}": user_inputs.get("execute_contract_days") or "7",
+                                "{{COMMENCE_WORK_DAYS}}": user_inputs.get("commence_work_days") or "15",
+                                "{{STARTUP_DEPT}}": user_inputs.get("startup_dept") or "[STARTUP_DEPT]",
+                                "{{STARTUP_REG_NO}}": user_inputs.get("startup_reg_no") or "[STARTUP_REG_NO]",
+                                "{{STARTUP_VALID_UPTO}}": user_inputs.get("startup_valid_upto") or "[STARTUP_VALID_UPTO]",
+                                "{{GSTIN}}": statutory.get("gstin") or "[GSTIN]",
+                                "{{NEAR_RELATIONSHIP_TEXT}}": user_inputs.get("near_relationship_text") or "hereby certify that none of our relative(s) is/are employed in the concerned Railway / Department.",
+                            }
+                            sig_name = user_inputs.get("signatory_name", "")
+                            sig_path = get_signature_path(company_name, sig_name)
+                            fill_docx_template(dest_path, dest_path, replacements, signature_path=sig_path, company_data=company_data)
+                            
+                            if portal_type.lower() in ["gem", "nprocure"]:
+                                req_custom_lh = (result and result.get("needs_letterhead")) or is_letterhead_required("", m_annex.name) or is_letterhead_required("", line)
+                                if req_custom_lh:
+                                    lh_path = get_letterhead_path(company_name)
+                                    apply_letterhead_to_docx(dest_path, lh_path)
+                                    if not dest_path.stem.endswith("(LH)") and "(LH)" not in dest_path.name:
+                                        new_dest = dest_path.with_name(f"{dest_path.stem} (LH){dest_path.suffix}")
+                                        try:
+                                            dest_path.replace(new_dest)
+                                            dest_path = new_dest
+                                        except Exception:
+                                            pass
+                            
+                            final_pdf = convert_to_pdf_if_docx(dest_path)
+                            generated_pdf_paths.append(final_pdf)
+                            if result and result.get("success"):
+                                notes.append("Filled custom uploaded docx using AI and templates.")
+                            else:
+                                notes.append("Custom uploaded docx AI fill failed.")
                         else:
-                            notes.append("Custom uploaded docx AI fill failed.")
-                    else:
-                        generated_pdf_paths.append(dest_path)
-                except Exception as e:
-                    print(f"  [!] Failed to process custom uploaded doc: {e}")
+                            final_pdf = convert_to_pdf_if_docx(dest_path)
+                            generated_pdf_paths.append(final_pdf)
+                    except Exception as e:
+                        print(f"  [!] Failed to process custom uploaded doc: {e}")
         # Try to extract from GeM ATC regardless of canonical_ids if it's GeM, we don't already have gcc_results, and no custom upload was provided
         KYC_IDS = {"PAN_CARD", "GST_DECLARATION", "STARTUP_CERTIFICATE", "STARTUPS_CERTIFICATE", "BALANCE_SHEET", "TURNOVER_FORMAT", "MSME_CERTIFICATE", "PF_CERTIFICATE", "ESIC", "ITR", "INCORPORATION", "SOLVENCY", "DIRECTOR_LIST", "AOA_MOA", "MANDATE_FORM"}
         is_pure_kyc = bool(canonical_ids) and all(cid in KYC_IDS for cid in canonical_ids)
@@ -792,33 +1026,38 @@ def process_requirements(requirements_list, tender_no, catalog, is_excel=False, 
                 except Exception as e:
                     print(f"  [GeM] Failed to extract from ATC: {e}")
 
-        if str(key) in gcc_results:
-            raw_text = gcc_results[str(key)]
-            # If we extracted from ATC or GCC, prefer that over our generic static templates
+        if portal_type.lower() == "gem" and not is_compulsory_fixed and (str(key) in gcc_results or (is_explicit_form and not is_pure_kyc)):
             if canonical_ids and not matched_custom_annexure:
-                print(f"  [GeM] Overriding canonical_ids {canonical_ids} because explicit format was extracted.")
+                print(f"  [GeM] Overriding canonical_ids {canonical_ids} because explicit format was found/extracted.")
                 canonical_ids = []
                 
+        if str(key) in gcc_results:
+            raw_text = gcc_results[str(key)]
             print(f"  [GCC Extractor] Extracting raw form for row {key} without filling...")
             
             import re
             from docx import Document
             base_name = re.sub(r'[\\/*?:"<>|]', "", str(line))[:30].strip()
-            dest_docx = tender_out_dir / f"{idx + 1:02d}_{base_name}.docx"
             
-            if not dry_run:
+            req_lh = is_letterhead_required(raw_text, line)
+            lh_suffix = " (LH)" if req_lh else ""
+            dest_docx = tender_out_dir / f"{idx + 1:02d}_{base_name}{lh_suffix}.docx"
+            
+            if True:
                 try:
-                    doc = Document()
-                    for p in raw_text.split('\n'):
-                        if p.strip():
-                            doc.add_paragraph(p.strip())
-                    doc.save(str(dest_docx))
+                    if req_lh:
+                        lh_path = get_letterhead_path(company_name)
+                        doc = create_doc_from_letterhead(lh_path, dest_docx, raw_text)
+                        notes.append("Extracted form from ATC and created on Company Letterhead.")
+                        print(f"  [Letterhead] Created {dest_docx.name} using {lh_path.name}")
+                    else:
+                        doc = Document()
+                        for p in raw_text.split('\n'):
+                            if p.strip():
+                                doc.add_paragraph(p.strip())
+                        doc.save(str(dest_docx))
                     
-                    from app.internal.intake.smart_filler import smart_fill_docx
                     company_data = load_company_data(company_name)
-                    documents_dir = get_docs_dir(company_name)
-                    
-                    result = smart_fill_docx(str(dest_docx), company_data, documents_dir, user_inputs)
                     
                     company = company_data.get("company", {})
                     signatory = company_data.get("signatory", {})
@@ -830,7 +1069,8 @@ def process_requirements(requirements_list, tender_no, catalog, is_excel=False, 
                         "{{RAILWAY}}": user_inputs.get("railway") or "[RAILWAY/DIVISION]",
                         "{{TENDER_NO}}": user_inputs.get("tender_no") or tender_no or "[TENDER_NO]",
                         "{{TENDER_NAME}}": user_inputs.get("tender_name") or "[TENDER_NAME]",
-                        "{{PLACE}}": user_inputs.get("place") or company.get("registered_address", "Ahmedabad"),
+                        "{{PLACE}}": "Ahmedabad",
+                        "{{TENDER_PLACE}}": user_inputs.get("place") or "",
                         "{{DATE}}": user_inputs.get("closing_date") or str(datetime.date.today().strftime("%d/%m/%Y")),
                         "{{DAYS}}": user_inputs.get("days") or "30",
                         "{{SIGNATORY_NAME}}": user_inputs.get("signatory_name") or signatory.get("name", "[SIGNATORY_NAME]"),
@@ -843,26 +1083,48 @@ def process_requirements(requirements_list, tender_no, catalog, is_excel=False, 
                         "{{STARTUP_REG_NO}}": user_inputs.get("startup_reg_no") or "[STARTUP_REG_NO]",
                         "{{STARTUP_VALID_UPTO}}": user_inputs.get("startup_valid_upto") or "[STARTUP_VALID_UPTO]",
                         "{{GSTIN}}": statutory.get("gstin") or "[GSTIN]",
+                        "{{NEAR_RELATIONSHIP_TEXT}}": user_inputs.get("near_relationship_text") or "hereby certify that none of our relative(s) is/are employed in the concerned Railway / Department.",
                     }
                     sig_name = user_inputs.get("signatory_name", "")
                     sig_path = get_signature_path(company_name, sig_name)
                     fill_docx_template(dest_docx, dest_docx, replacements, signature_path=sig_path, company_data=company_data)
                     
-                    final_pdf = convert_to_pdf_if_docx(dest_docx)
-                    generated_pdf_paths.append(final_pdf)
+                    if portal_type.lower() in ["gem", "nprocure"]:
+                        from app.internal.intake.smart_filler import smart_fill_docx
+                        documents_dir = get_docs_dir(company_name)
+                        result = smart_fill_docx(str(dest_docx), company_data, documents_dir, user_inputs)
+                        if result and result.get("missing_questions"):
+                            for info in result.get("missing_questions"):
+                                missing_fields.add(info)
+                        if (result and result.get("needs_letterhead")) or req_lh or is_letterhead_required("", line):
+                            lh_path = get_letterhead_path(company_name)
+                            apply_letterhead_to_docx(dest_docx, lh_path)
+                            if not dest_docx.stem.endswith("(LH)") and "(LH)" not in dest_docx.name:
+                                new_dest = dest_docx.with_name(f"{dest_docx.stem} (LH){dest_docx.suffix}")
+                                try:
+                                    dest_docx.replace(new_dest)
+                                    dest_docx = new_dest
+                                except Exception:
+                                    pass
                     
-                    if result and result.get("success"):
-                        notes.append("Filled extracted form using AI from GCC.")
+                    if dry_run:
+                        final_file = dest_docx
                     else:
-                        notes.append("Extracted form from GCC. AI fill failed.")
+                        final_file = convert_to_pdf_if_docx(dest_docx)
+                    
+                    atc_id = "extracted_atc_" + final_file.name
+                    if dry_run or not user_merges or atc_id in user_merges.get(str(key), [atc_id]):
+                        generated_pdf_paths.append(final_file)
+                    else:
+                        print(f"  [-] Skipped ATC extracted form because it was unchecked: {final_file.name}")
+                    
+                    notes.append("Extracted form from GCC and applied signature (blanks left empty).")
                     found = True
                 except Exception as e:
                     print(f"  [!] Failed to extract and fill doc from GCC: {e}")
                     notes.append("Failed to extract doc from GCC")
                     found = False
-            else:
-                notes.append("Will extract and fill form from GCC")
-                found = True
+
         elif not canonical_ids and not matched_custom_annexure:
             print(f"  [!] Could not map requirement to catalog.")
             line_lower = str(line).lower()
@@ -877,7 +1139,7 @@ def process_requirements(requirements_list, tender_no, catalog, is_excel=False, 
                         needs_gcc_list.append({"row_key": str(key), "line": str(line)})
             else:
                 notes.append("not properly discription")
-        if dry_run and len(canonical_ids) > 0:
+        if dry_run:
             docs = []
             for cid in canonical_ids:
                 src_file = find_file_in_company_dir(cid, company_name)
@@ -890,12 +1152,22 @@ def process_requirements(requirements_list, tender_no, catalog, is_excel=False, 
                 else:
                     # If the file does not exist for this company, DO NOT fall back to Aquint's generic name
                     print(f"  [!] Missing file for {cid} for company {company_name}")
-            if docs:
-                proposed_merges.append({
-                    "row_key": str(key),
-                    "line": str(line),
-                    "docs": docs
+            import urllib.parse
+            for p in generated_pdf_paths:
+                f_url = f"/file?path={urllib.parse.quote(str(p.resolve()))}"
+                docs.append({
+                    "id": "extracted_atc_" + p.name,
+                    "name": "[Extracted Form] " + p.name,
+                    "url": f_url
                 })
+                
+            proposed_merges.append({
+                "row_key": str(key),
+                "line": str(line),
+                "description": str(line),
+                "docs": docs,
+                "has_doc": len(docs) > 0
+            })
         
         print(f"  => Mapped to: {', '.join(canonical_ids)}")
             
@@ -910,6 +1182,8 @@ def process_requirements(requirements_list, tender_no, catalog, is_excel=False, 
                     print(f"  [!] No file configured or found for {canonical_id} in {company_name}")
                     notes.append(f"{canonical_id}: no file configured")
                 elif src_file:
+                    if not dry_run and not doc_enabled:
+                        continue
                     compulsory_reqs = [
                         "certificate to be submitted",
                         "declaration form for relative",
@@ -917,7 +1191,7 @@ def process_requirements(requirements_list, tender_no, catalog, is_excel=False, 
                         "power of attorney board resolution",
                         "statement of deviations"
                     ]
-                    if str(line).lower().strip() in compulsory_reqs:
+                    if is_compulsory_fixed or any(c in str(line).lower().strip() for c in compulsory_reqs) or canonical_id == "L1_DECLARATION":
                         import re
                         base_name = src_file.stem
                         base_name = re.sub(r'^\d+[\._]\s*', '', base_name).strip()
@@ -939,7 +1213,7 @@ def process_requirements(requirements_list, tender_no, catalog, is_excel=False, 
                     elif entry.get("category") == "B":
                         notes.append(f"{canonical_id}: document edit")
                         if dry_run:
-                            company_data = load_company_data(portal_type)
+                            company_data = load_company_data(company_name)
                             company = company_data.get("company", {})
                             signatory = company_data.get("signatory", {})
                             statutory = company_data.get("statutory", {})
@@ -949,7 +1223,7 @@ def process_requirements(requirements_list, tender_no, catalog, is_excel=False, 
                                 if "TENDER_NAME" in placeholders and not user_inputs.get("tender_name"): missing_fields.add("tender_name")
                                 if "ISSUING_AUTHORITY" in placeholders and not user_inputs.get("issuing_authority"): missing_fields.add("issuing_authority")
                                 if "DATE" in placeholders and not user_inputs.get("closing_date"): missing_fields.add("closing_date")
-                                if "PLACE" in placeholders and not user_inputs.get("place") and not company.get("registered_address"): missing_fields.add("place")
+                                if "PLACE" in placeholders and not user_inputs.get("place"): missing_fields.add("place")
                                 if "COMPANY_NAME" in placeholders and not user_inputs.get("company_name") and not company.get("legal_name"): missing_fields.add("company_name")
                                 if "DIVISON" in placeholders and not user_inputs.get("railway"): missing_fields.add("railway")
                                 if "RAILWAY" in placeholders and not user_inputs.get("railway"): missing_fields.add("railway")
@@ -978,7 +1252,8 @@ def process_requirements(requirements_list, tender_no, catalog, is_excel=False, 
                                 "{{RAILWAY}}": user_inputs.get("railway") or "[RAILWAY/DIVISION]",
                                 "{{TENDER_NO}}": user_inputs.get("tender_no") or tender_no or "[TENDER_NO]",
                                 "{{TENDER_NAME}}": user_inputs.get("tender_name") or "[TENDER_NAME]",
-                                "{{PLACE}}": user_inputs.get("place") or company.get("registered_address", "Ahmedabad"),
+                                "{{PLACE}}": "Ahmedabad",
+                                "{{TENDER_PLACE}}": user_inputs.get("place") or "",
                                 "{{DATE}}": user_inputs.get("closing_date") or str(datetime.date.today().strftime("%d/%m/%Y")),
                                 "{{DAYS}}": user_inputs.get("days") or "30",
                                 "{{SIGNATORY_NAME}}": user_inputs.get("signatory_name") or signatory.get("name", "[SIGNATORY_NAME]"),
@@ -997,6 +1272,7 @@ def process_requirements(requirements_list, tender_no, catalog, is_excel=False, 
                                 "{{ACCOUNT_NUMBER}}": statutory.get("account_number") or "[ACCOUNT_NUMBER]",
                                 "{{IFSC_CODE}}": statutory.get("ifsc_code") or "[IFSC_CODE]",
                                 "{{MICR_CODE}}": statutory.get("micr_code") or "[MICR_CODE]",
+                                "{{NEAR_RELATIONSHIP_TEXT}}": user_inputs.get("near_relationship_text") or "hereby certify that none of our relative(s) is/are employed in the concerned Railway / Department.",
                             }
                             sig_name = user_inputs.get("signatory_name", "")
                             sig_path = get_signature_path(company_name, sig_name)
@@ -1043,7 +1319,7 @@ def process_requirements(requirements_list, tender_no, catalog, is_excel=False, 
             sub_idx += 1
                 
         # Now append any manual extra PDFs/DOCX uploaded by the user for this row
-        if str(key) in extra_pdfs:
+        if str(key) in extra_pdfs and (doc_enabled or not is_ireps):
             for manual_file_path in extra_pdfs[str(key)]:
                 manual_path = Path(manual_file_path)
                 if manual_path.suffix.lower() in ('.docx', '.doc'):
@@ -1060,7 +1336,8 @@ def process_requirements(requirements_list, tender_no, catalog, is_excel=False, 
                         "{{RAILWAY}}": user_inputs.get("railway") or "[RAILWAY/DIVISION]",
                         "{{TENDER_NO}}": user_inputs.get("tender_no") or tender_no or "[TENDER_NO]",
                         "{{TENDER_NAME}}": user_inputs.get("tender_name") or "[TENDER_NAME]",
-                        "{{PLACE}}": user_inputs.get("place") or company.get("registered_address", "Ahmedabad"),
+                        "{{PLACE}}": "Ahmedabad",
+                        "{{TENDER_PLACE}}": user_inputs.get("place") or "",
                         "{{DATE}}": user_inputs.get("closing_date") or str(datetime.date.today().strftime("%d/%m/%Y")),
                         "{{DAYS}}": user_inputs.get("days") or "30",
                         "{{SIGNATORY_NAME}}": user_inputs.get("signatory_name") or signatory.get("name", "[SIGNATORY_NAME]"),
@@ -1082,6 +1359,52 @@ def process_requirements(requirements_list, tender_no, catalog, is_excel=False, 
                 generated_pdf_paths.append(manual_path)
                 found = True
 
+        # Declaration Generation (IREPS, GeM, nProcure)
+        decl_tmp_created = None
+        is_temp_decl = False
+        if not dry_run:
+            decl_conf = (user_declarations or {}).get(str(key), {})
+            decl_enabled = bool(decl_conf.get("enabled", False)) if isinstance(decl_conf, dict) else bool(decl_conf)
+            decl_text = decl_conf.get("text", "") if isinstance(decl_conf, dict) else ""
+            existing_pdf = decl_conf.get("pdf_path") if isinstance(decl_conf, dict) else None
+            
+            if decl_enabled:
+                if existing_pdf and Path(existing_pdf).exists():
+                    decl_pdf_path = Path(existing_pdf)
+                    generated_pdf_paths.append(decl_pdf_path)
+                    decl_tmp_created = decl_pdf_path
+                    is_temp_decl = False
+                    found = True
+                    notes.append("Attached legal declaration")
+                    print(f"  [+] Attached pre-created declaration: {decl_pdf_path.name}")
+                else:
+                    print(f"  [IREPS Declaration] Generating declaration for row {key}...")
+                    try:
+                        from app.internal.intake.declaration_generator import generate_declaration_for_requirement
+                        import app.core.config as config
+                        import uuid
+                        decl_temp_name = f"decl_{uuid.uuid4().hex[:8]}_{str(key)}.pdf"
+                        decl_pdf_path = config.DOWNLOADS_DIR / decl_temp_name
+                        
+                        generate_declaration_for_requirement(
+                            description=str(line),
+                            user_custom_text=decl_text,
+                            company_name=company_name,
+                            tender_no=tender_no,
+                            user_inputs=user_inputs,
+                            output_pdf_path=decl_pdf_path
+                        )
+                        
+                        if decl_pdf_path.exists():
+                            generated_pdf_paths.append(decl_pdf_path)
+                            decl_tmp_created = decl_pdf_path
+                            is_temp_decl = True
+                            found = True
+                            notes.append("Generated legal declaration")
+                            print(f"  [+] Generated declaration: {decl_pdf_path.name}")
+                    except Exception as e:
+                        print(f"  [!] Failed to generate declaration for row {key}: {e}")
+                        notes.append(f"Declaration generation error: {e}")
                 
         if not dry_run and generated_pdf_paths:
             do_combine = False
@@ -1097,7 +1420,11 @@ def process_requirements(requirements_list, tender_no, catalog, is_excel=False, 
                     try:
                         if single_doc.parent != tender_out_dir:
                             import re
-                            base_n = f"{(idx + 1):02d}_" + re.sub(r'[\\/*?:"<>|]', '', str(line))[:30].strip()
+                            clean_req = re.sub(r'[\\/*?:"<>|]', '', str(line))[:30].strip()
+                            if decl_tmp_created and single_doc == decl_tmp_created:
+                                base_n = f"{(idx + 1):02d}_Declaration_{clean_req}"
+                            else:
+                                base_n = f"{(idx + 1):02d}_{clean_req}"
                             if len(generated_pdf_paths) > 1:
                                 base_n += f"_{sub_i+1}"
                             dest_path = tender_out_dir / f"{base_n}{single_doc.suffix}"
@@ -1184,6 +1511,12 @@ def process_requirements(requirements_list, tender_no, catalog, is_excel=False, 
                     for pdf_path in generated_pdf_paths:
                         upload_nums.append(pdf_path.name)
                 
+        if decl_tmp_created and is_temp_decl and decl_tmp_created.exists():
+            try:
+                decl_tmp_created.unlink()
+            except Exception:
+                pass
+
         results[key] = {
             "found": found, 
             "notes": " | ".join(notes), 

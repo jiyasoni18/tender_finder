@@ -4,6 +4,7 @@ import Home from "./Home";
 import TenderFinder from "./TenderFinder";
 import SummaryCreation from "./SummaryCreation";
 import DocCreation from "./DocCreation";
+import LarkUpload from "./LarkUpload";
 import "./App.css";
 
 export default function App() {
@@ -27,6 +28,9 @@ export default function App() {
             <NavLink to="/mapping" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>
               📑 Doc Mapping
             </NavLink>
+            <NavLink to="/lark-upload" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>
+              📤 Lark Upload
+            </NavLink>
           </div>
         </nav>
 
@@ -36,6 +40,7 @@ export default function App() {
             <Route path="/finder" element={<TenderFinder />} />
             <Route path="/summary" element={<SummaryCreation />} />
             <Route path="/mapping" element={<DocCreation />} />
+            <Route path="/lark-upload" element={<LarkUpload />} />
           </Routes>
         </div>
       </div>

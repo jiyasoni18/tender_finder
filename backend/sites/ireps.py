@@ -371,7 +371,7 @@ class IrepsScraper(BaseScraper):
         safe_id = "".join(c if c.isalnum() or c in "-_" else "_" for c in folder_name)[:150]
         
         import app.core.config as config
-        base_dir = config.DOWNLOADS_DIR
+        base_dir = config.DOWNLOADS_DIR / self.name
         dest_dir = base_dir / safe_id
         dest_dir.mkdir(parents=True, exist_ok=True)
         

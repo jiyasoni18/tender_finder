@@ -68,7 +68,7 @@ class BaseScraper(abc.ABC):
     # -- shared helpers ---------------------------------------------------- #
     def download(self, listing: Listing) -> TenderDoc:
         """Fetch the PDF and wrap everything in a TenderDoc for Queue A."""
-        tender_folder = config.DOWNLOADS_DIR / _safe(listing.doc_id)
+        tender_folder = config.DOWNLOADS_DIR / self.name / _safe(listing.doc_id)
         tender_folder.mkdir(parents=True, exist_ok=True)
         dest = tender_folder / f"{self.name}_{_safe(listing.doc_id)}.pdf"
         path = self.fetch_pdf(listing, dest)

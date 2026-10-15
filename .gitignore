@@ -3,8 +3,11 @@
 # -----------------------------------------------------------------------------
 .DS_Store
 Thumbs.db
+desktop.ini
+.directory
 .vscode/
 .idea/
+.cursor/
 *.swp
 *.swo
 
@@ -24,6 +27,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 .venv/
+backend/.venv/
 venv/
 env/
 ENV/
@@ -33,9 +37,11 @@ ENV/
 htmlcov/
 *.sqlite3
 *.db
+**/.model_state
 
 # Backend - Runtime & Temporary Artifacts
 backend/downloads/
+downloads/
 backend/rejected/
 backend/completed/
 backend/logs/
@@ -44,15 +50,18 @@ backend/.state/*
 !backend/.state/td_auth.json
 !backend/.state/ireps_auth.json
 
-# Backend - Debug Files
+# Backend - Debug & Generated Files
 backend/*.html
 backend/*.png
 backend/*.pdf
+Generated_Requirements_*.xlsx
 
 # -----------------------------------------------------------------------------
 # Frontend (Node/React/Vite)
 # -----------------------------------------------------------------------------
+node_modules/
 frontend/node_modules/
+dist/
 frontend/dist/
 frontend/dist-ssr/
 frontend/*.local
@@ -60,16 +69,20 @@ frontend/.npm
 frontend/coverage/
 
 # -----------------------------------------------------------------------------
-# General Logs
+# General Logs & Temporary Artifacts
 # -----------------------------------------------------------------------------
 *.log
+logs/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+*.tmp
+*.bak
+scratch/
 
 # -----------------------------------------------------------------------------
-# Temporary & Scratch Files
+# Temporary & Scratch Scripts
 # -----------------------------------------------------------------------------
 backend/patch_*.py
 backend/test_*.py
@@ -79,10 +92,14 @@ backend/force_*.py
 backend/check_*.py
 backend/final_*.py
 fix_*.py
+test_*.py
+scratch_*.py
 
+# -----------------------------------------------------------------------------
+# Proprietary Documents & Library Media
+# -----------------------------------------------------------------------------
 aquint/
 arkonic/
 backend/documents railway/
 *.pdf
 *.docx
-

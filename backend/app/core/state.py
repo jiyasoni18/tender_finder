@@ -36,6 +36,9 @@ class Pipeline:
         return self.stop_event.is_set()
 
 
+from app.core.excel_ledger import sync_excel_ledger_blocking
+import time
+
 class Ledger:
     """
     Thread-safe dedup record backed by the database.
@@ -48,6 +51,17 @@ class Ledger:
         init_db()
         _seen, _completed = self._load_counts()
         log.info("Loaded ledger from DB: %d seen, %d completed", _seen, _completed)
+        
+        # Start background thread to sync to Excel month-wise
+        threading.Thread(target=self._excel_sync_loop, daemon=True, name="excel-sync-loop").start()
+
+    def _excel_sync_loop(self) -> None:
+        while True:
+            time.sleep(60)
+            try:
+                sync_excel_ledger_blocking()
+            except Exception as e:
+                log.error(f"Error in excel sync loop: {e}")
 
     def _load_counts(self) -> tuple[int, int]:
         with get_session() as db:

@@ -54,27 +54,56 @@ def fill_docx_template_global(template_path, output_path, replacements, signatur
     except ImportError:
         shutil.copy2(template_path, output_path)
         return
+    import re
     try:
         doc = Document(template_path)
-        for paragraph in doc.paragraphs:
+        place_val = "Ahmedabad"
+        date_val = str(replacements.get("{{DATE}}") or replacements.get("{{CLOSING_DATE}}") or replacements.get("date") or "").strip()
+
+        def process_p(p):
             for key, value in replacements.items():
-                if key in paragraph.text:
-                    for run in paragraph.runs:
+                if key in p.text:
+                    for run in p.runs:
                         if key in run.text:
                             run.text = run.text.replace(key, str(value))
-                    if key in paragraph.text:
-                        paragraph.text = paragraph.text.replace(key, str(value))
+                    if key in p.text:
+                        p.text = p.text.replace(key, str(value))
+
+            if place_val:
+                p.text = re.sub(r'\{\{\s*place\s*\}\}', place_val, p.text, flags=re.IGNORECASE)
+                p.text = re.sub(r'\[\s*place\s*\]', place_val, p.text, flags=re.IGNORECASE)
+                p.text = re.sub(r'<\s*place\s*>', place_val, p.text, flags=re.IGNORECASE)
+                p.text = re.sub(r'\[MISSING:\s*.*?(?:place|location).*?\]', place_val, p.text, flags=re.IGNORECASE)
+                p.text = re.sub(r'(?i)(\bplace\s*:\s*)(?:(?!\bdate\b)[^\n\r\t])*(?=\bdate\b)', r'\g<1>' + place_val + '    ', p.text)
+                p.text = re.sub(r'(?i)(\bplace\s*:\s*)(?:(?!\bdate\b)[^\n\r\t])*', r'\g<1>' + place_val, p.text)
+                p.text = re.sub(r'(?i)(\bplace\s*:\s*)(?:' + place_val + r'\s*)+', r'Place: ' + place_val + ' ', p.text)
+
+            if date_val:
+                p.text = re.sub(r'\{\{\s*date\s*\}\}', date_val, p.text, flags=re.IGNORECASE)
+                p.text = re.sub(r'\{\{\s*closing_date\s*\}\}', date_val, p.text, flags=re.IGNORECASE)
+                p.text = re.sub(r'(?i)(\bdate\s*:\s*)[_]{2,}', r'\g<1>' + date_val, p.text)
+                p.text = re.sub(r'(?i)(\bdate\s*:\s*)[\.]{2,}', r'\g<1>' + date_val, p.text)
+                p.text = re.sub(r'(?i)(\bdate\s*)…+', r'\g<1>: ' + date_val, p.text)
+                p.text = re.sub(r'(?i)(\bdated\s*:\s*)[_]{2,}', r'\g<1>' + date_val, p.text)
+                p.text = re.sub(r'(?i)(\bdated\s*:\s*)[\.]{2,}', r'\g<1>' + date_val, p.text)
+                p.text = re.sub(r'\[MISSING:\s*.*?(?:date|closing date).*?\]', date_val, p.text, flags=re.IGNORECASE)
+
+            # Remove [Signature of ...] text placeholder
+            p.text = re.sub(r'\[Signature\s*(?:of\s*[^\]]*)?\]', '', p.text, flags=re.IGNORECASE)
+
+            # Remove any [MISSING: ...] tags for email, mobile, phone, telephone, fax, contact
+            p.text = re.sub(r'\[MISSING:\s*.*?(?:email|mobile|phone|telephone|fax|contact).*?\]', '', p.text, flags=re.IGNORECASE)
+
+            # Remove email and mobile lines in the signature / lower block
+            p.text = re.sub(r'(?i)^\s*(?:email(?:\s*address|\s*id)?|mobile(?:\s*no\.?|\s*number|\s*num\.?)?|telephone(?:\s*no\.?|\s*number)?|phone(?:\s*no\.?|\s*number)?|contact(?:\s*no\.?|\s*number)?)\s*:.*$(?:\n)?', '', p.text, flags=re.MULTILINE)
+
+        for paragraph in doc.paragraphs:
+            process_p(paragraph)
         for table in doc.tables:
             for row in table.rows:
                 for cell in row.cells:
                     for paragraph in cell.paragraphs:
-                        for key, value in replacements.items():
-                            if key in paragraph.text:
-                                for run in paragraph.runs:
-                                    if key in run.text:
-                                        run.text = run.text.replace(key, str(value))
-                                if key in paragraph.text:
-                                    paragraph.text = paragraph.text.replace(key, str(value))
+                        process_p(paragraph)
         doc.save(output_path)
     except Exception as e:
         logging.error(f"Error filling {template_path}: {e}")
@@ -301,6 +330,33 @@ async def upload_ireps_session(file: UploadFile = File(...)):
     except Exception as e:
         return {"status": "error", "message": f"Upload failed: {e}"}
 
+from fastapi import Form
+import shutil
+
+@app.post("/api/upload-lark")
+async def upload_lark(
+    file: UploadFile = File(...),
+    custom_rows: str = Form("")
+):
+    try:
+        temp_dir = config.BASE_DIR / "temp"
+        temp_dir.mkdir(exist_ok=True)
+        temp_path = temp_dir / file.filename
+        
+        with open(temp_path, "wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+            
+        from app.lark_upload import process_lark_upload
+        result = process_lark_upload(str(temp_path), custom_rows)
+        
+        # Clean up temp file
+        if temp_path.exists():
+            temp_path.unlink()
+            
+        return result
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
 @app.get("/api/analytics")
 async def get_analytics():
     """Return data for Rejection Reasons and Department breakdowns."""
@@ -374,10 +430,16 @@ async def get_results():
                 original_docs.append(url)
 
         # Fallback: scan default DOWNLOADS_DIR sub-folder
-        tender_dir = config.DOWNLOADS_DIR / tender_id
+        source = row.get("source", "")
+        tender_dir = config.DOWNLOADS_DIR / source / tender_id
+        if not tender_dir.is_dir():
+            tender_dir = config.DOWNLOADS_DIR / tender_id
+            
         if tender_dir.is_dir():
             for f in tender_dir.iterdir():
-                url = f"/downloads/{tender_id}/{f.name}"
+                # Since URL path expects relative to DOWNLOADS_DIR, we compute it correctly
+                rel_path = f.relative_to(config.DOWNLOADS_DIR).as_posix()
+                url = f"/downloads/{rel_path}"
                 if f.name.startswith("Summary_") and f.name.endswith(".pdf"):
                     if not details_pdf:
                         details_pdf = url

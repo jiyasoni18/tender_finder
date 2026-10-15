@@ -216,8 +216,8 @@ body {
 }
 
 .refresh-btn {
-  width: 100%;
-  padding: 0.6rem;
+  width: auto;
+  padding: 0.5rem 1rem;
   background: none;
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -644,16 +644,17 @@ body {
 
 /* Phase 2 & 3 Containers */
 .phase-container {
-  max-width: 800px;
-  margin: 40px auto;
+  max-width: 980px;
+  width: 95%;
+  margin: 30px auto;
   background: var(--surface);
-  border-radius: 2px;
+  border-radius: 8px;
   box-shadow: var(--shadow-md);
-  overflow: hidden;
+  overflow: visible;
   border: 1px solid var(--border);
 }
 .phase-content {
-  padding: 30px;
+  padding: 28px 24px;
   text-align: center;
 }
 .file-input {

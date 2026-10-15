@@ -111,14 +111,20 @@ export default function TenderFinder() {
 
   useEffect(() => { if (logEndRef.current) logEndRef.current.scrollIntoView({ behavior: "smooth" }); }, [logs]);
 
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
   // Fetch Results
   const fetchResults = async () => {
+    setIsRefreshing(true);
     try {
       const res = await fetch(`${API_BASE}/api/results`, { cache: "no-store" });
       const data = await res.json();
       setResults(data);
       return data;
     } catch (e) { console.error(e); return []; }
+    finally {
+      setIsRefreshing(false);
+    }
   };
   
   useEffect(() => { fetchResults(); }, []);
@@ -134,7 +140,11 @@ export default function TenderFinder() {
           setIsScraping(false);
           fetchResults().then(resData => {
             if (resData && resData.length > 0) {
-              const confirmSummary = window.confirm(`Can I create a summary for the in-range ${resData.length} document(s) now?`);
+              const unsummarizedCount = resData.filter(t => !t.details_pdf).length;
+              const promptMsg = unsummarizedCount > 0 
+                ? `Finished scraping! Can I run the AI to generate summaries for the ${unsummarizedCount} unprocessed document(s) in your database?`
+                : `Finished scraping! Do you want to run the AI summary batch job on the ${resData.length} in-range document(s)?`;
+              const confirmSummary = window.confirm(promptMsg);
               if (confirmSummary) {
                 fetch(`${API_BASE}/api/summary/batch`, { method: "POST" })
                   .then(() => alert("Batch summary generation started in the background! Summaries will appear when you refresh."))
@@ -295,7 +305,9 @@ export default function TenderFinder() {
         <div className="table-pane">
           <div className="table-header">
             <h2>{activePortal === "1" ? "IREPS" : activePortal === "2" ? "Tender Detail" : activePortal === "3" ? "nProcure" : "GEM"} Tenders</h2>
-            <button className="refresh-btn" onClick={fetchResults}>↻ Refresh</button>
+            <button className="refresh-btn" onClick={fetchResults} disabled={isRefreshing}>
+              {isRefreshing ? "↻ Refreshing..." : "↻ Refresh"}
+            </button>
           </div>
           <TenderTable results={results} activePortal={activePortal} />
         </div>

@@ -51,12 +51,15 @@ def generate_custom_doc_from_text(raw_text, tender_no, user_inputs, company_data
     signatory = company_data.get("signatory", {})
     statutory = company_data.get("statutory", {})
     
+    issuing_auth = user_inputs.get("issuing_authority") or user_inputs.get("railway", "")
+    railway_val = user_inputs.get("railway") or issuing_auth
+
     # Construct context for Gemini
     context = f"""
     Tender No: {tender_no}
     Tender Name: {user_inputs.get("tender_name", "")}
-    Railway/Division: {user_inputs.get("railway", "")}
-    Issuing Authority: {user_inputs.get("issuing_authority", "")}
+    Railway/Division: {railway_val}
+    Issuing Authority / Office: {issuing_auth}
     
     Company Legal Name: {company.get("legal_name", "")}
     Company Address: {company.get("registered_address", "")}
@@ -157,26 +160,69 @@ def generate_custom_doc_from_text(raw_text, tender_no, user_inputs, company_data
 
     # Deterministic check for letterhead requirement
     requires_letterhead = "letterhead" in raw_text.lower() or "letter head" in raw_text.lower()
+    
+    from app.internal.intake.intake import get_letterhead_path
+    company_name = user_inputs.get("company_name") or company_data.get("company", {}).get("legal_name", "")
+    if not letterhead_path or not Path(letterhead_path).exists():
+        letterhead_path = get_letterhead_path(company_name)
         
     # Create Document
-    doc = Document()
-    
-    # Insert Letterhead if required and available
     if requires_letterhead and letterhead_path and Path(letterhead_path).exists():
-        try:
-            section = doc.sections[0]
-            header = section.header
-            header_para = header.paragraphs[0]
-            run = header_para.add_run()
-            run.add_picture(str(letterhead_path), width=Inches(6.0)) # Adjust width as needed
-        except Exception as e:
-            print(f"Failed to insert letterhead: {e}")
+        if Path(letterhead_path).suffix.lower() == ".docx":
+            import docx
+            doc = docx.Document(str(letterhead_path))
+            body = doc._element.body
+            sectPr = body.xpath('./w:sectPr')
+            body.clear_content()
+            if sectPr:
+                body.append(sectPr[0])
+        else:
+            doc = Document()
+            try:
+                section = doc.sections[0]
+                header = section.header
+                header_para = header.paragraphs[0]
+                run = header_para.add_run()
+                run.add_picture(str(letterhead_path), width=Inches(6.0))
+            except Exception as e:
+                print(f"Failed to insert letterhead: {e}")
+    else:
+        doc = Document()
             
+    import re
+    place_val = user_inputs.get("place") or "Ahmedabad"
+    date_val = user_inputs.get("closing_date") or user_inputs.get("date") or datetime.date.today().strftime('%d/%m/%Y')
+
+    def resolve_gcc_text(txt: str) -> str:
+        if not txt: return txt
+        if issuing_auth:
+            txt = re.sub(r'\[MISSING:\s*.*?(?:issuing authority|authority|office).*?\]', issuing_auth, txt, flags=re.IGNORECASE)
+        if railway_val:
+            txt = re.sub(r'\[MISSING:\s*.*?(?:railway|division).*?\]', railway_val, txt, flags=re.IGNORECASE)
+        if tender_no:
+            txt = re.sub(r'\[MISSING:\s*.*?(?:tender no|tender number).*?\]', str(tender_no), txt, flags=re.IGNORECASE)
+        if place_val:
+            txt = re.sub(r'\[MISSING:\s*.*?(?:place|location).*?\]', place_val, txt, flags=re.IGNORECASE)
+            txt = re.sub(r'\{\{\s*place\s*\}\}', place_val, txt, flags=re.IGNORECASE)
+            txt = re.sub(r'\[\s*place\s*\]', place_val, txt, flags=re.IGNORECASE)
+            txt = re.sub(r'<\s*place\s*>', place_val, txt, flags=re.IGNORECASE)
+            txt = re.sub(r'(?i)(\bplace\s*:\s*)(?:Ahmedabad|Ahmedebad|New Delhi|Vadodara|Kolkata|Mumbai|Chennai)\b', r'\g<1>' + place_val, txt)
+            txt = re.sub(r'(?i)(\bplace\s*:\s*)[_]{2,}', r'\g<1>' + place_val, txt)
+            txt = re.sub(r'(?i)(\bplace\s*:\s*)[\.]{2,}', r'\g<1>' + place_val, txt)
+            txt = re.sub(r'(?i)(\bplace\s*)…+', r'\g<1>: ' + place_val, txt)
+            txt = re.sub(r'(?i)(\bplace\s*:\s*)$', r'\g<1>' + place_val, txt)
+        if date_val:
+            txt = re.sub(r'\[MISSING:\s*.*?(?:date|closing date).*?\]', date_val, txt, flags=re.IGNORECASE)
+            txt = re.sub(r'\{\{\s*date\s*\}\}', date_val, txt, flags=re.IGNORECASE)
+            txt = re.sub(r'(?i)(\bdate\s*:\s*)[_]{2,}', r'\g<1>' + date_val, txt)
+            txt = re.sub(r'(?i)(\bdate\s*:\s*)[\.]{2,}', r'\g<1>' + date_val, txt)
+        return txt
+
     # Add the filled text via blocks
     for block in blocks:
         btype = block.get("type")
         if btype == "paragraph":
-            text = block.get("text", "").strip()
+            text = resolve_gcc_text(block.get("text", "").strip())
             if text:
                 p = doc.add_paragraph(text)
                 if any(kw in text.lower() for kw in ["signature", "signatory", "seal"]):

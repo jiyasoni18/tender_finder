@@ -325,7 +325,7 @@ class TenderDetailScraper(BaseScraper):
                     return None
             
             import app.core.config as config
-            tender_folder = config.DOWNLOADS_DIR / safe_combined
+            tender_folder = config.DOWNLOADS_DIR / self.name / safe_combined
             tender_folder.mkdir(parents=True, exist_ok=True)
             
             # Create a summary PDF of the details page

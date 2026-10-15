@@ -29,16 +29,69 @@ def call_gemini_with_retry(client, prompt, max_retries=6):
                 increment_model_idx()
             else:
                 raise e
+
 def extract_form_name(line_text):
-    match = re.search(r'\b(form|annexure|appendix|proforma)[ \-]?([a-z0-9]+)\b', line_text, re.IGNORECASE)
+    match = re.search(r'\b(form|annexure|appendix|proforma)[\s\W_]+([a-z0-9]+)\b', line_text, re.IGNORECASE)
     if match:
-        return match.group(0).strip()
+        return f"{match.group(1).strip()} {match.group(2).strip()}"
     return line_text.strip()
+
+def find_best_page_by_header(doc, line_text):
+    match = re.search(r'\b(form|annexure|appendix|proforma)[\s\W_]+([a-z0-9]+(?:\([a-z0-9]+\))?)\b', line_text, re.IGNORECASE)
+    if not match:
+        return -1
+    prefix, num = match.group(1), match.group(2)
+    pattern = rf'\b{re.escape(prefix)}[\s\-_]*{re.escape(num)}\b'
+    candidates = []
+    for i, page in enumerate(doc):
+        text = page.get_text()
+        matches = list(re.finditer(pattern, text, re.IGNORECASE))
+        if matches:
+            t_lower = text.lower()
+            is_toc_or_checklist = any(w in t_lower for w in [
+                'list of the documents', 'list of documents', 'checklist', 
+                'table of contents', 'documents establishing bidder', 
+                'qualifying bid', 'section-xii', 'section-10', 'section-iv'
+            ])
+            annexure_matches = len(re.findall(r'\bannexure[\s\-_]*[a-z0-9]\b', t_lower))
+            
+            for m in matches:
+                score = 0
+                after_snippet = text[m.end():m.end()+350].lower()
+                
+                # Big bonus for actual template / form indicators immediately following or on page
+                if 'letter head' in after_snippet or 'letterhead' in after_snippet or 'letter head' in t_lower:
+                    score += 35
+                if 'signature of' in after_snippet or 'seal of' in after_snippet or 'signature of' in t_lower:
+                    score += 20
+                if 'hereby declare' in after_snippet or 'hereby certify' in after_snippet or 'i/we' in after_snippet or 'undertake' in after_snippet:
+                    score += 20
+                if 'ref. no' in after_snippet or 'ref no' in after_snippet:
+                    score += 15
+                if re.search(r'[\._…]{4,}', after_snippet): # blanks to fill
+                    score += 25
+                    
+                # Penalties for index / checklist pages
+                if is_toc_or_checklist:
+                    score -= 50
+                if annexure_matches >= 4 and not ('letter head' in after_snippet or 'ref. no' in after_snippet or 'hereby declare' in after_snippet):
+                    score -= 30
+                    
+                candidates.append((score, i + 1))
+    if candidates:
+        candidates.sort(key=lambda x: x[0], reverse=True)
+        return candidates[0][1]
+    return -1
 
 def find_page_for_form(doc, line_text, api_key):
     form_name = extract_form_name(line_text)
     
-    # Try ToC first
+    # Try header scoring across all pages first
+    header_page = find_best_page_by_header(doc, line_text)
+    if header_page != -1:
+        return header_page
+    
+    # Try ToC
     toc = doc.get_toc()
     if toc:
         for lvl, title, page in toc:
@@ -53,9 +106,7 @@ def find_page_for_form(doc, line_text, api_key):
         
     clean_text = re.sub(r'--- PAGE \d+ ---', '', index_text).strip()
     if len(clean_text) < 50:
-        # Scanned PDF, no text available for indexing
         return -1
-        
         
     client = genai.Client(api_key=api_key)
     prompt = f"""
@@ -76,7 +127,6 @@ def find_page_for_form(doc, line_text, api_key):
     try:
         response = call_gemini_with_retry(client, prompt)
         page_num_str = response.text.strip()
-        # Extract first integer found
         match = re.search(r'\d+', page_num_str)
         if match:
             return int(match.group())
@@ -98,29 +148,35 @@ def extract_form_from_gcc(pdf_path, line_text, api_key):
         
     form_name = extract_form_name(line_text)
     
-    if len(doc) <= 40:
-        print(f"Document is short ({len(doc)} pages), passing full text to Gemini for {form_name}")
-        start_page = 1
-        found_page = 1
-        # It will extract the whole document in the next block because we limit end_idx
-    else:
-        start_page = find_page_for_form(doc, line_text, api_key)
-        
-        if start_page == -1 or start_page > len(doc):
-            print(f"Could not find page for {form_name} in index. Falling back to full text search.")
-            # Fallback: text search in document
-            found_page = -1
-            for i in range(len(doc)):
-                text = doc[i].get_text()
-                if form_name.lower() in text.lower():
-                    found_page = i + 1 # 1-indexed
-                    break
+    # Check best page by header first
+    start_page = find_best_page_by_header(doc, line_text)
+    if start_page == -1:
+        if len(doc) <= 40:
+            print(f"Document is short ({len(doc)} pages), passing full text to Gemini for {form_name}")
+            start_page = 1
+        else:
+            start_page = find_page_for_form(doc, line_text, api_key)
             
-            if found_page != -1:
-                start_page = found_page
-            else:
-                print(f"Could not find {form_name} anywhere in the document.")
-                return None
+            if start_page == -1 or start_page > len(doc):
+                print(f"Could not find page for {form_name} in index. Falling back to full text search.")
+                match = re.search(r'\b(form|annexure|appendix|proforma)[\s\W_]+([a-z0-9]+)\b', line_text, re.IGNORECASE)
+                if match:
+                    pattern = rf'\b{re.escape(match.group(1))}[\s\-_]*{re.escape(match.group(2))}\b'
+                else:
+                    pattern = re.escape(form_name)
+                    
+                found_page = -1
+                for i in range(len(doc)):
+                    text = doc[i].get_text()
+                    if re.search(pattern, text, re.IGNORECASE):
+                        found_page = i + 1
+                        break
+                
+                if found_page != -1:
+                    start_page = found_page
+                else:
+                    print(f"Could not find {form_name} anywhere in the document.")
+                    return None
             
     if len(doc) <= 40:
         idx = 0
@@ -141,11 +197,13 @@ def extract_form_from_gcc(pdf_path, line_text, api_key):
     client = genai.Client(api_key=api_key)
     prompt = f"""
     You are an expert at extracting specific forms/annexures from Tender documents.
-    I need you to extract the EXACT, VERBATIM text and formatting for the following form: "{form_name}"
+    I need you to extract the EXACT text for the following form: "{form_name}"
     (Originally requested as: "{line_text}")
     
-    Extract the entire form content, from its title down to the signature blocks.
-    DO NOT summarize. Maintain the layout (e.g., placeholders like _________, tables, lists).
+    Extract ONLY this specific form content, from its title down to its signature/seal blocks.
+    DO NOT include other annexures or sections that appear before or after it on the same page.
+    DO NOT change, substitute, summarize, or rephrase the wording. Keep the EXACT original wording verbatim.
+    CRITICAL: The provided text may have broken newlines or line breaks in the middle of sentences due to PDF extraction. You MUST fix these broken lines and format the text properly into complete, readable paragraphs. Do not leave strange broken lines mid-sentence.
     If you cannot find the form, return exactly "NOT_FOUND".
     
     Document Text:
@@ -183,12 +241,13 @@ def extract_form_from_missing_annexures(pdf_path: str, line_text: str, api_key: 
     You are an expert at extracting specific forms/annexures from Tender documents.
     I have attached a PDF file that contains one or more missing annexures.
     
-    I need you to look at the pages and extract the EXACT, VERBATIM text and formatting for the following form: "{form_name}"
+    I need you to look at the pages and extract the EXACT text for the following form: "{form_name}"
     (Originally requested as: "{line_text}")
     
     Find the page(s) that match this form. Look at the top of the pages for the annexure number.
     Extract the entire form content, from its title down to the signature blocks.
-    DO NOT summarize. Maintain the layout (e.g., placeholders like _________, tables, lists).
+    DO NOT summarize. Maintain the logical layout (e.g., placeholders like _________, lists).
+    CRITICAL: You MUST format the text properly into complete, readable paragraphs. Do not insert weird mid-sentence line breaks or broken newlines. Ensure the text flows naturally.
     If you absolutely cannot find this form in the attached PDF, return exactly "NOT_FOUND".
     """
     

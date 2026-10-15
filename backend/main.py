@@ -132,6 +132,13 @@ def _shutdown(pipeline: Pipeline, threads: list[threading.Thread]) -> None:
     # Generate the final report with all completed tenders
     if hasattr(pipeline, 'completed_docs') and pipeline.completed_docs:
         generate_final_report(pipeline.completed_docs)
+        
+    try:
+        from app.core.excel_ledger import sync_excel_ledger_blocking
+        sync_excel_ledger_blocking()
+        log.info("Excel ledger synced successfully on shutdown.")
+    except Exception as e:
+        log.error("Failed to sync excel ledger on shutdown: %s", e)
 
 
 if __name__ == "__main__":
